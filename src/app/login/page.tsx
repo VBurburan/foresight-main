@@ -27,7 +27,7 @@ export default function LoginPageWrapper() {
 function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") || "/instructor/dashboard";
+  const redirect = searchParams.get("redirect");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,17 +42,36 @@ function LoginPage() {
     setLoading(true);
 
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (signInError) {
         setError(signInError.message);
-      } else {
-        router.push(redirect);
-        router.refresh();
+        return;
       }
+
+      // Query the students table for the user's role
+      const { data: studentRecord } = await supabase
+        .from("students")
+        .select("role")
+        .eq("auth_id", authData.user.id)
+        .single();
+
+      const role = studentRecord?.role;
+
+      // If a redirect was explicitly requested, honor it
+      if (redirect) {
+        router.push(redirect);
+      } else if (role === "instructor" || role === "admin") {
+        router.push("/instructor/dashboard");
+      } else {
+        // student, null, or any other value
+        router.push("/student/dashboard");
+      }
+
+      router.refresh();
     } catch {
       setError("An unexpected error occurred");
     } finally {
@@ -76,7 +95,7 @@ function LoginPage() {
             </div>
             <div>
               <p className="text-sm font-bold tracking-wide">Foresight</p>
-              <p className="text-[10px] text-slate-400 tracking-widest uppercase">Instructor Portal</p>
+              <p className="text-[10px] text-slate-400 tracking-widest uppercase">Assessment Platform</p>
             </div>
           </Link>
         </div>
@@ -88,18 +107,18 @@ function LoginPage() {
             Platform for EMS
           </h1>
           <p className="text-lg text-gray-300 leading-relaxed max-w-md">
-            Build TEI assessments, track cohort analytics, and identify at-risk students before they fall behind.
+            Build and take real TEI assessments, track analytics, and stay accreditation-ready.
           </p>
 
           <div className="space-y-4">
             {[
               {
                 icon: Shield,
-                text: "All 6 NREMT TEI question formats",
+                text: "Build & take real TEI assessments",
               },
               {
                 icon: BarChart3,
-                text: "Cohort & individual analytics",
+                text: "Track cohort & individual analytics",
               },
               {
                 icon: FileText,
@@ -139,15 +158,15 @@ function LoginPage() {
               </div>
               <div>
                 <p className="text-lg font-bold text-slate-900">Foresight</p>
-                <p className="text-[10px] text-slate-400 tracking-widest uppercase">Instructor Portal</p>
+                <p className="text-[10px] text-slate-400 tracking-widest uppercase">Assessment Platform</p>
               </div>
             </Link>
           </div>
 
           <div className="mb-6 lg:mb-8">
-            <h2 className="text-2xl font-bold text-[#1B4F72]">Welcome back</h2>
+            <h2 className="text-2xl font-bold text-[#1B4F72]">Welcome to Foresight</h2>
             <p className="text-sm text-gray-500 mt-1">
-              Sign in to access your instructor dashboard
+              Sign in to your account
             </p>
           </div>
 
@@ -203,7 +222,7 @@ function LoginPage() {
 
             <div className="mt-6 pt-4 border-t border-slate-100 text-center">
               <p className="text-xs text-slate-400">
-                Instructor accounts are provisioned by your institution.
+                Students: use the credentials from your instructor
               </p>
               <a
                 href="mailto:vincent@path2medic.com"

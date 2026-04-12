@@ -3,6 +3,7 @@ import { updateSession } from "@/lib/supabase/middleware";
 
 const protectedRoutes = [
   "/instructor",
+  "/student",
 ];
 
 export async function middleware(request: NextRequest) {
