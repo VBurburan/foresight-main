@@ -56,20 +56,16 @@ function LoginPage() {
       const { data: studentRecord } = await supabase
         .from("students")
         .select("role")
-        .eq("auth_id", authData.user.id)
+        .eq("user_id", authData.user.id)
         .single();
 
       const role = studentRecord?.role;
+      const isInstructor = role === "instructor" || role === "admin";
 
-      // If a redirect was explicitly requested, honor it
-      if (redirect) {
-        router.push(redirect);
-      } else if (role === "instructor" || role === "admin") {
-        router.push("/instructor/dashboard");
-      } else {
-        // student, null, or any other value
-        router.push("/student/dashboard");
-      }
+      // Determine destination based on role
+      const defaultDest = isInstructor ? "/instructor/dashboard" : "/student/dashboard";
+      const dest = redirect || defaultDest;
+      router.push(dest);
 
       router.refresh();
     } catch {
