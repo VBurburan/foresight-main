@@ -13,10 +13,8 @@ import {
   LogOut,
   Menu,
   X,
-  ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
@@ -95,17 +93,6 @@ export function ForesightSidebar() {
           );
         })}
 
-        <Separator className="my-4 bg-white/10" />
-
-        {/* Switch to Student View */}
-        <Link
-          href="https://path2medic.vercel.app/dashboard"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all"
-          onClick={() => setMobileOpen(false)}
-        >
-          <ArrowLeft className="w-[18px] h-[18px]" />
-          <span className="font-medium">Student Portal (Path2Medic)</span>
-        </Link>
       </nav>
 
       {/* User Info and Sign Out */}

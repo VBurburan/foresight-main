@@ -116,16 +116,10 @@ function LoginPage() {
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div>
           <p className="text-xs text-gray-500">
-            &copy; 2026 Foresight by Path2Medic
+            &copy; 2026 Foresight. All rights reserved.
           </p>
-          <a
-            href="https://path2medic.vercel.app"
-            className="text-xs text-gray-500 hover:text-gray-400 transition-colors"
-          >
-            Looking for student test prep? Visit Path2Medic &rarr;
-          </a>
         </div>
       </div>
 
@@ -220,15 +214,6 @@ function LoginPage() {
             </div>
           </div>
 
-          {/* Footer */}
-          <p className="mt-6 text-center text-xs text-gray-400">
-            <a
-              href="https://path2medic.vercel.app"
-              className="underline hover:text-gray-600"
-            >
-              Student? Sign in at Path2Medic
-            </a>
-          </p>
         </div>
       </div>
     </div>
