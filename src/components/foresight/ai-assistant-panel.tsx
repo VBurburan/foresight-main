@@ -54,7 +54,7 @@ export function AIAssistantPanel({
   // Config state
   const [count, setCount] = useState('5');
   const [itemType, setItemType] = useState('MC');
-  const [domain, setDomain] = useState('');
+  const [domain, setDomain] = useState('any');
   const [difficulty, setDifficulty] = useState('medium');
   const [topicHint, setTopicHint] = useState('');
   const [error, setError] = useState('');
@@ -79,7 +79,7 @@ export function AIAssistantPanel({
           count: parseInt(count) || 5,
           certification_level: certLevel,
           item_type: itemType,
-          domain: domain || undefined,
+          domain: domain === 'any' ? undefined : domain,
           difficulty,
           topic_hint: topicHint || undefined,
         }),
@@ -198,7 +198,7 @@ export function AIAssistantPanel({
                 <SelectValue placeholder="Any domain" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any Domain</SelectItem>
+                <SelectItem value="any">Any Domain</SelectItem>
                 <SelectItem value="Airway, Respiration & Ventilation">Airway, Resp & Vent</SelectItem>
                 <SelectItem value="Cardiology & Resuscitation">Cardiology & Resus</SelectItem>
                 <SelectItem value="Medical/OB/GYN">Medical/OB/GYN</SelectItem>
