@@ -91,7 +91,7 @@ export function StudentSidebar() {
       {/* Footer */}
       <div className="px-4 py-4 mt-auto border-t border-white/[0.06]">
         {user && (
-          <p className="text-xs text-zinc-600 truncate mb-3">{user.email}</p>
+          <p className="text-xs text-zinc-400 truncate mb-3">{user.email}</p>
         )}
         <button
           onClick={handleSignOut}

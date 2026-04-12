@@ -334,7 +334,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
                                 {student.avgScore}%
                               </span>
                             ) : (
-                              <span className="text-zinc-600">--</span>
+                              <span className="text-zinc-500">--</span>
                             )}
                           </TableCell>
                           <TableCell className="text-center text-sm text-zinc-400">

@@ -12,6 +12,9 @@ import {
   Eye,
   CheckCircle2,
   X,
+  Sparkles,
+  Send,
+  Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -130,7 +133,7 @@ function ECGPreviewInline({ stripId }: { stripId: string }) {
   return (
     <div className="rounded-lg surface-1 ring-1 ring-white/[0.06] overflow-hidden mb-4">
       <img src={strip.image_url} alt="ECG Strip" className="w-full h-auto object-contain" />
-      <p className="text-[9px] text-zinc-600 px-2 py-1">PhysioNet - CC BY 4.0</p>
+      <p className="text-[9px] text-zinc-500 px-2 py-1">PhysioNet - CC BY 4.0</p>
     </div>
   );
 }
@@ -176,6 +179,7 @@ function TestBuilderContent() {
   const { user } = useUser();
   const [assessmentName, setAssessmentName] = useState('');
   const [certLevel, setCertLevel] = useState<string>('Paramedic');
+  const [assessmentType, setAssessmentType] = useState<string>('quiz');
   const [questions, setQuestions] = useState<QuestionTemplate[]>([]);
   const [showNewDialog, setShowNewDialog] = useState(false);
   const [selectedType, setSelectedType] = useState<TEIType>('MC');
@@ -184,6 +188,126 @@ function TestBuilderContent() {
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const [draftsLoaded, setDraftsLoaded] = useState(false);
   const [assessmentId, setAssessmentId] = useState<string | null>(null);
+  const [generating, setGenerating] = useState(false);
+  const [publishOpen, setPublishOpen] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const [selectedClassId, setSelectedClassId] = useState<string>('');
+  const [availableClasses, setAvailableClasses] = useState<{ id: string; name: string }[]>([]);
+
+  // Load classes for publishing
+  useEffect(() => {
+    if (!user) return;
+    const supabase = createClient();
+    supabase.from('instructors').select('id').eq('user_id', user.id).single()
+      .then(({ data: inst }) => {
+        if (!inst) return;
+        supabase.from('classes').select('id, name').eq('instructor_id', inst.id)
+          .then(({ data }) => setAvailableClasses(data ?? []));
+      });
+  }, [user]);
+
+  const handlePublish = async () => {
+    if (!user || !assessmentId) return;
+    setPublishing(true);
+    try {
+      const supabase = createClient();
+      await supabase.from('instructor_assessments').update({
+        status: 'published',
+        class_id: selectedClassId || null,
+      }).eq('id', assessmentId);
+      setSaveMessage('Published!');
+      setPublishOpen(false);
+      setTimeout(() => setSaveMessage(''), 3000);
+    } catch {
+      setSaveMessage('Error publishing');
+      setTimeout(() => setSaveMessage(''), 3000);
+    }
+    setPublishing(false);
+  };
+
+  const handleGenerateAI = async (questionId?: string) => {
+    setGenerating(true);
+    setSaveMessage('Generating with AI...');
+
+    try {
+      const supabase = createClient();
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+      // Determine how many questions to generate
+      const typeRanges: Record<string, number> = { quiz: 10, chapter: 25, midterm: 50, final: 100 };
+      const targetCount = questionId ? 1 : Math.min(typeRanges[assessmentType] || 10, 10);
+
+      // If generating for a specific question, use its type. Otherwise use MC as default.
+      const targetType = questionId
+        ? questions.find((q) => q.id === questionId)?.type || 'MC'
+        : 'MC';
+
+      const response = await fetch(`${supabaseUrl}/functions/v1/generate-questions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseAnonKey}`,
+        },
+        body: JSON.stringify({
+          count: targetCount,
+          certification_level: certLevel,
+          item_type: targetType,
+          difficulty: 'medium',
+          topic_hint: assessmentName || undefined,
+        }),
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || 'Generation failed');
+      }
+
+      const result = await response.json();
+      const generated = result.questions || [];
+
+      if (generated.length === 0) {
+        setSaveMessage('No questions generated — try again');
+        setTimeout(() => setSaveMessage(''), 3000);
+        setGenerating(false);
+        return;
+      }
+
+      if (questionId) {
+        // Replace a single question
+        const q = generated[0];
+        setQuestions((prev) =>
+          prev.map((existing) =>
+            existing.id === questionId
+              ? { ...existing, stem: q.stem, data: q.options || existing.data, rationale: q.rationale || '' }
+              : existing
+          )
+        );
+      } else {
+        // Add all generated questions
+        const newQuestions: QuestionTemplate[] = generated.map((q: any) => {
+          const type = (q.item_type || 'MC') as TEIType;
+          const base = createBlankQuestion(type);
+          return {
+            ...base,
+            stem: q.stem || '',
+            data: q.options || base.data,
+            rationale: q.rationale || '',
+            expanded: false,
+          };
+        });
+        setQuestions((prev) => [...prev, ...newQuestions]);
+      }
+
+      setSaveMessage(`Generated ${generated.length} question${generated.length !== 1 ? 's' : ''}!`);
+      setTimeout(() => setSaveMessage(''), 3000);
+    } catch (err: any) {
+      console.error('AI generation error:', err);
+      setSaveMessage(`Error: ${err.message || 'Generation failed'}`);
+      setTimeout(() => setSaveMessage(''), 4000);
+    }
+    setGenerating(false);
+  };
 
   // Load draft on mount — try Supabase first, fall back to localStorage
   useEffect(() => {
@@ -409,14 +533,14 @@ function TestBuilderContent() {
     <div className="px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold text-zinc-50">Test Builder</h1>
-            <p className="text-sm text-zinc-400 mt-0.5">Create assessments with real TEI formats</p>
+            <h1 className="text-2xl font-bold text-zinc-50 font-heading">Test Builder</h1>
+            <p className="text-sm text-zinc-400 mt-0.5">Create and manage assessments with real TEI formats</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             {saveMessage && (
-              <span className="text-xs text-emerald-400 font-medium">{saveMessage}</span>
+              <span className="text-xs text-emerald-400 font-medium animate-fade-in">{saveMessage}</span>
             )}
             {questions.length > 0 && (
               <Button variant="ghost" size="sm" onClick={handleClearDraft} className="text-zinc-400 hover:text-red-400 text-xs">
@@ -442,36 +566,137 @@ function TestBuilderContent() {
               <Save className="h-4 w-4 mr-1.5" />
               Save Draft
             </Button>
+            {assessmentId && (
+              <Dialog open={publishOpen} onOpenChange={setPublishOpen}>
+                <DialogTrigger asChild>
+                  <Button size="sm" className="bg-blue-600 hover:bg-blue-500 text-white">
+                    <Send className="h-4 w-4 mr-1.5" />
+                    Publish
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="glass-card border-white/[0.12] sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="text-zinc-50">Publish Assessment</DialogTitle>
+                    <DialogDescription className="text-zinc-400">
+                      Published assessments become available for students to take. Assign to a class to make it visible on their dashboard.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-2">
+                    <div className="space-y-1.5">
+                      <label className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Assign to Class (optional)</label>
+                      <Select value={selectedClassId} onValueChange={setSelectedClassId}>
+                        <SelectTrigger><SelectValue placeholder="Select a class..." /></SelectTrigger>
+                        <SelectContent>
+                          {availableClasses.map((c) => (
+                            <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="glass-subtle p-3 text-xs text-zinc-400">
+                      <p><span className="font-medium text-zinc-300">{questions.length} questions</span> will be published as &ldquo;{assessmentName || 'Untitled'}&rdquo;</p>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setPublishOpen(false)} className="text-zinc-300">Cancel</Button>
+                    <Button onClick={handlePublish} disabled={publishing} className="bg-blue-600 hover:bg-blue-500 text-white">
+                      {publishing ? <><Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> Publishing...</> : 'Publish Assessment'}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
         </div>
 
-        {/* Assessment Config */}
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <label htmlFor="assessment-name" className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
-              Assessment Name
-            </label>
-            <Input
-              id="assessment-name"
-              value={assessmentName}
-              onChange={(e) => setAssessmentName(e.target.value)}
-              placeholder="e.g., Cardiology Midterm — Spring 2026"
-              className="bg-surface-1"
-            />
+        {/* Assessment Setup */}
+        <div className="glass-card p-5 space-y-5">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="h-6 w-6 rounded-md surface-2 flex items-center justify-center text-xs font-bold text-zinc-300">1</div>
+            <h2 className="text-sm font-semibold text-zinc-200">Assessment Setup</h2>
           </div>
-          <div className="space-y-1.5">
-            <label className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Certification Level</label>
-            <Select value={certLevel} onValueChange={setCertLevel}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="EMT">EMT</SelectItem>
-                <SelectItem value="AEMT">AEMT</SelectItem>
-                <SelectItem value="Paramedic">Paramedic</SelectItem>
-              </SelectContent>
-            </Select>
+
+          <div className="grid sm:grid-cols-3 gap-4">
+            <div className="space-y-1.5">
+              <label htmlFor="assessment-name" className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
+                Assessment Name
+              </label>
+              <Input
+                id="assessment-name"
+                value={assessmentName}
+                onChange={(e) => setAssessmentName(e.target.value)}
+                placeholder="e.g., Cardiology Midterm"
+                className="bg-surface-1"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Certification Level</label>
+              <Select value={certLevel} onValueChange={setCertLevel}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="EMT">EMT</SelectItem>
+                  <SelectItem value="AEMT">AEMT</SelectItem>
+                  <SelectItem value="Paramedic">Paramedic</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Assessment Type</label>
+              <Select value={assessmentType} onValueChange={setAssessmentType}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="quiz">Quiz (10–25 questions)</SelectItem>
+                  <SelectItem value="chapter">Chapter Test (25–50)</SelectItem>
+                  <SelectItem value="midterm">Midterm Exam (50–100)</SelectItem>
+                  <SelectItem value="final">Final Exam (100–150)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
+
+          {/* TEI Mix guide */}
+          <div className="glass-subtle p-3">
+            <p className="text-xs font-medium text-zinc-300 mb-2">Suggested TEI Mix</p>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { type: 'MC', pct: '55–65%', desc: 'Foundation' },
+                { type: 'MR', pct: '10–15%', desc: 'Select All' },
+                { type: 'DD', pct: '8–12%', desc: 'Matching' },
+                { type: 'OB', pct: '8–12%', desc: 'Sequencing' },
+                { type: 'BL', pct: '5–8%', desc: 'Linking' },
+              ].map((item) => (
+                <div key={item.type} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md surface-2 text-xs">
+                  <span className="font-mono font-semibold text-zinc-200">{item.type}</span>
+                  <span className="text-zinc-400">{item.pct}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* AI Generation Section */}
+        <div className="glass-card p-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="h-6 w-6 rounded-md surface-2 flex items-center justify-center text-xs font-bold text-zinc-300">2</div>
+              <h2 className="text-sm font-semibold text-zinc-200">Question Assembly</h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleGenerateAI()}
+                disabled={generating}
+                className="text-purple-300 border-purple-500/30 hover:bg-purple-500/10"
+              >
+                {generating ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> : <Sparkles className="h-4 w-4 mr-1.5" />}
+                Generate All with AI
+              </Button>
+            </div>
+          </div>
+          <p className="mt-2 text-xs text-zinc-400">
+            Add questions manually, use AI to generate them from your curriculum, or mix both approaches.
+          </p>
         </div>
 
         {/* Question Count Summary */}
@@ -479,9 +704,9 @@ function TestBuilderContent() {
           <div className="flex items-center justify-between py-2 text-sm">
             <div className="flex items-center gap-3 text-zinc-400">
               <span className="font-semibold text-zinc-50">{questions.length} question{questions.length !== 1 ? 's' : ''}</span>
-              <span className="text-zinc-600">|</span>
+              <span className="text-zinc-500">|</span>
               <span>{filledCount} completed</span>
-              <span className="text-zinc-600">|</span>
+              <span className="text-zinc-500">|</span>
               <span>{questions.length - filledCount} blank</span>
             </div>
             <span className="text-xs text-zinc-400 font-mono tabular-nums">
@@ -506,7 +731,7 @@ function TestBuilderContent() {
                 onClick={() => toggleExpand(q.id)}
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <GripVertical className="h-4 w-4 text-zinc-600 flex-shrink-0" />
+                  <GripVertical className="h-4 w-4 text-zinc-500 flex-shrink-0" />
                   <span className="text-sm font-medium text-zinc-400 tabular-nums flex-shrink-0">Q{idx + 1}</span>
                   <span className="surface-2 text-zinc-300 font-mono text-xs rounded px-1.5 py-0.5 flex-shrink-0">
                     {q.type}
@@ -514,7 +739,7 @@ function TestBuilderContent() {
                   {q.stem ? (
                     <span className="text-sm text-zinc-300 truncate">{q.stem}</span>
                   ) : (
-                    <span className="text-sm text-zinc-600 italic">Blank — click to edit</span>
+                    <span className="text-sm text-zinc-500 italic">Blank — click to edit</span>
                   )}
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0 ml-2">
@@ -539,6 +764,18 @@ function TestBuilderContent() {
               {q.expanded && (
                 <div className="px-4 pb-4 pt-0 border-t border-white/[0.06]">
                   <div className="space-y-4 mt-4">
+                    {/* AI generate for this question */}
+                    {!q.stem && (
+                      <button
+                        onClick={() => handleGenerateAI(q.id)}
+                        disabled={generating}
+                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-dashed border-purple-500/30 text-purple-300 text-sm hover:bg-purple-500/5 transition-colors disabled:opacity-50"
+                      >
+                        {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                        Generate this question with AI
+                      </button>
+                    )}
+
                     {/* Stem */}
                     <div className="space-y-1.5">
                       <label className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Question Stem</label>

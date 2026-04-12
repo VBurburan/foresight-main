@@ -233,9 +233,12 @@ function DashboardContent() {
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-zinc-50">Dashboard</h1>
+          <div>
+            <h1 className="text-2xl font-bold text-zinc-50 font-heading">Dashboard</h1>
+            <p className="text-sm text-zinc-400 mt-0.5">Overview of your classes and student performance</p>
+          </div>
           <Link href="/instructor/classes">
-            <button className="inline-flex items-center gap-1.5 rounded-md bg-white px-3.5 py-2 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-100">
+            <button className="inline-flex items-center gap-1.5 rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-zinc-900 transition-all hover:bg-zinc-100 shadow-elevation-1 hover:shadow-elevation-2">
               <Plus className="h-4 w-4" />
               New Class
             </button>
@@ -263,20 +266,24 @@ function DashboardContent() {
 
         {/* Stats row */}
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {stats.map((stat, idx) => (
-            <div key={idx} className="glass-card p-5">
-              <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">
-                {stat.label}
-              </p>
-              <div className="mt-1 flex items-baseline gap-2">
-                <p className="text-2xl font-semibold text-zinc-50">{stat.value}</p>
-                {stat.label === 'At Risk' && typeof stat.value === 'number' && stat.value > 0 && (
-                  <span className="inline-block h-2 w-2 rounded-full bg-red-400" />
-                )}
+          {stats.map((stat, idx) => {
+            const colors = ['text-blue-400', 'text-indigo-400', 'text-emerald-400', 'text-red-400'];
+            const isAtRisk = stat.label === 'At Risk' && typeof stat.value === 'number' && stat.value > 0;
+            return (
+              <div key={idx} className="glass-card p-5 group hover:bg-white/[0.12] transition-all duration-200">
+                <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">
+                  {stat.label}
+                </p>
+                <div className="mt-2 flex items-baseline gap-2">
+                  <p className={`text-3xl font-bold tabular-nums ${isAtRisk ? 'text-red-400' : colors[idx] || 'text-zinc-50'}`}>{stat.value}</p>
+                  {isAtRisk && (
+                    <span className="inline-block h-2 w-2 rounded-full bg-red-400 animate-pulse-slow" />
+                  )}
+                </div>
+                <p className="mt-1 text-xs text-zinc-400">{stat.subtext}</p>
               </div>
-              <p className="mt-0.5 text-xs text-zinc-400">{stat.subtext}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Divider */}
@@ -383,7 +390,7 @@ function DashboardContent() {
                               )}
                             </p>
                           </div>
-                          <span className="shrink-0 text-xs text-zinc-600">
+                          <span className="shrink-0 text-xs text-zinc-400">
                             {activity.timestamp}
                           </span>
                         </div>

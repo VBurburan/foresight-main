@@ -365,7 +365,7 @@ function ClassesContent() {
                           {cls.avgScore}%
                         </span>
                       ) : (
-                        <span className="text-zinc-600">--</span>
+                        <span className="text-zinc-500">--</span>
                       )}
                     </TableCell>
                     <TableCell>

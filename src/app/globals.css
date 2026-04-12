@@ -28,8 +28,8 @@
 
     /* Surface hierarchy tokens */
     --surface-0: 240 10% 3.9%;        /* page bg: zinc-950 */
-    --surface-1: 240 5.9% 12%;        /* cards: slightly lighter than zinc-900 */
-    --surface-2: 240 3.7% 18%;        /* elevated: slightly lighter than zinc-800 */
+    --surface-1: 240 5.9% 14%;        /* cards: lifted for real separation */
+    --surface-2: 240 3.7% 20%;        /* elevated: interactive elements */
     --surface-3: 240 5.3% 26.1%;      /* hover: zinc-700 */
 
     /* Accent colors */
@@ -37,6 +37,15 @@
     --accent-emerald: 160 84% 39%;    /* success */
     --accent-amber: 38 92% 50%;       /* warning */
     --accent-red: 0 84% 60%;          /* error/at-risk */
+
+    /* Chart palette */
+    --chart-pre: 25 95% 53%;          /* orange — pre-test */
+    --chart-post: 172 66% 50%;        /* teal — post-test */
+    --chart-blue: 217 91% 60%;
+    --chart-indigo: 239 84% 67%;
+    --chart-emerald: 160 84% 39%;
+    --chart-amber: 38 92% 50%;
+    --chart-red: 0 84% 60%;
   }
 }
 
@@ -57,13 +66,16 @@
 @layer utilities {
   /* Glass morphism utilities */
   .glass {
-    @apply backdrop-blur-xl bg-white/[0.06] border border-white/[0.08] rounded-xl;
+    @apply backdrop-blur-xl bg-white/[0.07] border border-white/[0.10] rounded-xl shadow-elevation-1;
   }
   .glass-card {
-    @apply backdrop-blur-xl bg-white/[0.08] border border-white/[0.10] rounded-xl;
+    @apply backdrop-blur-xl bg-white/[0.09] border border-white/[0.12] rounded-xl shadow-elevation-1;
   }
   .glass-subtle {
-    @apply backdrop-blur-md bg-white/[0.04] border border-white/[0.06] rounded-lg;
+    @apply backdrop-blur-md bg-white/[0.05] border border-white/[0.08] rounded-lg;
+  }
+  .glass-card-hover {
+    @apply glass-card transition-all duration-200 hover:bg-white/[0.12] hover:border-white/[0.16] hover:shadow-elevation-2;
   }
 
   /* Surface utilities matching the hierarchy */
