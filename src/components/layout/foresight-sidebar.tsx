@@ -43,19 +43,19 @@ export function ForesightSidebar() {
       {/* Brand */}
       <div className="px-4 pt-5 pb-4">
         <div className="flex items-center gap-2.5">
-          <div className="w-6 h-6 rounded-md bg-slate-50 flex items-center justify-center">
+          <div className="w-7 h-7 bg-white rounded-md flex items-center justify-center">
             <Image
               src="/images/foresight-logo.png"
               alt="Foresight"
-              width={24}
-              height={24}
+              width={20}
+              height={20}
             />
           </div>
           <div>
-            <p className="text-sm font-semibold text-slate-900 leading-none">
+            <p className="text-sm font-semibold text-white leading-none">
               Foresight
             </p>
-            <p className="text-[10px] text-slate-400 uppercase tracking-widest mt-0.5">
+            <p className="text-[10px] text-zinc-500 uppercase tracking-widest mt-0.5">
               Instructor
             </p>
           </div>
@@ -76,14 +76,14 @@ export function ForesightSidebar() {
               className={cn(
                 "flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors",
                 isActive
-                  ? "bg-slate-100 text-slate-900 font-medium"
-                  : "text-slate-600 hover:bg-slate-50"
+                  ? "bg-white/[0.06] text-white border-l-2 border-blue-400 font-medium"
+                  : "text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
               )}
             >
               <Icon
                 className={cn(
                   "w-4 h-4 shrink-0",
-                  isActive ? "text-slate-700" : "text-slate-400"
+                  isActive ? "text-zinc-200" : "text-zinc-500"
                 )}
               />
               {item.label}
@@ -93,13 +93,13 @@ export function ForesightSidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-4 py-4 mt-auto border-t border-slate-100">
+      <div className="px-4 py-4 mt-auto border-t border-white/[0.06]">
         {user && (
-          <p className="text-xs text-slate-400 truncate mb-3">{user.email}</p>
+          <p className="text-xs text-zinc-600 truncate mb-3">{user.email}</p>
         )}
         <button
           onClick={handleSignOut}
-          className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 transition-colors"
+          className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
         >
           <LogOut className="w-4 h-4" />
           Sign Out
@@ -111,26 +111,32 @@ export function ForesightSidebar() {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex w-56 bg-white flex-col border-r border-slate-200">
+      <aside className="hidden md:flex w-56 bg-zinc-900 flex-col border-r border-white/[0.06]">
         <SidebarContent />
       </aside>
 
       {/* Mobile header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-white flex items-center justify-between px-4 z-40 border-b border-slate-200">
+      <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-zinc-900 flex items-center justify-between px-4 z-40 border-b border-white/[0.06]">
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="text-slate-600"
+          className="text-zinc-400"
         >
-          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {mobileOpen ? (
+            <X className="w-5 h-5" />
+          ) : (
+            <Menu className="w-5 h-5" />
+          )}
         </button>
         <div className="flex items-center gap-2">
-          <Image
-            src="/images/foresight-logo.png"
-            alt="Foresight"
-            width={20}
-            height={20}
-          />
-          <span className="text-sm font-semibold text-slate-900">Foresight</span>
+          <div className="w-7 h-7 bg-white rounded-md flex items-center justify-center">
+            <Image
+              src="/images/foresight-logo.png"
+              alt="Foresight"
+              width={16}
+              height={16}
+            />
+          </div>
+          <span className="text-sm font-semibold text-white">Foresight</span>
         </div>
         <div className="w-5" />
       </div>
@@ -139,10 +145,10 @@ export function ForesightSidebar() {
       {mobileOpen && (
         <>
           <div
-            className="fixed inset-0 top-14 bg-black/20 z-30 md:hidden"
+            className="fixed inset-0 top-14 bg-black/50 z-30 md:hidden"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className="fixed top-14 left-0 bottom-0 z-40 w-56 bg-white border-r border-slate-200 flex flex-col md:hidden">
+          <aside className="fixed top-14 left-0 bottom-0 z-40 w-56 bg-zinc-900 border-r border-white/[0.06] flex flex-col md:hidden">
             <SidebarContent />
           </aside>
         </>

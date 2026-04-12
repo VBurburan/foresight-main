@@ -44,9 +44,15 @@ interface TEIPerformance {
 }
 
 function scoreColor(score: number): string {
-  if (score >= 75) return 'text-emerald-600';
-  if (score >= 60) return 'text-amber-600';
-  return 'text-red-600';
+  if (score >= 75) return 'text-emerald-400';
+  if (score >= 60) return 'text-amber-400';
+  return 'text-red-400';
+}
+
+function barColor(score: number): string {
+  if (score >= 75) return 'bg-emerald-400';
+  if (score >= 60) return 'bg-amber-400';
+  return 'bg-red-400';
 }
 
 function StudentDetailContent({ studentId }: { studentId: string }) {
@@ -193,11 +199,11 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white px-4 py-8 sm:px-6 lg:px-8">
+      <div className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl space-y-6">
-          <div className="h-6 w-48 rounded bg-slate-100 animate-pulse" />
-          <div className="h-32 rounded bg-slate-100 animate-pulse" />
-          <div className="h-64 rounded bg-slate-100 animate-pulse" />
+          <div className="h-6 w-48 rounded-md bg-zinc-800 animate-pulse" />
+          <div className="h-32 rounded-xl bg-zinc-800/50 animate-pulse" />
+          <div className="h-64 rounded-xl bg-zinc-800/50 animate-pulse" />
         </div>
       </div>
     );
@@ -205,10 +211,10 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-white px-4 py-8 sm:px-6 lg:px-8">
+      <div className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl text-center py-20">
-          <p className="text-slate-400">Student not found.</p>
-          <Link href="/instructor/classes" className="mt-4 inline-block text-sm text-slate-600 hover:text-slate-900">
+          <p className="text-zinc-500">Student not found.</p>
+          <Link href="/instructor/classes" className="mt-4 inline-block text-sm text-zinc-400 hover:text-white transition-colors">
             &larr; Classes
           </Link>
         </div>
@@ -222,44 +228,46 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
       : null;
 
   return (
-    <div className="min-h-screen bg-white px-4 py-8 sm:px-6 lg:px-8">
+    <div className="px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl space-y-8">
         {/* Back link */}
         <Link
           href="/instructor/classes"
-          className="text-sm text-slate-400 hover:text-slate-700 transition-colors"
+          className="text-sm text-zinc-500 hover:text-white transition-colors"
         >
           &larr; Classes
         </Link>
 
-        {/* Student profile row */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-slate-900">{profile.fullName}</h1>
-            <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500">
-              <span>{profile.email}</span>
-              <span>{profile.certLevel || 'Unknown Level'}</span>
-              <span>Joined {new Date(profile.createdAt).toLocaleDateString()}</span>
-              {readinessScore !== null && (
-                <span className={scoreColor(readinessScore)}>
-                  Readiness: {readinessScore}%
-                </span>
-              )}
+        {/* Student profile card */}
+        <div className="glass-card p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold text-white">{profile.fullName}</h1>
+              <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-zinc-400">
+                <span>{profile.email}</span>
+                <span>{profile.certLevel || 'Unknown Level'}</span>
+                <span>Joined {new Date(profile.createdAt).toLocaleDateString()}</span>
+                {readinessScore !== null && (
+                  <span className={scoreColor(readinessScore)}>
+                    Readiness: {readinessScore}%
+                  </span>
+                )}
+              </div>
             </div>
+            {overallAvg !== null && (
+              <div className="text-right">
+                <p className={`text-4xl font-bold ${scoreColor(overallAvg)}`}>{overallAvg}%</p>
+                <p className="text-xs text-zinc-500 mt-0.5">Overall Score</p>
+              </div>
+            )}
           </div>
-          {overallAvg !== null && (
-            <div className="text-right">
-              <p className={`text-4xl font-bold ${scoreColor(overallAvg)}`}>{overallAvg}%</p>
-              <p className="text-xs text-slate-400 mt-0.5">Overall Score</p>
-            </div>
-          )}
         </div>
 
         {/* Score Trend */}
         {scoreTrend.length > 0 && (
           <div>
-            <h2 className="text-sm font-semibold text-slate-900 mb-1">Score Trend</h2>
-            <p className="text-xs text-slate-400 mb-4">
+            <h2 className="text-sm font-semibold text-white mb-1">Score Trend</h2>
+            <p className="text-xs text-zinc-500 mb-4">
               {scoreTrend.length} session{scoreTrend.length !== 1 ? 's' : ''}
               {scoreTrend.length >= 2 && (
                 <>
@@ -272,28 +280,29 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
                 </>
               )}
             </p>
-            <div className="rounded-lg border border-slate-200 bg-white p-4">
+            <div className="glass-card p-4">
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart data={scoreTrend}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis dataKey="date" tick={{ fill: '#64748b', fontSize: 12 }} />
-                  <YAxis domain={[0, 100]} tick={{ fill: '#64748b', fontSize: 12 }} />
-                  <ReferenceLine y={70} stroke="#cbd5e1" strokeDasharray="5 5" label={{ value: '70% pass', fill: '#94a3b8', fontSize: 11 }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#27272A" />
+                  <XAxis dataKey="date" tick={{ fill: '#71717a', fontSize: 12 }} />
+                  <YAxis domain={[0, 100]} tick={{ fill: '#71717a', fontSize: 12 }} />
+                  <ReferenceLine y={70} stroke="#3f3f46" strokeDasharray="5 5" label={{ value: '70% pass', fill: '#71717a', fontSize: 11 }} />
                   <Tooltip
                     contentStyle={{
-                      borderRadius: '6px',
-                      border: '1px solid #e2e8f0',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(255,255,255,0.06)',
+                      backgroundColor: '#18181b',
+                      color: '#e4e4e7',
                     }}
                     formatter={(value: number) => [`${value}%`, 'Score']}
                   />
                   <Line
                     type="monotone"
                     dataKey="score"
-                    stroke="#334155"
+                    stroke="#3b82f6"
                     strokeWidth={2}
-                    dot={{ r: 4, fill: '#334155', stroke: '#fff', strokeWidth: 2 }}
-                    activeDot={{ r: 6, fill: '#1e293b' }}
+                    dot={{ r: 4, fill: '#3b82f6', stroke: '#09090b', strokeWidth: 2 }}
+                    activeDot={{ r: 6, fill: '#60a5fa' }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -304,20 +313,20 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         {/* Domain Mastery */}
         {domainMastery.length > 0 && (
           <div>
-            <h2 className="text-sm font-semibold text-slate-900 mb-1">Domain Mastery</h2>
-            <p className="text-xs text-slate-400 mb-4">Weakest areas shown first</p>
+            <h2 className="text-sm font-semibold text-white mb-1">Domain Mastery</h2>
+            <p className="text-xs text-zinc-500 mb-4">Weakest areas shown first</p>
             <div className="space-y-3">
               {domainMastery.map((d) => (
                 <div key={d.domain}>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-slate-700">{d.domain}</span>
+                    <span className="text-sm text-zinc-300">{d.domain}</span>
                     <span className={`text-sm font-semibold tabular-nums ${scoreColor(d.score)}`}>
                       {d.score}%
                     </span>
                   </div>
-                  <div className="h-2 w-full rounded-full bg-slate-200 overflow-hidden">
+                  <div className="h-2 w-full rounded-full bg-zinc-800 overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-slate-600 transition-all"
+                      className={`h-full rounded-full ${barColor(d.score)} transition-all`}
                       style={{ width: `${d.score}%` }}
                     />
                   </div>
@@ -330,21 +339,21 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         <div className="grid gap-8 lg:grid-cols-2">
           {/* TEI Performance */}
           <div>
-            <h2 className="text-sm font-semibold text-slate-900 mb-1">TEI Performance</h2>
-            <p className="text-xs text-slate-400 mb-4">By item type</p>
+            <h2 className="text-sm font-semibold text-white mb-1">TEI Performance</h2>
+            <p className="text-xs text-zinc-500 mb-4">By item type</p>
             {teiPerf.length > 0 ? (
               <div className="space-y-3">
                 {teiPerf.map((item) => (
                   <div key={item.itemType}>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-slate-700">{item.itemType}</span>
+                      <span className="text-sm text-zinc-300">{item.itemType}</span>
                       <span className={`text-sm font-semibold tabular-nums ${scoreColor(item.score)}`}>
                         {item.score}%
                       </span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-slate-200 overflow-hidden">
+                    <div className="h-2 w-full rounded-full bg-zinc-800 overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-slate-600 transition-all"
+                        className={`h-full rounded-full ${barColor(item.score)} transition-all`}
                         style={{ width: `${item.score}%` }}
                       />
                     </div>
@@ -352,25 +361,25 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-slate-400 py-8 text-center">No TEI data available yet.</p>
+              <p className="text-sm text-zinc-500 py-8 text-center">No TEI data available yet.</p>
             )}
           </div>
 
           {/* Error Patterns */}
           <div>
-            <h2 className="text-sm font-semibold text-slate-900 mb-1">Error Patterns</h2>
-            <p className="text-xs text-slate-400 mb-4">Identified weakness patterns</p>
+            <h2 className="text-sm font-semibold text-white mb-1">Error Patterns</h2>
+            <p className="text-xs text-zinc-500 mb-4">Identified weakness patterns</p>
             {errorPatterns.length > 0 ? (
               <ul className="space-y-2">
                 {errorPatterns.map((pattern, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-sm text-slate-700">
-                    <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-slate-400 flex-shrink-0" />
+                  <li key={idx} className="flex items-start gap-2 text-sm text-zinc-300">
+                    <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-500 flex-shrink-0" />
                     {pattern}
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-slate-400 py-8 text-center">No error patterns identified yet.</p>
+              <p className="text-sm text-zinc-500 py-8 text-center">No error patterns identified yet.</p>
             )}
           </div>
         </div>
@@ -378,39 +387,39 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         {/* Exam Session History */}
         {sessions.length > 0 && (
           <div>
-            <h2 className="text-sm font-semibold text-slate-900 mb-1">Exam History</h2>
-            <p className="text-xs text-slate-400 mb-4">
+            <h2 className="text-sm font-semibold text-white mb-1">Exam History</h2>
+            <p className="text-xs text-zinc-500 mb-4">
               Last {sessions.length} assessment{sessions.length !== 1 ? 's' : ''}
             </p>
-            <div className="rounded-lg border border-slate-200 overflow-hidden">
+            <div className="glass-card overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50">
-                    <th className="text-left py-2.5 px-4 font-medium text-slate-500 text-xs uppercase tracking-wider">Date</th>
-                    <th className="text-left py-2.5 px-4 font-medium text-slate-500 text-xs uppercase tracking-wider">Level</th>
-                    <th className="text-center py-2.5 px-4 font-medium text-slate-500 text-xs uppercase tracking-wider">Score</th>
-                    <th className="text-center py-2.5 px-4 font-medium text-slate-500 text-xs uppercase tracking-wider">Questions</th>
-                    <th className="text-right py-2.5 px-4 font-medium text-slate-500 text-xs uppercase tracking-wider">Time</th>
+                  <tr className="border-b border-white/[0.06]">
+                    <th className="text-left py-2.5 px-4 font-medium text-zinc-500 text-xs uppercase tracking-wider">Date</th>
+                    <th className="text-left py-2.5 px-4 font-medium text-zinc-500 text-xs uppercase tracking-wider">Level</th>
+                    <th className="text-center py-2.5 px-4 font-medium text-zinc-500 text-xs uppercase tracking-wider">Score</th>
+                    <th className="text-center py-2.5 px-4 font-medium text-zinc-500 text-xs uppercase tracking-wider">Questions</th>
+                    <th className="text-right py-2.5 px-4 font-medium text-zinc-500 text-xs uppercase tracking-wider">Time</th>
                   </tr>
                 </thead>
                 <tbody>
                   {sessions.map((session) => (
-                    <tr key={session.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                      <td className="py-2.5 px-4 text-slate-700">{session.date}</td>
-                      <td className="py-2.5 px-4 text-slate-500 font-mono text-xs">{session.certLevel || '--'}</td>
+                    <tr key={session.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                      <td className="py-2.5 px-4 text-zinc-300">{session.date}</td>
+                      <td className="py-2.5 px-4 text-zinc-500 font-mono text-xs">{session.certLevel || '--'}</td>
                       <td className="py-2.5 px-4 text-center">
                         {session.score != null ? (
                           <span className={`font-semibold tabular-nums ${scoreColor(session.score)}`}>
                             {session.score}%
                           </span>
                         ) : (
-                          <span className="text-slate-300">--</span>
+                          <span className="text-zinc-600">--</span>
                         )}
                       </td>
-                      <td className="py-2.5 px-4 text-center text-slate-600 tabular-nums">
+                      <td className="py-2.5 px-4 text-center text-zinc-400 tabular-nums">
                         {session.questionCount ?? '--'}
                       </td>
-                      <td className="py-2.5 px-4 text-right text-slate-500 tabular-nums">
+                      <td className="py-2.5 px-4 text-right text-zinc-500 tabular-nums">
                         {session.timeSpent != null
                           ? `${Math.round(session.timeSpent / 60)} min`
                           : '--'}

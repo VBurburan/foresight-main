@@ -7,14 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
-import { DotPattern } from "@/components/ui/dot-pattern";
 
 export default function LoginPageWrapper() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-white">
-          <p className="text-slate-400 text-sm">Loading...</p>
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <p className="text-zinc-500 text-sm">Loading...</p>
         </div>
       }
     >
@@ -75,41 +74,38 @@ function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-white px-4">
-      <DotPattern
-        width={24}
-        height={24}
-        cr={1}
-        className="fill-slate-200/60 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)]"
-      />
+    <main className="relative min-h-screen flex flex-col items-center justify-center bg-background px-4">
+      {/* Subtle radial gradient overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.06),transparent_60%)]" />
 
       {/* Logo + Wordmark */}
-      <div className="relative z-10 flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-center">
+      <div className="relative z-10 flex flex-col items-center gap-3 mb-8">
+        <div className="w-14 h-14 rounded-xl bg-white p-3 shadow-glow-blue flex items-center justify-center">
           <Image
             src="/images/foresight-logo.png"
             alt="Foresight"
             width={32}
             height={32}
+            className="w-full h-full object-contain"
           />
         </div>
-        <span className="text-xl font-semibold text-slate-900 tracking-tight">
+        <span className="text-xl font-semibold text-white tracking-tight">
           Foresight
         </span>
       </div>
 
       {/* Card */}
-      <div className="relative z-10 w-full max-w-sm rounded-2xl border border-slate-200 bg-white shadow-lg shadow-slate-200/50 p-8">
+      <div className="relative z-10 w-full max-w-sm glass-card ring-1 ring-white/[0.08] p-8">
         <div className="mb-6">
-          <h1 className="text-xl font-semibold text-slate-900">Sign in</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-xl font-semibold text-white">Sign in</h1>
+          <p className="text-sm text-zinc-400 mt-1">
             Enter your credentials to continue
           </p>
         </div>
 
         <form onSubmit={handleSignIn} className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-sm text-slate-700">
+            <Label htmlFor="email" className="text-sm text-zinc-300">
               Email
             </Label>
             <Input
@@ -120,11 +116,12 @@ function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
+              className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500 focus:ring-blue-500/40 focus:border-blue-500/40"
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="password" className="text-sm text-slate-700">
+            <Label htmlFor="password" className="text-sm text-zinc-300">
               Password
             </Label>
             <Input
@@ -135,25 +132,26 @@ function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
+              className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500 focus:ring-blue-500/40 focus:border-blue-500/40"
             />
           </div>
 
           {error && (
-            <div className="rounded-lg bg-red-50 border border-red-200 px-3 py-2.5 text-sm text-red-700">
+            <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2.5 text-sm text-red-400">
               {error}
             </div>
           )}
 
           <Button
             type="submit"
-            className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium h-10"
+            className="w-full bg-white hover:bg-zinc-100 text-zinc-900 font-medium h-10"
             disabled={loading}
           >
             {loading ? "Signing in..." : "Sign In"}
           </Button>
         </form>
 
-        <p className="text-xs text-slate-400 text-center mt-5">
+        <p className="text-xs text-zinc-500 text-center mt-5">
           Students: use credentials from your instructor
         </p>
       </div>
@@ -161,12 +159,12 @@ function LoginPage() {
       {/* Below card */}
       <div className="relative z-10 mt-6">
         <a
-          href="mailto:vincent@path2medic.com"
-          className="text-xs text-slate-400 hover:text-slate-600 transition-colors"
+          href="mailto:vincent@foresight.edu"
+          className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
         >
           Need access? Contact us
         </a>
       </div>
-    </div>
+    </main>
   );
 }

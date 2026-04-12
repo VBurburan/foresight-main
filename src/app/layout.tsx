@@ -1,32 +1,31 @@
 import type { Metadata } from "next";
-import { Montserrat, Open_Sans } from "next/font/google";
+import { Inter, Manrope } from "next/font/google";
 import "@/app/globals.css";
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-heading",
-  display: "swap",
-  weight: ["400", "500", "600", "700", "800", "900"],
-});
-
-const openSans = Open_Sans({
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
+});
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-heading",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
   title: {
     template: "%s | Foresight",
-    default: "Foresight — Institutional EMS Assessment Platform",
+    default: "Foresight — Assessment Infrastructure for EMS Programs",
   },
   description:
-    "The first institutional assessment platform with real NREMT TEI formats. Cohort analytics, AI-powered test builder, and accreditation tracking for EMS education programs.",
+    "Build NREMT-style TEI assessments, track cohort analytics, and identify at-risk students. The assessment platform built for EMS educators.",
   openGraph: {
-    title: "Foresight — Institutional EMS Assessment Platform",
+    title: "Foresight — Assessment Infrastructure for EMS Programs",
     description:
-      "The first institutional assessment platform with real NREMT TEI formats. Cohort analytics, AI-powered test builder, and accreditation tracking for EMS education programs.",
+      "Build NREMT-style TEI assessments, track cohort analytics, and identify at-risk students.",
     type: "website",
     siteName: "Foresight",
   },
@@ -38,9 +37,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
-        className={`${montserrat.variable} ${openSans.variable} font-sans antialiased`}
+        className={`${inter.variable} ${manrope.variable} font-sans`}
       >
         {children}
       </body>

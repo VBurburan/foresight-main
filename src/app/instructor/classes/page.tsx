@@ -48,9 +48,9 @@ interface ClassRow {
 }
 
 function scoreColor(score: number): string {
-  if (score >= 75) return 'text-emerald-600';
-  if (score >= 60) return 'text-amber-600';
-  return 'text-red-600';
+  if (score >= 75) return 'text-emerald-400';
+  if (score >= 60) return 'text-amber-400';
+  return 'text-red-400';
 }
 
 function CopyButton({ text }: { text: string }) {
@@ -65,13 +65,13 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={(e) => { e.stopPropagation(); e.preventDefault(); handleCopy(); }}
-      className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs hover:bg-slate-100"
+      className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs hover:bg-white/[0.04]"
       title="Copy enrollment code"
     >
       {copied ? (
-        <Check className="h-3 w-3 text-emerald-600" />
+        <Check className="h-3 w-3 text-emerald-400" />
       ) : (
-        <Copy className="h-3 w-3 text-slate-400" />
+        <Copy className="h-3 w-3 text-zinc-500" />
       )}
     </button>
   );
@@ -216,8 +216,8 @@ function ClassesContent() {
     return (
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl space-y-6">
-          <Skeleton className="h-8 w-48" />
-          <Skeleton className="h-64 rounded-lg" />
+          <div className="h-8 w-48 rounded-md bg-zinc-800 animate-pulse" />
+          <div className="h-64 rounded-xl bg-zinc-800/50 animate-pulse" />
         </div>
       </div>
     );
@@ -228,11 +228,11 @@ function ClassesContent() {
       <div className="mx-auto max-w-6xl space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-slate-900">Classes</h1>
+          <h1 className="text-2xl font-semibold text-white">Classes</h1>
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="gap-2 bg-slate-900 hover:bg-slate-800 text-white">
+              <Button className="gap-2 bg-white hover:bg-zinc-100 text-zinc-900">
                 <Plus className="h-4 w-4" />
                 Create Class
               </Button>
@@ -252,6 +252,7 @@ function ClassesContent() {
                     value={newClass.name}
                     onChange={(e) => setNewClass({ ...newClass, name: e.target.value })}
                     placeholder="e.g., Paramedic 2026 Cohort A"
+                    className="bg-surface-1"
                   />
                 </div>
                 <div className="space-y-2">
@@ -278,6 +279,7 @@ function ClassesContent() {
                     onChange={(e) => setNewClass({ ...newClass, description: e.target.value })}
                     placeholder="Course details and goals..."
                     rows={3}
+                    className="bg-surface-1"
                   />
                 </div>
                 <div className="space-y-2">
@@ -289,6 +291,7 @@ function ClassesContent() {
                     onChange={(e) =>
                       setNewClass({ ...newClass, maxStudents: parseInt(e.target.value) || 20 })
                     }
+                    className="bg-surface-1"
                   />
                 </div>
               </div>
@@ -296,12 +299,13 @@ function ClassesContent() {
                 <Button
                   variant="outline"
                   onClick={() => setIsDialogOpen(false)}
+                  className="glass-card text-zinc-300 hover:text-white"
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleCreateClass}
-                  className="bg-slate-900 hover:bg-slate-800 text-white"
+                  className="bg-white hover:bg-zinc-100 text-zinc-900"
                   disabled={creating || !newClass.name.trim()}
                 >
                   {creating ? 'Creating...' : 'Create Class'}
@@ -313,43 +317,46 @@ function ClassesContent() {
 
         {/* Classes Table */}
         {classes.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-slate-200 py-16 text-center">
-            <p className="text-sm font-medium text-slate-900">No classes yet</p>
-            <p className="mt-1 text-sm text-slate-500">
+          <div className="glass-card flex flex-col items-center justify-center py-16 text-center">
+            <div className="surface-2 rounded-full p-4 mb-4">
+              <Plus className="h-6 w-6 text-zinc-400" />
+            </div>
+            <p className="text-sm font-medium text-zinc-300">No classes yet</p>
+            <p className="mt-1 text-sm text-zinc-500">
               Create your first class to start tracking student progress.
             </p>
             <Button
               onClick={() => setIsDialogOpen(true)}
-              className="mt-4 gap-2 bg-slate-900 hover:bg-slate-800 text-white"
+              className="mt-4 gap-2 bg-white hover:bg-zinc-100 text-zinc-900"
             >
               <Plus className="h-4 w-4" />
               Create Class
             </Button>
           </div>
         ) : (
-          <div className="rounded-lg border border-slate-200 bg-white">
+          <div className="glass-card overflow-hidden">
             <Table>
               <TableHeader>
-                <TableRow className="hover:bg-transparent border-slate-200">
-                  <TableHead className="text-xs uppercase tracking-wider text-slate-400 font-medium">Class Name</TableHead>
-                  <TableHead className="text-xs uppercase tracking-wider text-slate-400 font-medium">Cert Level</TableHead>
-                  <TableHead className="text-center text-xs uppercase tracking-wider text-slate-400 font-medium">Students</TableHead>
-                  <TableHead className="text-center text-xs uppercase tracking-wider text-slate-400 font-medium">Avg Score</TableHead>
-                  <TableHead className="text-xs uppercase tracking-wider text-slate-400 font-medium">Enrollment Code</TableHead>
-                  <TableHead className="text-center text-xs uppercase tracking-wider text-slate-400 font-medium">Status</TableHead>
-                  <TableHead className="text-right text-xs uppercase tracking-wider text-slate-400 font-medium">Action</TableHead>
+                <TableRow className="hover:bg-transparent border-white/[0.06]">
+                  <TableHead className="text-xs uppercase tracking-wider text-zinc-500 font-medium">Class Name</TableHead>
+                  <TableHead className="text-xs uppercase tracking-wider text-zinc-500 font-medium">Cert Level</TableHead>
+                  <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-500 font-medium">Students</TableHead>
+                  <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-500 font-medium">Avg Score</TableHead>
+                  <TableHead className="text-xs uppercase tracking-wider text-zinc-500 font-medium">Enrollment Code</TableHead>
+                  <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-500 font-medium">Status</TableHead>
+                  <TableHead className="text-right text-xs uppercase tracking-wider text-zinc-500 font-medium">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {classes.map((cls) => (
-                  <TableRow key={cls.id} className="border-slate-100">
-                    <TableCell className="font-medium text-slate-900">
+                  <TableRow key={cls.id} className="border-white/[0.04] hover:bg-white/[0.02]">
+                    <TableCell className="font-medium text-white">
                       {cls.name}
                     </TableCell>
-                    <TableCell className="text-sm text-slate-600">
+                    <TableCell className="text-sm text-zinc-400">
                       {cls.certification_level || 'All'}
                     </TableCell>
-                    <TableCell className="text-center text-sm text-slate-600">
+                    <TableCell className="text-center text-sm text-zinc-400">
                       {cls.studentCount}
                     </TableCell>
                     <TableCell className="text-center">
@@ -358,13 +365,13 @@ function ClassesContent() {
                           {cls.avgScore}%
                         </span>
                       ) : (
-                        <span className="text-slate-300">--</span>
+                        <span className="text-zinc-600">--</span>
                       )}
                     </TableCell>
                     <TableCell>
                       {cls.enrollment_code && (
                         <div className="flex items-center gap-1">
-                          <code className="rounded bg-slate-50 px-2 py-0.5 text-xs font-mono text-slate-700">
+                          <code className="rounded surface-2 px-2 py-0.5 text-xs font-mono text-zinc-300">
                             {cls.enrollment_code}
                           </code>
                           <CopyButton text={cls.enrollment_code} />
@@ -372,10 +379,10 @@ function ClassesContent() {
                       )}
                     </TableCell>
                     <TableCell className="text-center">
-                      <span className="inline-flex items-center gap-1.5 text-xs text-slate-600">
+                      <span className="inline-flex items-center gap-1.5 text-xs text-zinc-400">
                         <span
                           className={`inline-block h-1.5 w-1.5 rounded-full ${
-                            cls.is_active !== false ? 'bg-emerald-500' : 'bg-slate-300'
+                            cls.is_active !== false ? 'bg-emerald-400' : 'bg-zinc-600'
                           }`}
                         />
                         {cls.is_active !== false ? 'Active' : 'Inactive'}
@@ -383,7 +390,7 @@ function ClassesContent() {
                     </TableCell>
                     <TableCell className="text-right">
                       <Link href={`/instructor/classes/${cls.id}`}>
-                        <Button size="sm" variant="ghost" className="text-slate-600 hover:text-slate-900">
+                        <Button size="sm" variant="ghost" className="text-zinc-400 hover:text-white">
                           View
                         </Button>
                       </Link>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import { BookOpen, ClipboardList } from 'lucide-react';
 import { useUser } from '@/components/auth/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 
@@ -30,9 +31,9 @@ interface ExamSessionRow {
 }
 
 function getScoreColor(score: number | null): string {
-  if (score == null) return 'text-slate-400';
-  if (score >= 70) return 'text-emerald-600';
-  return 'text-red-600';
+  if (score == null) return 'text-zinc-500';
+  if (score >= 70) return 'text-emerald-400';
+  return 'text-red-400';
 }
 
 export default function StudentExamsPage() {
@@ -105,42 +106,45 @@ export default function StudentExamsPage() {
   if (authLoading || loading) {
     return (
       <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-6">
-        <div className="h-8 w-32 bg-slate-100 rounded animate-pulse" />
-        <div className="h-64 bg-slate-100 rounded animate-pulse" />
-        <div className="h-64 bg-slate-100 rounded animate-pulse" />
+        <div className="h-8 w-32 bg-zinc-800 rounded-md animate-pulse" />
+        <div className="h-64 bg-zinc-800 rounded-md animate-pulse" />
+        <div className="h-64 bg-zinc-800 rounded-md animate-pulse" />
       </div>
     );
   }
 
   return (
     <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-10">
-      <h1 className="text-2xl font-semibold text-slate-900">Exams</h1>
+      <h1 className="text-2xl font-semibold text-white">Exams</h1>
 
       {/* Available Assessments */}
       <section className="space-y-4">
-        <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wide">
+        <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-500">
           Available Assessments
         </h2>
 
         {assessments.length === 0 ? (
-          <p className="text-sm text-slate-400 py-8 text-center">
-            No assessments available right now.
-          </p>
+          <div className="glass-card py-12 text-center">
+            <div className="inline-flex items-center justify-center surface-2 rounded-full p-3 mb-3">
+              <BookOpen className="w-5 h-5 text-zinc-500" />
+            </div>
+            <p className="text-sm text-zinc-400">No assessments available right now.</p>
+          </div>
         ) : (
-          <div className="border border-slate-200 rounded-lg divide-y divide-slate-200 bg-white">
+          <div className="glass-card overflow-hidden divide-y divide-white/[0.06]">
             {assessments.map((assessment) => (
               <div
                 key={assessment.id}
-                className="flex items-center justify-between px-5 py-4"
+                className="flex items-center justify-between px-5 py-4 hover:bg-white/[0.02] transition-colors"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-slate-900 truncate">
+                  <p className="text-sm font-medium text-white truncate">
                     {assessment.name}
                   </p>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-zinc-500 mt-0.5">
                     {assessment.question_count ?? '?'} questions
                     {assessment.certification_level && (
-                      <span className="ml-2 text-slate-400">
+                      <span className="ml-2 text-zinc-500">
                         {assessment.certification_level}
                       </span>
                     )}
@@ -148,7 +152,7 @@ export default function StudentExamsPage() {
                 </div>
                 <Link
                   href={`/student/exam/${assessment.id}`}
-                  className="text-sm font-medium text-slate-900 hover:text-slate-600 transition-colors whitespace-nowrap ml-4"
+                  className="text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors whitespace-nowrap ml-4"
                 >
                   Take Exam &rarr;
                 </Link>
@@ -160,26 +164,29 @@ export default function StudentExamsPage() {
 
       {/* Past Attempts */}
       <section className="space-y-4">
-        <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wide">
+        <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-500">
           Past Attempts
         </h2>
 
         {sessions.length === 0 ? (
-          <p className="text-sm text-slate-400 py-8 text-center">
-            No exam attempts yet.
-          </p>
+          <div className="glass-card py-12 text-center">
+            <div className="inline-flex items-center justify-center surface-2 rounded-full p-3 mb-3">
+              <ClipboardList className="w-5 h-5 text-zinc-500" />
+            </div>
+            <p className="text-sm text-zinc-400">No exam attempts yet.</p>
+          </div>
         ) : (
-          <div className="border border-slate-200 rounded-lg bg-white overflow-hidden">
+          <div className="glass-card overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left font-medium text-slate-500 px-5 py-3">Assessment</th>
-                  <th className="text-left font-medium text-slate-500 px-5 py-3">Score</th>
-                  <th className="text-left font-medium text-slate-500 px-5 py-3 hidden md:table-cell">Date</th>
-                  <th className="text-right font-medium text-slate-500 px-5 py-3" />
+                <tr className="border-b border-white/[0.06]">
+                  <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3">Assessment</th>
+                  <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3">Score</th>
+                  <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3 hidden md:table-cell">Date</th>
+                  <th className="text-right text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-white/[0.06]">
                 {sessions.map((session) => {
                   const a = session.assessment_id
                     ? assessmentMap.get(session.assessment_id)
@@ -187,8 +194,8 @@ export default function StudentExamsPage() {
                   const dateStr = session.completed_at || session.started_at;
 
                   return (
-                    <tr key={session.id}>
-                      <td className="px-5 py-3 font-medium text-slate-900">
+                    <tr key={session.id} className="hover:bg-white/[0.02] transition-colors">
+                      <td className="px-5 py-3 font-medium text-white">
                         {a?.name || 'Unknown Assessment'}
                       </td>
                       <td className="px-5 py-3">
@@ -197,10 +204,10 @@ export default function StudentExamsPage() {
                             {session.score_percentage}%
                           </span>
                         ) : (
-                          <span className="text-slate-400">--</span>
+                          <span className="text-zinc-500">--</span>
                         )}
                       </td>
-                      <td className="px-5 py-3 text-slate-500 hidden md:table-cell">
+                      <td className="px-5 py-3 text-zinc-400 hidden md:table-cell">
                         {dateStr
                           ? format(new Date(dateStr), 'MMM d, yyyy')
                           : '--'}
@@ -208,7 +215,7 @@ export default function StudentExamsPage() {
                       <td className="px-5 py-3 text-right">
                         <Link
                           href={`/student/results/${session.id}`}
-                          className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
+                          className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
                         >
                           View &rarr;
                         </Link>

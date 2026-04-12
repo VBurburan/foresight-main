@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
-import { Loader2 } from 'lucide-react';
+import { Loader2, BookOpen, BarChart3 } from 'lucide-react';
 import { useUser } from '@/components/auth/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 
@@ -255,17 +255,17 @@ export default function StudentDashboardPage() {
     return (
       <div className="px-6 py-8 lg:px-10 md:pt-8 pt-20">
         <div className="mx-auto max-w-6xl">
-          <div className="h-7 w-48 rounded bg-slate-100 animate-pulse" />
+          <div className="h-7 w-48 rounded-md bg-zinc-800 animate-pulse" />
           <div className="mt-8 grid grid-cols-3 gap-8">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="space-y-2">
-                <div className="h-3 w-16 rounded bg-slate-100 animate-pulse" />
-                <div className="h-7 w-20 rounded bg-slate-100 animate-pulse" />
+                <div className="h-3 w-16 rounded-md bg-zinc-800 animate-pulse" />
+                <div className="h-7 w-20 rounded-md bg-zinc-800 animate-pulse" />
               </div>
             ))}
           </div>
-          <div className="mt-8 h-px bg-slate-200" />
-          <div className="mt-8 h-72 rounded-lg bg-slate-50 animate-pulse" />
+          <div className="mt-8 h-px bg-white/[0.06]" />
+          <div className="mt-8 h-72 rounded-xl bg-zinc-800 animate-pulse" />
         </div>
       </div>
     );
@@ -275,10 +275,10 @@ export default function StudentDashboardPage() {
     return (
       <div className="flex min-h-screen items-center justify-center px-4 md:pt-0 pt-20">
         <div className="text-center">
-          <p className="text-sm text-slate-500">Please sign in to view your dashboard.</p>
+          <p className="text-sm text-zinc-500">Please sign in to view your dashboard.</p>
           <Link
             href="/login"
-            className="mt-4 inline-block rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800"
+            className="mt-4 inline-block rounded-lg bg-white px-4 py-2 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-100"
           >
             Sign In
           </Link>
@@ -291,16 +291,16 @@ export default function StudentDashboardPage() {
     <div className="px-6 py-8 lg:px-10 md:pt-8 pt-20">
       <div className="mx-auto max-w-6xl">
         {/* ---- Header ---- */}
-        <h1 className="text-2xl font-semibold text-slate-900">
+        <h1 className="text-2xl font-semibold text-white">
           Welcome back, {firstName}
         </h1>
 
         {/* ---- Join a Class (no classes enrolled) ---- */}
         {classes.length === 0 && (
           <div className="mt-8">
-            <div className="rounded-lg border border-slate-200 bg-white px-5 py-5">
-              <p className="text-sm font-medium text-slate-900">Join a class</p>
-              <p className="mt-1 text-xs text-slate-400">
+            <div className="glass-card px-5 py-5">
+              <p className="text-sm font-medium text-white">Join a class</p>
+              <p className="mt-1 text-xs text-zinc-500">
                 Enter the enrollment code provided by your instructor to get started.
               </p>
               <div className="mt-3 flex items-center gap-2">
@@ -314,22 +314,22 @@ export default function StudentDashboardPage() {
                     setEnrollSuccess(null);
                   }}
                   onKeyDown={(e) => e.key === 'Enter' && handleJoinClass()}
-                  className="h-9 w-48 rounded-md border border-slate-200 bg-white px-3 font-mono text-sm tracking-wider uppercase placeholder:text-slate-300 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-300"
+                  className="h-9 w-48 rounded-lg border border-zinc-700 bg-zinc-900/50 px-3 font-mono text-sm tracking-wider uppercase text-white placeholder:text-zinc-500 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40"
                   maxLength={12}
                 />
                 <button
                   onClick={handleJoinClass}
                   disabled={enrolling || !enrollCode.trim()}
-                  className="inline-flex h-9 items-center rounded-md bg-slate-900 px-3.5 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="inline-flex h-9 items-center rounded-lg bg-white px-3.5 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-100 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {enrolling ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Join'}
                 </button>
               </div>
               {enrollError && (
-                <p className="mt-2 text-sm text-red-600">{enrollError}</p>
+                <p className="mt-2 text-sm text-red-400">{enrollError}</p>
               )}
               {enrollSuccess && (
-                <p className="mt-2 text-sm text-emerald-600">{enrollSuccess}</p>
+                <p className="mt-2 text-sm text-emerald-400">{enrollSuccess}</p>
               )}
             </div>
           </div>
@@ -340,29 +340,29 @@ export default function StudentDashboardPage() {
           <>
             <div className="mt-8 grid grid-cols-3 gap-8">
               <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
+                <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
                   Exams Taken
                 </p>
-                <p className="mt-1 text-2xl font-semibold text-slate-900">{examsTaken}</p>
+                <p className="mt-1 text-2xl font-semibold text-white">{examsTaken}</p>
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
+                <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
                   Avg Score
                 </p>
-                <p className="mt-1 text-2xl font-semibold text-slate-900">
+                <p className="mt-1 text-2xl font-semibold text-white">
                   {avgScore != null ? `${avgScore}%` : '--'}
                 </p>
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
+                <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
                   Best Score
                 </p>
-                <p className="mt-1 text-2xl font-semibold text-slate-900">
+                <p className="mt-1 text-2xl font-semibold text-white">
                   {bestScore != null ? `${bestScore}%` : '--'}
                 </p>
               </div>
             </div>
-            <div className="mt-6 h-px bg-slate-200" />
+            <div className="mt-6 h-px bg-white/[0.06]" />
           </>
         )}
 
@@ -371,9 +371,9 @@ export default function StudentDashboardPage() {
           <div className="mt-8 grid gap-8 lg:grid-cols-5">
             {/* Left: Available Assessments */}
             <div className="lg:col-span-3">
-              <div className="rounded-lg border border-slate-200 bg-white">
-                <div className="px-5 py-4">
-                  <h2 className="text-sm font-medium text-slate-900">Available Assessments</h2>
+              <div className="glass-card overflow-hidden">
+                <div className="px-5 py-4 border-b border-white/[0.06]">
+                  <h2 className="text-sm font-medium text-white">Available Assessments</h2>
                 </div>
 
                 {assessments.length > 0 ? (
@@ -381,22 +381,22 @@ export default function StudentDashboardPage() {
                     {assessments.map((a, idx) => (
                       <div
                         key={a.id}
-                        className={`flex items-center justify-between gap-4 px-5 py-3 hover:bg-slate-50 ${
-                          idx !== 0 ? 'border-t border-slate-100' : ''
+                        className={`flex items-center justify-between gap-4 px-5 py-3 hover:bg-white/[0.02] transition-colors ${
+                          idx !== 0 ? 'border-t border-white/[0.06]' : ''
                         }`}
                       >
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-slate-900 truncate">
+                          <p className="text-sm font-medium text-white truncate">
                             {a.name}
                           </p>
                           <div className="mt-0.5 flex items-center gap-3">
                             {a.question_count != null && (
-                              <span className="text-xs text-slate-400">
+                              <span className="text-xs text-zinc-500">
                                 {a.question_count} question{a.question_count !== 1 ? 's' : ''}
                               </span>
                             )}
                             {a.certification_level && (
-                              <span className="inline-flex items-center rounded-full border border-slate-200 px-2 py-0.5 text-xs text-slate-600">
+                              <span className="inline-flex items-center rounded-full border border-white/[0.08] px-2 py-0.5 text-xs text-zinc-400">
                                 {a.certification_level}
                               </span>
                             )}
@@ -404,7 +404,7 @@ export default function StudentDashboardPage() {
                         </div>
                         <Link
                           href={`/student/exam/${a.id}`}
-                          className="shrink-0 text-sm font-medium text-slate-900 hover:text-slate-600 transition-colors"
+                          className="shrink-0 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors"
                         >
                           Take Exam &rarr;
                         </Link>
@@ -412,9 +412,12 @@ export default function StudentDashboardPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="px-5 pb-5">
-                    <p className="text-sm text-slate-400">No assessments available yet.</p>
-                    <p className="mt-0.5 text-xs text-slate-300">
+                  <div className="px-5 py-8 text-center">
+                    <div className="inline-flex items-center justify-center surface-2 rounded-full p-3 mb-3">
+                      <BookOpen className="w-5 h-5 text-zinc-500" />
+                    </div>
+                    <p className="text-sm text-zinc-400">No assessments available yet.</p>
+                    <p className="mt-0.5 text-xs text-zinc-500">
                       Your instructor will publish assessments when they are ready.
                     </p>
                   </div>
@@ -424,9 +427,9 @@ export default function StudentDashboardPage() {
 
             {/* Right: Recent Results */}
             <div className="lg:col-span-2">
-              <div className="rounded-lg border border-slate-200 bg-white">
-                <div className="px-5 py-4">
-                  <h2 className="text-sm font-medium text-slate-900">Recent Results</h2>
+              <div className="glass-card overflow-hidden">
+                <div className="px-5 py-4 border-b border-white/[0.06]">
+                  <h2 className="text-sm font-medium text-white">Recent Results</h2>
                 </div>
 
                 {results.length > 0 ? (
@@ -434,15 +437,15 @@ export default function StudentDashboardPage() {
                     {results.slice(0, 10).map((r, idx) => (
                       <div
                         key={r.id}
-                        className={`flex items-center justify-between gap-3 px-5 py-3 hover:bg-slate-50 ${
-                          idx !== 0 ? 'border-t border-slate-100' : ''
+                        className={`flex items-center justify-between gap-3 px-5 py-3 hover:bg-white/[0.02] transition-colors ${
+                          idx !== 0 ? 'border-t border-white/[0.06]' : ''
                         }`}
                       >
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-slate-900 truncate">
+                          <p className="text-sm font-medium text-white truncate">
                             {r.assessment_name}
                           </p>
-                          <p className="mt-0.5 text-xs text-slate-400">
+                          <p className="mt-0.5 text-xs text-zinc-500">
                             {r.completed_at ? formatDate(r.completed_at) : '--'}
                           </p>
                         </div>
@@ -451,23 +454,26 @@ export default function StudentDashboardPage() {
                             <span
                               className={`text-sm font-semibold ${
                                 r.score_percentage >= 70
-                                  ? 'text-emerald-600'
-                                  : 'text-red-600'
+                                  ? 'text-emerald-400'
+                                  : 'text-red-400'
                               }`}
                             >
                               {r.score_percentage}%
                             </span>
                           ) : (
-                            <span className="text-sm text-slate-300">--</span>
+                            <span className="text-sm text-zinc-500">--</span>
                           )}
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="px-5 pb-5">
-                    <p className="text-sm text-slate-400">No results yet.</p>
-                    <p className="mt-0.5 text-xs text-slate-300">
+                  <div className="px-5 py-8 text-center">
+                    <div className="inline-flex items-center justify-center surface-2 rounded-full p-3 mb-3">
+                      <BarChart3 className="w-5 h-5 text-zinc-500" />
+                    </div>
+                    <p className="text-sm text-zinc-400">No results yet.</p>
+                    <p className="mt-0.5 text-xs text-zinc-500">
                       Complete an assessment to see your scores here.
                     </p>
                   </div>
@@ -481,7 +487,7 @@ export default function StudentDashboardPage() {
         {classes.length > 0 && (
           <div className="mt-8">
             <div className="flex items-center gap-3">
-              <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
+              <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
                 Join another class
               </p>
               <input
@@ -494,22 +500,22 @@ export default function StudentDashboardPage() {
                   setEnrollSuccess(null);
                 }}
                 onKeyDown={(e) => e.key === 'Enter' && handleJoinClass()}
-                className="h-8 w-28 rounded-md border border-slate-200 bg-white px-2.5 font-mono text-xs tracking-wider uppercase placeholder:text-slate-300 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-300"
+                className="h-8 w-28 rounded-lg border border-zinc-700 bg-zinc-900/50 px-2.5 font-mono text-xs tracking-wider uppercase text-white placeholder:text-zinc-500 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40"
                 maxLength={12}
               />
               <button
                 onClick={handleJoinClass}
                 disabled={enrolling || !enrollCode.trim()}
-                className="inline-flex h-8 items-center rounded-md bg-slate-900 px-3 text-xs font-medium text-white transition-colors hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="inline-flex h-8 items-center rounded-lg bg-white px-3 text-xs font-medium text-zinc-900 transition-colors hover:bg-zinc-100 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {enrolling ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : 'Join'}
               </button>
             </div>
             {enrollError && (
-              <p className="mt-2 text-sm text-red-600">{enrollError}</p>
+              <p className="mt-2 text-sm text-red-400">{enrollError}</p>
             )}
             {enrollSuccess && (
-              <p className="mt-2 text-sm text-emerald-600">{enrollSuccess}</p>
+              <p className="mt-2 text-sm text-emerald-400">{enrollSuccess}</p>
             )}
           </div>
         )}
@@ -517,14 +523,14 @@ export default function StudentDashboardPage() {
         {/* ---- Your Classes ---- */}
         {classes.length > 0 && (
           <div className="mt-6">
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
+            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
               Your Classes
             </p>
             <div className="mt-2 flex flex-wrap gap-2">
               {classes.map((cls) => (
                 <span
                   key={cls.id}
-                  className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-sm text-slate-700"
+                  className="inline-flex items-center rounded-full surface-2 border border-white/[0.08] px-3 py-1 text-sm text-zinc-300"
                 >
                   {cls.name}
                 </span>

@@ -44,16 +44,16 @@ interface ClassInfo {
 }
 
 function scoreColor(score: number): string {
-  if (score >= 75) return 'text-emerald-600';
-  if (score >= 60) return 'text-amber-600';
-  return 'text-red-600';
+  if (score >= 75) return 'text-emerald-400';
+  if (score >= 60) return 'text-amber-400';
+  return 'text-red-400';
 }
 
 function statusDot(score: number | null): { color: string; label: string } {
-  if (score === null) return { color: 'bg-slate-300', label: '' };
-  if (score < 60) return { color: 'bg-red-500', label: 'At Risk' };
-  if (score < 75) return { color: 'bg-amber-500', label: 'Monitor' };
-  return { color: 'bg-emerald-500', label: 'On Track' };
+  if (score === null) return { color: 'bg-zinc-600', label: '' };
+  if (score < 60) return { color: 'bg-red-400', label: 'At Risk' };
+  if (score < 75) return { color: 'bg-amber-400', label: 'Monitor' };
+  return { color: 'bg-emerald-400', label: 'On Track' };
 }
 
 function ClassDetailContent({ classId }: { classId: string }) {
@@ -190,9 +190,9 @@ function ClassDetailContent({ classId }: { classId: string }) {
     return (
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl space-y-6">
-          <Skeleton className="h-8 w-80" />
-          <Skeleton className="h-4 w-48" />
-          <Skeleton className="h-64 rounded-lg" />
+          <div className="h-8 w-80 rounded-md bg-zinc-800 animate-pulse" />
+          <div className="h-4 w-48 rounded-md bg-zinc-800 animate-pulse" />
+          <div className="h-64 rounded-xl bg-zinc-800/50 animate-pulse" />
         </div>
       </div>
     );
@@ -202,9 +202,9 @@ function ClassDetailContent({ classId }: { classId: string }) {
     return (
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl py-20 text-center">
-          <p className="text-sm text-slate-500">Class not found.</p>
+          <p className="text-sm text-zinc-500">Class not found.</p>
           <Link href="/instructor/classes">
-            <Button variant="outline" className="mt-4">
+            <Button variant="outline" className="mt-4 glass-card text-zinc-300 hover:text-white">
               Back to Classes
             </Button>
           </Link>
@@ -219,29 +219,29 @@ function ClassDetailContent({ classId }: { classId: string }) {
         {/* Back link */}
         <Link
           href="/instructor/classes"
-          className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-900"
+          className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-white transition-colors"
         >
           &larr; Classes
         </Link>
 
         {/* Class header */}
-        <div className="rounded-lg border border-slate-200 bg-white p-6">
+        <div className="glass-card p-6">
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-2xl font-semibold text-slate-900">{classInfo.name}</h1>
-              <p className="mt-1 text-sm text-slate-500">
+              <h1 className="text-2xl font-semibold text-white">{classInfo.name}</h1>
+              <p className="mt-1 text-sm text-zinc-400">
                 {classInfo.certification_level || 'All levels'} &middot;{' '}
                 {students.length} student{students.length !== 1 ? 's' : ''}
                 {classInfo.max_students && ` / ${classInfo.max_students} max`}
               </p>
               {classInfo.description && (
-                <p className="mt-2 text-sm text-slate-500">{classInfo.description}</p>
+                <p className="mt-2 text-sm text-zinc-500">{classInfo.description}</p>
               )}
             </div>
-            <span className="inline-flex items-center gap-1.5 text-xs text-slate-600">
+            <span className="inline-flex items-center gap-1.5 text-xs text-zinc-400">
               <span
                 className={`inline-block h-1.5 w-1.5 rounded-full ${
-                  classInfo.is_active !== false ? 'bg-emerald-500' : 'bg-slate-300'
+                  classInfo.is_active !== false ? 'bg-emerald-400' : 'bg-zinc-600'
                 }`}
               />
               {classInfo.is_active !== false ? 'Active' : 'Inactive'}
@@ -249,21 +249,21 @@ function ClassDetailContent({ classId }: { classId: string }) {
           </div>
 
           {classInfo.enrollment_code && (
-            <div className="mt-4 flex items-center gap-3 border-t border-slate-100 pt-4">
-              <span className="text-xs font-medium uppercase tracking-wider text-slate-400">
+            <div className="mt-4 flex items-center gap-3 border-t border-white/[0.06] pt-4">
+              <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">
                 Enrollment Code
               </span>
-              <code className="rounded bg-slate-50 px-2.5 py-1 text-sm font-mono font-medium text-slate-800">
+              <code className="rounded surface-2 px-2.5 py-1 text-sm font-mono font-medium text-zinc-200">
                 {classInfo.enrollment_code}
               </code>
               <button
                 onClick={handleCopyCode}
-                className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-700"
+                className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-white transition-colors"
               >
                 {copied ? (
                   <>
-                    <Check className="h-3.5 w-3.5 text-emerald-600" />
-                    <span className="text-emerald-600">Copied</span>
+                    <Check className="h-3.5 w-3.5 text-emerald-400" />
+                    <span className="text-emerald-400">Copied</span>
                   </>
                 ) : (
                   <>
@@ -278,7 +278,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
 
         {/* Tabs */}
         <Tabs defaultValue="students" className="w-full">
-          <TabsList>
+          <TabsList className="surface-1 border border-white/[0.06]">
             <TabsTrigger value="students">
               Students ({students.length})
             </TabsTrigger>
@@ -289,43 +289,43 @@ function ClassDetailContent({ classId }: { classId: string }) {
 
           {/* Students Tab */}
           <TabsContent value="students" className="mt-4">
-            <div className="rounded-lg border border-slate-200 bg-white">
+            <div className="glass-card overflow-hidden">
               {students.length === 0 ? (
                 <div className="py-16 text-center">
-                  <p className="text-sm font-medium text-slate-900">No students enrolled yet</p>
-                  <p className="mt-1 text-sm text-slate-500">
+                  <p className="text-sm font-medium text-zinc-300">No students enrolled yet</p>
+                  <p className="mt-1 text-sm text-zinc-500">
                     Share the enrollment code{' '}
-                    <code className="font-mono font-medium text-slate-800">{classInfo.enrollment_code}</code>
+                    <code className="font-mono font-medium text-zinc-200">{classInfo.enrollment_code}</code>
                     {' '}with your students.
                   </p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
-                    <TableRow className="hover:bg-transparent border-slate-200">
-                      <TableHead className="text-xs uppercase tracking-wider text-slate-400 font-medium">Name</TableHead>
-                      <TableHead className="text-xs uppercase tracking-wider text-slate-400 font-medium">Email</TableHead>
-                      <TableHead className="text-center text-xs uppercase tracking-wider text-slate-400 font-medium">Avg Score</TableHead>
-                      <TableHead className="text-center text-xs uppercase tracking-wider text-slate-400 font-medium">Sessions</TableHead>
-                      <TableHead className="text-xs uppercase tracking-wider text-slate-400 font-medium">Last Active</TableHead>
-                      <TableHead className="text-center text-xs uppercase tracking-wider text-slate-400 font-medium">Status</TableHead>
-                      <TableHead className="text-right text-xs uppercase tracking-wider text-slate-400 font-medium">Action</TableHead>
+                    <TableRow className="hover:bg-transparent border-white/[0.06]">
+                      <TableHead className="text-xs uppercase tracking-wider text-zinc-500 font-medium">Name</TableHead>
+                      <TableHead className="text-xs uppercase tracking-wider text-zinc-500 font-medium">Email</TableHead>
+                      <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-500 font-medium">Avg Score</TableHead>
+                      <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-500 font-medium">Sessions</TableHead>
+                      <TableHead className="text-xs uppercase tracking-wider text-zinc-500 font-medium">Last Active</TableHead>
+                      <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-500 font-medium">Status</TableHead>
+                      <TableHead className="text-right text-xs uppercase tracking-wider text-zinc-500 font-medium">Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {students.map((student) => {
                       const status = statusDot(student.avgScore);
                       return (
-                        <TableRow key={student.userId} className="border-slate-100">
+                        <TableRow key={student.userId} className="border-white/[0.04] hover:bg-white/[0.02]">
                           <TableCell>
                             <Link
                               href={`/instructor/students/${student.userId}`}
-                              className="font-medium text-slate-900 hover:underline"
+                              className="font-medium text-white hover:underline"
                             >
                               {student.fullName}
                             </Link>
                           </TableCell>
-                          <TableCell className="text-xs text-slate-500">
+                          <TableCell className="text-xs text-zinc-500">
                             {student.email}
                           </TableCell>
                           <TableCell className="text-center">
@@ -334,20 +334,20 @@ function ClassDetailContent({ classId }: { classId: string }) {
                                 {student.avgScore}%
                               </span>
                             ) : (
-                              <span className="text-slate-300">--</span>
+                              <span className="text-zinc-600">--</span>
                             )}
                           </TableCell>
-                          <TableCell className="text-center text-sm text-slate-600">
+                          <TableCell className="text-center text-sm text-zinc-400">
                             {student.sessionsCompleted}
                           </TableCell>
-                          <TableCell className="text-xs text-slate-500">
+                          <TableCell className="text-xs text-zinc-500">
                             {student.lastActivity
                               ? new Date(student.lastActivity).toLocaleDateString()
                               : 'Never'}
                           </TableCell>
                           <TableCell className="text-center">
                             {status.label && (
-                              <span className="inline-flex items-center gap-1.5 text-xs text-slate-600">
+                              <span className="inline-flex items-center gap-1.5 text-xs text-zinc-400">
                                 <span className={`inline-block h-1.5 w-1.5 rounded-full ${status.color}`} />
                                 {status.label}
                               </span>
@@ -355,7 +355,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
                           </TableCell>
                           <TableCell className="text-right">
                             <Link href={`/instructor/students/${student.userId}`}>
-                              <Button size="sm" variant="ghost" className="text-slate-600 hover:text-slate-900">
+                              <Button size="sm" variant="ghost" className="text-zinc-400 hover:text-white">
                                 View
                               </Button>
                             </Link>
@@ -371,32 +371,34 @@ function ClassDetailContent({ classId }: { classId: string }) {
 
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="mt-4">
-            <div className="rounded-lg border border-slate-200 bg-white p-6">
-              <h3 className="text-sm font-medium text-slate-900">Domain Performance</h3>
-              <p className="mt-0.5 text-xs text-slate-500">Aggregated average scores across all students</p>
+            <div className="glass-card p-6">
+              <h3 className="text-sm font-medium text-white">Domain Performance</h3>
+              <p className="mt-0.5 text-xs text-zinc-500">Aggregated average scores across all students</p>
 
               {domainPerf.length > 0 ? (
                 <div className="mt-6">
                   <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={domainPerf}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                      <XAxis dataKey="domain" tick={{ fill: '#64748b', fontSize: 12 }} />
-                      <YAxis domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 11 }} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#27272A" />
+                      <XAxis dataKey="domain" tick={{ fill: '#71717a', fontSize: 12 }} />
+                      <YAxis domain={[0, 100]} tick={{ fill: '#71717a', fontSize: 11 }} />
                       <Tooltip
                         contentStyle={{
-                          borderRadius: '6px',
-                          border: '1px solid #e2e8f0',
+                          borderRadius: '8px',
+                          border: '1px solid rgba(255,255,255,0.06)',
+                          backgroundColor: '#18181b',
+                          color: '#e4e4e7',
                           fontSize: 12,
                         }}
                         formatter={(value: number) => [`${value}%`, 'Avg Score']}
                       />
-                      <Bar dataKey="avgScore" fill="#475569" radius={[3, 3, 0, 0]} />
+                      <Bar dataKey="avgScore" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               ) : (
                 <div className="flex h-[300px] items-center justify-center">
-                  <p className="text-sm text-slate-400">Not enough data yet. Students need to complete exams.</p>
+                  <p className="text-sm text-zinc-500">Not enough data yet. Students need to complete exams.</p>
                 </div>
               )}
             </div>

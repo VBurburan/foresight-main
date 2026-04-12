@@ -161,13 +161,13 @@ function AnalyticsContent() {
     return (
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl space-y-6">
-          <Skeleton className="h-8 w-48" />
+          <div className="h-8 w-48 rounded-md bg-zinc-800 animate-pulse" />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-24 rounded-lg" />
+              <div key={i} className="h-24 rounded-xl bg-zinc-800/50 animate-pulse" />
             ))}
           </div>
-          <Skeleton className="h-80 rounded-lg" />
+          <div className="h-80 rounded-xl bg-zinc-800/50 animate-pulse" />
         </div>
       </div>
     );
@@ -177,23 +177,23 @@ function AnalyticsContent() {
     <div className="px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl space-y-6">
         {/* Header */}
-        <h1 className="text-2xl font-semibold text-slate-900">Analytics</h1>
+        <h1 className="text-2xl font-semibold text-white">Analytics</h1>
 
         {/* Stat blocks */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {metrics.map((m) => (
-            <div key={m.label} className="rounded-lg border border-slate-200 bg-white p-4">
+            <div key={m.label} className="glass-card p-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{m.label}</p>
-                  <p className="mt-1 text-2xl font-semibold text-slate-900">{m.value}</p>
-                  <div className="mt-0.5 flex items-center gap-1 text-xs text-slate-500">
-                    {m.trend === 'up' && <ArrowUpRight className="h-3 w-3 text-emerald-600" />}
-                    {m.trend === 'down' && <ArrowDownRight className="h-3 w-3 text-red-600" />}
+                  <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">{m.label}</p>
+                  <p className="mt-1 text-2xl font-semibold text-white">{m.value}</p>
+                  <div className="mt-0.5 flex items-center gap-1 text-xs text-zinc-500">
+                    {m.trend === 'up' && <ArrowUpRight className="h-3 w-3 text-emerald-400" />}
+                    {m.trend === 'down' && <ArrowDownRight className="h-3 w-3 text-red-400" />}
                     {m.change}
                   </div>
                 </div>
-                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-slate-50 text-slate-400">
+                <div className="flex h-8 w-8 items-center justify-center rounded-md surface-2 text-zinc-400">
                   {m.icon}
                 </div>
               </div>
@@ -204,67 +204,73 @@ function AnalyticsContent() {
         {/* Charts */}
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Domain Radar */}
-          <div className="rounded-lg border border-slate-200 bg-white p-6">
-            <h3 className="text-sm font-medium text-slate-900">Domain Performance</h3>
-            <p className="mt-0.5 text-xs text-slate-500">Cohort average by NREMT domain</p>
+          <div className="glass-card p-6">
+            <h3 className="text-sm font-medium text-white">Domain Performance</h3>
+            <p className="mt-0.5 text-xs text-zinc-500">Cohort average by NREMT domain</p>
             {domainScores.length > 0 ? (
               <div className="mt-4">
                 <ResponsiveContainer width="100%" height={280}>
                   <RadarChart data={domainScores}>
-                    <PolarGrid stroke="#e2e8f0" />
-                    <PolarAngleAxis dataKey="domain" tick={{ fill: '#64748b', fontSize: 11 }} />
-                    <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 10 }} />
-                    <Radar dataKey="score" stroke="#475569" fill="#475569" fillOpacity={0.1} strokeWidth={2} />
+                    <PolarGrid stroke="#27272A" />
+                    <PolarAngleAxis dataKey="domain" tick={{ fill: '#71717a', fontSize: 11 }} />
+                    <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#52525b', fontSize: 10 }} />
+                    <Radar dataKey="score" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.15} strokeWidth={2} />
                   </RadarChart>
                 </ResponsiveContainer>
               </div>
             ) : (
               <div className="flex h-[280px] items-center justify-center">
-                <p className="text-sm text-slate-400">No domain data yet</p>
+                <p className="text-sm text-zinc-500">No domain data yet</p>
               </div>
             )}
           </div>
 
           {/* TEI Type Breakdown */}
-          <div className="rounded-lg border border-slate-200 bg-white p-6">
-            <h3 className="text-sm font-medium text-slate-900">TEI Type Performance</h3>
-            <p className="mt-0.5 text-xs text-slate-500">Cohort average by question format</p>
+          <div className="glass-card p-6">
+            <h3 className="text-sm font-medium text-white">TEI Type Performance</h3>
+            <p className="mt-0.5 text-xs text-zinc-500">Cohort average by question format</p>
             {teiBreakdown.length > 0 ? (
               <div className="mt-4">
                 <ResponsiveContainer width="100%" height={280}>
                   <BarChart data={teiBreakdown}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis dataKey="type" tick={{ fill: '#64748b', fontSize: 12 }} />
-                    <YAxis domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 11 }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#27272A" />
+                    <XAxis dataKey="type" tick={{ fill: '#71717a', fontSize: 12 }} />
+                    <YAxis domain={[0, 100]} tick={{ fill: '#71717a', fontSize: 11 }} />
                     <Tooltip
-                      contentStyle={{ borderRadius: '6px', border: '1px solid #e2e8f0', fontSize: 12 }}
+                      contentStyle={{
+                        borderRadius: '8px',
+                        border: '1px solid rgba(255,255,255,0.06)',
+                        backgroundColor: '#18181b',
+                        color: '#e4e4e7',
+                        fontSize: 12,
+                      }}
                       formatter={(value: number) => [`${value}%`, 'Avg Score']}
                     />
-                    <Bar dataKey="avgScore" fill="#475569" radius={[3, 3, 0, 0]} />
+                    <Bar dataKey="avgScore" fill="#6366f1" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             ) : (
               <div className="flex h-[280px] items-center justify-center">
-                <p className="text-sm text-slate-400">No TEI data yet</p>
+                <p className="text-sm text-zinc-500">No TEI data yet</p>
               </div>
             )}
           </div>
         </div>
 
         {/* Accreditation Metrics */}
-        <div className="rounded-lg border border-slate-200 bg-white">
+        <div className="glass-card overflow-hidden">
           <div className="px-6 pt-5 pb-2">
-            <h3 className="text-sm font-medium text-slate-900">Accreditation Metrics</h3>
-            <p className="mt-0.5 text-xs text-slate-500">CoAEMSP threshold tracking</p>
+            <h3 className="text-sm font-medium text-white">Accreditation Metrics</h3>
+            <p className="mt-0.5 text-xs text-zinc-500">CoAEMSP threshold tracking</p>
           </div>
           <Table>
             <TableHeader>
-              <TableRow className="hover:bg-transparent border-slate-200">
-                <TableHead className="text-xs uppercase tracking-wider text-slate-400 font-medium">Metric</TableHead>
-                <TableHead className="text-center text-xs uppercase tracking-wider text-slate-400 font-medium">Current</TableHead>
-                <TableHead className="text-center text-xs uppercase tracking-wider text-slate-400 font-medium">Threshold</TableHead>
-                <TableHead className="text-center text-xs uppercase tracking-wider text-slate-400 font-medium">Status</TableHead>
+              <TableRow className="hover:bg-transparent border-white/[0.06]">
+                <TableHead className="text-xs uppercase tracking-wider text-zinc-500 font-medium">Metric</TableHead>
+                <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-500 font-medium">Current</TableHead>
+                <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-500 font-medium">Threshold</TableHead>
+                <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-500 font-medium">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -273,11 +279,11 @@ function AnalyticsContent() {
                 { label: 'NREMT Pass Rate', threshold: '70%' },
                 { label: 'Positive Placement', threshold: '70%' },
               ].map((row) => (
-                <TableRow key={row.label} className="border-slate-100">
-                  <TableCell className="text-sm text-slate-900">{row.label}</TableCell>
-                  <TableCell className="text-center text-sm text-slate-300">--</TableCell>
-                  <TableCell className="text-center text-sm text-slate-500">{row.threshold}</TableCell>
-                  <TableCell className="text-center text-xs text-slate-400">Data pending</TableCell>
+                <TableRow key={row.label} className="border-white/[0.04] hover:bg-white/[0.02]">
+                  <TableCell className="text-sm text-zinc-300">{row.label}</TableCell>
+                  <TableCell className="text-center text-sm text-zinc-600">--</TableCell>
+                  <TableCell className="text-center text-sm text-zinc-400">{row.threshold}</TableCell>
+                  <TableCell className="text-center text-xs text-zinc-500">Data pending</TableCell>
                 </TableRow>
               ))}
             </TableBody>

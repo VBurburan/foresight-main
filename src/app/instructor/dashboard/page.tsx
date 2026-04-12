@@ -212,18 +212,17 @@ function DashboardContent() {
     return (
       <div className="px-6 py-8 lg:px-10">
         <div className="mx-auto max-w-6xl">
-          <div className="h-7 w-32 rounded bg-slate-100 animate-pulse" />
-          <div className="mt-8 grid grid-cols-4 gap-8">
+          <div className="h-7 w-32 rounded-md bg-zinc-800 animate-pulse" />
+          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="space-y-2">
-                <div className="h-3 w-16 rounded bg-slate-100 animate-pulse" />
-                <div className="h-7 w-20 rounded bg-slate-100 animate-pulse" />
-                <div className="h-3 w-24 rounded bg-slate-100 animate-pulse" />
+              <div key={i} className="glass-card p-5 space-y-3">
+                <div className="h-3 w-16 rounded-md bg-zinc-800 animate-pulse" />
+                <div className="h-7 w-20 rounded-md bg-zinc-800 animate-pulse" />
+                <div className="h-3 w-24 rounded-md bg-zinc-800 animate-pulse" />
               </div>
             ))}
           </div>
-          <div className="mt-8 h-px bg-slate-200" />
-          <div className="mt-8 h-72 rounded-lg bg-slate-50 animate-pulse" />
+          <div className="mt-8 h-72 rounded-xl bg-zinc-800/50 animate-pulse" />
         </div>
       </div>
     );
@@ -234,9 +233,9 @@ function DashboardContent() {
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-slate-900">Dashboard</h1>
+          <h1 className="text-2xl font-semibold text-white">Dashboard</h1>
           <Link href="/instructor/classes">
-            <button className="inline-flex items-center gap-1.5 rounded-md bg-slate-900 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800">
+            <button className="inline-flex items-center gap-1.5 rounded-md bg-white px-3.5 py-2 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-100">
               <Plus className="h-4 w-4" />
               New Class
             </button>
@@ -246,12 +245,15 @@ function DashboardContent() {
         {/* Empty state for no classes */}
         {!hasClasses && (
           <div className="mt-10 text-center py-16">
-            <p className="text-sm font-medium text-slate-900">No classes yet</p>
-            <p className="mt-1 text-sm text-slate-400">
+            <div className="mx-auto surface-2 rounded-full p-4 w-fit mb-4">
+              <Plus className="h-6 w-6 text-zinc-400" />
+            </div>
+            <p className="text-sm font-medium text-zinc-300">No classes yet</p>
+            <p className="mt-1 text-sm text-zinc-500">
               Create your first class to start tracking student progress and building assessments.
             </p>
             <Link href="/instructor/classes">
-              <button className="mt-5 inline-flex items-center gap-1.5 rounded-md bg-slate-900 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800">
+              <button className="mt-5 inline-flex items-center gap-1.5 rounded-md bg-white px-3.5 py-2 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-100">
                 <Plus className="h-4 w-4" />
                 Create Class
               </button>
@@ -260,72 +262,73 @@ function DashboardContent() {
         )}
 
         {/* Stats row */}
-        <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
+        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {stats.map((stat, idx) => (
-            <div key={idx} className="min-w-0">
-              <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
+            <div key={idx} className="glass-card p-5">
+              <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
                 {stat.label}
               </p>
               <div className="mt-1 flex items-baseline gap-2">
-                <p className="text-2xl font-semibold text-slate-900">{stat.value}</p>
+                <p className="text-2xl font-semibold text-white">{stat.value}</p>
                 {stat.label === 'At Risk' && typeof stat.value === 'number' && stat.value > 0 && (
-                  <span className="inline-block h-2 w-2 rounded-full bg-red-500" />
+                  <span className="inline-block h-2 w-2 rounded-full bg-red-400" />
                 )}
               </div>
-              <p className="mt-0.5 text-xs text-slate-400">{stat.subtext}</p>
+              <p className="mt-0.5 text-xs text-zinc-500">{stat.subtext}</p>
             </div>
           ))}
         </div>
 
         {/* Divider */}
-        <div className="mt-6 h-px bg-slate-200" />
+        <div className="mt-6 h-px bg-white/[0.06]" />
 
         {/* Main content */}
         {hasClasses && (
-          <div className="mt-8 grid gap-8 lg:grid-cols-5">
+          <div className="mt-8 grid gap-6 lg:grid-cols-5">
             {/* Class Performance chart */}
             <div className="lg:col-span-3">
-              <div className="rounded-lg border border-slate-200 bg-white">
+              <div className="glass-card">
                 <div className="px-5 py-4">
-                  <h2 className="text-sm font-medium text-slate-900">Class Performance</h2>
-                  <p className="mt-0.5 text-xs text-slate-400">Average score by class</p>
+                  <h2 className="text-sm font-medium text-white">Class Performance</h2>
+                  <p className="mt-0.5 text-xs text-zinc-500">Average score by class</p>
                 </div>
                 <div className="px-5 pb-5">
                   {classPerformance.length > 0 ? (
                     <ResponsiveContainer width="100%" height={280}>
                       <BarChart data={classPerformance} barCategoryGap="20%">
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#27272A" vertical={false} />
                         <XAxis
                           dataKey="name"
-                          tick={{ fill: '#94a3b8', fontSize: 12 }}
-                          axisLine={{ stroke: '#e2e8f0' }}
+                          tick={{ fill: '#71717a', fontSize: 12 }}
+                          axisLine={{ stroke: '#27272A' }}
                           tickLine={false}
                         />
                         <YAxis
                           domain={[0, 100]}
-                          tick={{ fill: '#94a3b8', fontSize: 12 }}
+                          tick={{ fill: '#71717a', fontSize: 12 }}
                           axisLine={false}
                           tickLine={false}
                           width={32}
                         />
                         <Tooltip
                           contentStyle={{
-                            borderRadius: '6px',
-                            border: '1px solid #e2e8f0',
-                            boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                            borderRadius: '8px',
+                            border: '1px solid rgba(255,255,255,0.06)',
+                            backgroundColor: '#18181b',
+                            color: '#e4e4e7',
                             fontSize: '13px',
                           }}
                           formatter={(value: number) => [`${value}%`, 'Avg Score']}
-                          cursor={{ fill: '#f8fafc' }}
+                          cursor={{ fill: 'rgba(255,255,255,0.02)' }}
                         />
-                        <Bar dataKey="avgScore" fill="#475569" radius={[3, 3, 0, 0]} />
+                        <Bar dataKey="avgScore" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   ) : (
                     <div className="flex h-[280px] items-center justify-center">
                       <div className="text-center">
-                        <p className="text-sm text-slate-400">No data yet</p>
-                        <p className="mt-1 text-xs text-slate-300">
+                        <p className="text-sm text-zinc-400">No data yet</p>
+                        <p className="mt-1 text-xs text-zinc-500">
                           Scores will appear after students complete exams.
                         </p>
                       </div>
@@ -337,10 +340,10 @@ function DashboardContent() {
 
             {/* Recent Activity */}
             <div className="lg:col-span-2">
-              <div className="rounded-lg border border-slate-200 bg-white">
+              <div className="glass-card">
                 <div className="px-5 py-4">
-                  <h2 className="text-sm font-medium text-slate-900">Recent Activity</h2>
-                  <p className="mt-0.5 text-xs text-slate-400">Latest student submissions</p>
+                  <h2 className="text-sm font-medium text-white">Recent Activity</h2>
+                  <p className="mt-0.5 text-xs text-zinc-500">Latest student submissions</p>
                 </div>
                 <div className="px-2 pb-3">
                   {recentActivity.length > 0 ? (
@@ -348,31 +351,39 @@ function DashboardContent() {
                       {recentActivity.map((activity) => (
                         <div
                           key={activity.id}
-                          className="flex items-center gap-3 rounded-md px-3 py-2.5 hover:bg-slate-50"
+                          className="flex items-center gap-3 rounded-md px-3 py-2.5 hover:bg-white/[0.02]"
                         >
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100">
-                            <span className="text-xs font-medium text-slate-600">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full surface-2">
+                            <span className="text-xs font-medium text-zinc-300">
                               {activity.studentName.charAt(0).toUpperCase()}
                             </span>
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium text-slate-900">
+                            <p className="truncate text-sm font-medium text-white">
                               {activity.studentName}
                             </p>
-                            <p className="truncate text-xs text-slate-400">
+                            <p className="truncate text-xs text-zinc-500">
                               {activity.action}
                               {activity.score != null && (
                                 <>
                                   {' '}
-                                  <span className="text-slate-500">{activity.score}%</span>
+                                  <span className={
+                                    activity.score >= 75
+                                      ? 'text-emerald-400'
+                                      : activity.score >= 60
+                                      ? 'text-amber-400'
+                                      : 'text-red-400'
+                                  }>
+                                    {activity.score}%
+                                  </span>
                                   {activity.score < 60 && (
-                                    <span className="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-red-500 align-middle" />
+                                    <span className="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-red-400 align-middle" />
                                   )}
                                 </>
                               )}
                             </p>
                           </div>
-                          <span className="shrink-0 text-xs text-slate-300">
+                          <span className="shrink-0 text-xs text-zinc-600">
                             {activity.timestamp}
                           </span>
                         </div>
@@ -381,8 +392,8 @@ function DashboardContent() {
                   ) : (
                     <div className="flex h-[240px] items-center justify-center">
                       <div className="text-center">
-                        <p className="text-sm text-slate-400">No activity yet</p>
-                        <p className="mt-1 text-xs text-slate-300">
+                        <p className="text-sm text-zinc-400">No activity yet</p>
+                        <p className="mt-1 text-xs text-zinc-500">
                           Student submissions will appear here.
                         </p>
                       </div>

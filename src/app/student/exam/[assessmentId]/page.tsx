@@ -125,9 +125,9 @@ function ECGStripPreview({ stripId }: { stripId: string }) {
   }, [stripId]);
   if (!strip) return null;
   return (
-    <div className="rounded-lg border border-slate-200 bg-slate-50 overflow-hidden mb-4">
+    <div className="rounded-lg border border-white/[0.06] surface-1 overflow-hidden mb-4">
       <img src={strip.image_url} alt="ECG Strip" className="w-full h-auto object-contain" />
-      <p className="text-[9px] text-slate-300 px-2 py-1">PhysioNet - CC BY 4.0</p>
+      <p className="text-[9px] text-zinc-600 px-2 py-1">PhysioNet - CC BY 4.0</p>
     </div>
   );
 }
@@ -156,20 +156,20 @@ function MCRenderer({
             onClick={() => onChange(opt.key)}
             className={`w-full text-left rounded-lg border px-4 py-3 transition-colors flex items-start gap-3 ${
               selected
-                ? 'border-slate-900 bg-slate-50'
-                : 'border-slate-200 hover:border-slate-400'
+                ? 'border-blue-500/50 bg-blue-500/10'
+                : 'border-white/[0.06] surface-1 hover:border-white/[0.12]'
             }`}
           >
             <span
               className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-semibold ${
                 selected
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-slate-100 text-slate-500'
+                  ? 'bg-blue-500 text-white'
+                  : 'surface-2 text-zinc-500'
               }`}
             >
               {opt.key}
             </span>
-            <span className={`text-sm pt-0.5 ${selected ? 'text-slate-900 font-medium' : 'text-slate-700'}`}>
+            <span className={`text-sm pt-0.5 ${selected ? 'text-white font-medium' : 'text-zinc-400'}`}>
               {opt.text}
             </span>
           </button>
@@ -198,7 +198,7 @@ function MRRenderer({
 
   return (
     <div className="space-y-2">
-      <p className="text-xs text-slate-500 mb-2 font-medium uppercase tracking-wide">
+      <p className="text-xs text-zinc-500 mb-2 font-medium uppercase tracking-wide">
         Select all that apply
       </p>
       {data.options.map((opt) => {
@@ -210,20 +210,20 @@ function MRRenderer({
             onClick={() => toggle(opt.key)}
             className={`w-full text-left rounded-lg border px-4 py-3 transition-colors flex items-start gap-3 ${
               selected
-                ? 'border-slate-900 bg-slate-50'
-                : 'border-slate-200 hover:border-slate-400'
+                ? 'border-blue-500/50 bg-blue-500/10'
+                : 'border-white/[0.06] surface-1 hover:border-white/[0.12]'
             }`}
           >
             <span
               className={`flex-shrink-0 w-7 h-7 rounded flex items-center justify-center text-sm font-semibold ${
                 selected
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-slate-100 text-slate-500'
+                  ? 'bg-blue-500 text-white'
+                  : 'surface-2 text-zinc-500'
               }`}
             >
               {selected ? <CheckCircle2 className="w-4 h-4" /> : opt.key}
             </span>
-            <span className={`text-sm pt-0.5 ${selected ? 'text-slate-900 font-medium' : 'text-slate-700'}`}>
+            <span className={`text-sm pt-0.5 ${selected ? 'text-white font-medium' : 'text-zinc-400'}`}>
               {opt.text}
             </span>
           </button>
@@ -244,19 +244,19 @@ function DDRenderer({
 }) {
   return (
     <div className="space-y-3">
-      <p className="text-xs text-slate-500 mb-2 font-medium uppercase tracking-wide">
+      <p className="text-xs text-zinc-500 mb-2 font-medium uppercase tracking-wide">
         Assign each item to a category
       </p>
       {data.items.map((item) => (
         <div
           key={item.id}
-          className="flex items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 bg-white"
+          className="flex items-center gap-3 rounded-lg border border-white/[0.06] px-4 py-3 surface-1"
         >
-          <span className="flex-1 text-sm text-slate-700 font-medium">{item.text}</span>
+          <span className="flex-1 text-sm text-zinc-300 font-medium">{item.text}</span>
           <select
             value={answer[item.id] || ''}
             onChange={(e) => onChange({ ...answer, [item.id]: e.target.value })}
-            className="rounded-md border border-slate-200 px-3 py-1.5 text-sm bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 outline-none"
+            className="rounded-lg border border-zinc-700 bg-zinc-900/50 px-3 py-1.5 text-sm text-white focus:border-blue-500/40 focus:ring-1 focus:ring-blue-500/40 outline-none"
           >
             <option value="">-- Select --</option>
             {data.categories.map((cat, idx) => (
@@ -293,18 +293,18 @@ function BLRenderer({
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-slate-500 mb-2 font-medium uppercase tracking-wide">
+      <p className="text-xs text-zinc-500 mb-2 font-medium uppercase tracking-wide">
         Arrange in correct order (use dropdown to set position)
       </p>
       {currentOrder.map((origIdx, pos) => (
         <div
           key={origIdx}
-          className="flex items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 bg-white"
+          className="flex items-center gap-3 rounded-lg border border-white/[0.06] px-4 py-3 surface-1"
         >
           <select
             value={pos}
             onChange={(e) => setPosition(origIdx, parseInt(e.target.value))}
-            className="rounded-md border border-slate-200 px-2 py-1 text-sm bg-white w-16 text-center font-mono font-bold focus:border-slate-900 focus:ring-1 focus:ring-slate-900 outline-none"
+            className="rounded-lg border border-zinc-700 bg-zinc-900/50 px-2 py-1 text-sm text-white w-16 text-center font-mono font-bold focus:border-blue-500/40 focus:ring-1 focus:ring-blue-500/40 outline-none"
           >
             {data.items.map((_, i) => (
               <option key={i} value={i}>
@@ -312,7 +312,7 @@ function BLRenderer({
               </option>
             ))}
           </select>
-          <span className="flex-1 text-sm text-slate-700">{data.items[origIdx]}</span>
+          <span className="flex-1 text-sm text-zinc-300">{data.items[origIdx]}</span>
         </div>
       ))}
     </div>
@@ -330,19 +330,19 @@ function OBRenderer({
 }) {
   return (
     <div className="overflow-x-auto">
-      <p className="text-xs text-slate-500 mb-3 font-medium uppercase tracking-wide">
+      <p className="text-xs text-zinc-500 mb-3 font-medium uppercase tracking-wide">
         Select one option per row
       </p>
       <table className="w-full border-collapse">
         <thead>
           <tr>
-            <th className="text-left text-sm font-semibold text-slate-600 py-2 px-3 border-b border-slate-200">
+            <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-500 py-2 px-3 border-b border-white/[0.06]">
               Statement
             </th>
             {data.columns.map((col, idx) => (
               <th
                 key={idx}
-                className="text-center text-sm font-semibold text-slate-600 py-2 px-3 border-b border-slate-200 min-w-[100px]"
+                className="text-center text-xs font-medium uppercase tracking-wider text-zinc-500 py-2 px-3 border-b border-white/[0.06] min-w-[100px]"
               >
                 {col}
               </th>
@@ -351,8 +351,8 @@ function OBRenderer({
         </thead>
         <tbody>
           {data.rows.map((row, rowIdx) => (
-            <tr key={rowIdx} className="border-b border-slate-100 hover:bg-slate-50">
-              <td className="text-sm text-slate-700 py-3 px-3">{row}</td>
+            <tr key={rowIdx} className="border-b border-white/[0.06] hover:bg-white/[0.02]">
+              <td className="text-sm text-zinc-300 py-3 px-3">{row}</td>
               {data.columns.map((col, colIdx) => (
                 <td key={colIdx} className="text-center py-3 px-3">
                   <button
@@ -360,8 +360,8 @@ function OBRenderer({
                     onClick={() => onChange({ ...answer, [row]: col })}
                     className={`w-6 h-6 rounded-full border-2 transition-colors mx-auto flex items-center justify-center ${
                       answer[row] === col
-                        ? 'border-slate-900 bg-slate-900'
-                        : 'border-slate-300 hover:border-slate-400'
+                        ? 'border-blue-500 bg-blue-500'
+                        : 'border-zinc-600 hover:border-zinc-500'
                     }`}
                   >
                     {answer[row] === col && (
@@ -398,65 +398,68 @@ function CJSRenderer({
   return (
     <div className="space-y-6">
       {data.phases.map((phase, phaseIdx) => (
-        <div key={phaseIdx} className="rounded-lg border border-slate-200 overflow-hidden">
+        <div key={phaseIdx} className="rounded-lg border border-white/[0.06] surface-1 overflow-hidden">
           {/* Phase header */}
-          <div className="bg-slate-900 text-white px-4 py-2.5">
-            <h4 className="text-sm font-semibold">{phase.label}</h4>
+          <div className="bg-blue-500/10 border-b border-white/[0.06] px-4 py-2.5 flex items-center gap-2">
+            <span className="inline-flex items-center rounded-md bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-400">
+              Phase {phaseIdx + 1}
+            </span>
+            <h4 className="text-sm font-semibold text-white">{phase.label}</h4>
           </div>
 
           <div className="p-4 space-y-4">
-            <p className="text-sm text-slate-700 leading-relaxed">{phase.content}</p>
+            <p className="text-sm text-zinc-400 leading-relaxed">{phase.content}</p>
 
             {phase.vitals && (
-              <div className="rounded-lg bg-slate-50 border border-slate-200 p-3">
-                <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Vitals</p>
+              <div className="rounded-lg surface-2 border border-white/[0.06] p-3">
+                <p className="text-xs font-semibold text-zinc-500 uppercase mb-2">Vitals</p>
                 <div className="grid grid-cols-4 gap-2 text-xs">
                   {phase.vitals.hr && (
                     <div>
-                      <span className="font-semibold text-slate-600">HR:</span>{' '}
-                      <span className="text-slate-800">{phase.vitals.hr}</span>
+                      <span className="font-semibold text-zinc-500">HR:</span>{' '}
+                      <span className="text-zinc-300">{phase.vitals.hr}</span>
                     </div>
                   )}
                   {phase.vitals.bp && (
                     <div>
-                      <span className="font-semibold text-slate-600">BP:</span>{' '}
-                      <span className="text-slate-800">{phase.vitals.bp}</span>
+                      <span className="font-semibold text-zinc-500">BP:</span>{' '}
+                      <span className="text-zinc-300">{phase.vitals.bp}</span>
                     </div>
                   )}
                   {phase.vitals.rr && (
                     <div>
-                      <span className="font-semibold text-slate-600">RR:</span>{' '}
-                      <span className="text-slate-800">{phase.vitals.rr}</span>
+                      <span className="font-semibold text-zinc-500">RR:</span>{' '}
+                      <span className="text-zinc-300">{phase.vitals.rr}</span>
                     </div>
                   )}
                   {phase.vitals.spo2 && (
                     <div>
-                      <span className="font-semibold text-slate-600">SpO2:</span>{' '}
-                      <span className="text-slate-800">{phase.vitals.spo2}</span>
+                      <span className="font-semibold text-zinc-500">SpO2:</span>{' '}
+                      <span className="text-zinc-300">{phase.vitals.spo2}</span>
                     </div>
                   )}
                   {phase.vitals.etco2 && (
                     <div>
-                      <span className="font-semibold text-slate-600">EtCO2:</span>{' '}
-                      <span className="text-slate-800">{phase.vitals.etco2}</span>
+                      <span className="font-semibold text-zinc-500">EtCO2:</span>{' '}
+                      <span className="text-zinc-300">{phase.vitals.etco2}</span>
                     </div>
                   )}
                   {phase.vitals.temp && (
                     <div>
-                      <span className="font-semibold text-slate-600">Temp:</span>{' '}
-                      <span className="text-slate-800">{phase.vitals.temp}</span>
+                      <span className="font-semibold text-zinc-500">Temp:</span>{' '}
+                      <span className="text-zinc-300">{phase.vitals.temp}</span>
                     </div>
                   )}
                   {phase.vitals.bgl && (
                     <div>
-                      <span className="font-semibold text-slate-600">BGL:</span>{' '}
-                      <span className="text-slate-800">{phase.vitals.bgl}</span>
+                      <span className="font-semibold text-zinc-500">BGL:</span>{' '}
+                      <span className="text-zinc-300">{phase.vitals.bgl}</span>
                     </div>
                   )}
                   {phase.vitals.map && (
                     <div>
-                      <span className="font-semibold text-slate-600">MAP:</span>{' '}
-                      <span className="text-slate-800">{phase.vitals.map}</span>
+                      <span className="font-semibold text-zinc-500">MAP:</span>{' '}
+                      <span className="text-zinc-300">{phase.vitals.map}</span>
                     </div>
                   )}
                 </div>
@@ -464,16 +467,16 @@ function CJSRenderer({
             )}
 
             {phase.history && (
-              <div className="rounded-lg bg-slate-50 border border-slate-200 p-3">
-                <p className="text-xs font-semibold text-slate-500 uppercase mb-1">History</p>
-                <p className="text-sm text-slate-700">{phase.history}</p>
+              <div className="rounded-lg surface-2 border border-white/[0.06] p-3">
+                <p className="text-xs font-semibold text-zinc-500 uppercase mb-1">History</p>
+                <p className="text-sm text-zinc-300">{phase.history}</p>
               </div>
             )}
 
             {phase.ecgFindings && (
-              <div className="rounded-lg bg-slate-50 border border-slate-200 p-3">
-                <p className="text-xs font-semibold text-slate-500 uppercase mb-1">ECG Findings</p>
-                <p className="text-sm text-slate-700">{phase.ecgFindings}</p>
+              <div className="rounded-lg surface-2 border border-white/[0.06] p-3">
+                <p className="text-xs font-semibold text-zinc-500 uppercase mb-1">ECG Findings</p>
+                <p className="text-sm text-zinc-300">{phase.ecgFindings}</p>
               </div>
             )}
 
@@ -482,9 +485,9 @@ function CJSRenderer({
               const subAnswer = answer[subKey];
 
               return (
-                <div key={qIdx} className="border-t border-slate-200 pt-4">
+                <div key={qIdx} className="border-t border-white/[0.06] pt-4">
                   {pq.ecgStripId && <ECGStripPreview stripId={pq.ecgStripId} />}
-                  <p className="text-sm font-medium text-slate-800 mb-3">{pq.stem}</p>
+                  <p className="text-sm font-medium text-white mb-3">{pq.stem}</p>
                   {renderSubQuestion(pq, subAnswer, (val: any) => updateSubAnswer(phaseIdx, qIdx, val))}
                 </div>
               );
@@ -514,7 +517,7 @@ function renderSubQuestion(
     case 'OB':
       return <OBRenderer data={data as OBData} answer={answer || {}} onChange={onChange} />;
     default:
-      return <p className="text-sm text-red-500">Unknown question type: {pq.type}</p>;
+      return <p className="text-sm text-red-400">Unknown question type: {pq.type}</p>;
   }
 }
 
@@ -638,10 +641,10 @@ function QuestionNav({
             onClick={() => onJump(idx)}
             className={`w-9 h-9 rounded-lg text-xs font-semibold transition-colors relative ${
               isCurrent
-                ? 'ring-2 ring-slate-900 bg-white text-slate-900'
+                ? 'ring-2 ring-blue-400 surface-1 text-white'
                 : answered
-                ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                : 'bg-white text-slate-400 border border-slate-200 hover:bg-slate-50'
+                ? 'surface-2 text-zinc-300 hover:bg-zinc-700'
+                : 'surface-1 text-zinc-500 border border-white/[0.06] hover:bg-white/[0.04]'
             }`}
           >
             {idx + 1}
@@ -889,10 +892,10 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
   if (loading || authLoading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-3">
-          <Loader2 className="w-8 h-8 animate-spin text-slate-400 mx-auto" />
-          <p className="text-slate-400 text-sm">Loading exam...</p>
+          <Loader2 className="w-8 h-8 animate-spin text-zinc-500 mx-auto" />
+          <p className="text-zinc-500 text-sm">Loading exam...</p>
         </div>
       </div>
     );
@@ -900,13 +903,13 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="max-w-md mx-auto text-center space-y-4">
-          <AlertTriangle className="w-10 h-10 text-slate-400 mx-auto" />
-          <p className="text-sm text-slate-700">{error}</p>
+          <AlertTriangle className="w-10 h-10 text-zinc-500 mx-auto" />
+          <p className="text-sm text-zinc-300">{error}</p>
           <button
             onClick={() => router.back()}
-            className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
+            className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
           >
             &larr; Go Back
           </button>
@@ -920,20 +923,20 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
   /* ---- Render ---- */
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Top bar */}
-      <div className="sticky top-0 z-50 bg-white border-b border-slate-200">
+      <div className="sticky top-0 z-50 surface-1 border-b border-white/[0.06]">
         <div className="max-w-5xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <h1 className="text-sm font-semibold text-slate-900 truncate">{assessment.name}</h1>
+              <h1 className="text-sm font-semibold text-white truncate">{assessment.name}</h1>
             </div>
 
-            <div className="text-sm text-slate-500">
+            <div className="inline-flex items-center rounded-md surface-2 px-2.5 py-1 text-sm text-zinc-400">
               Q {currentIndex + 1} of {questions.length}
             </div>
 
-            <div className="flex items-center gap-1.5 text-sm text-slate-500">
+            <div className="flex items-center gap-1.5 text-sm text-zinc-400">
               <Clock className="w-3.5 h-3.5" />
               <span className="font-mono">{formatTime(elapsed)}</span>
             </div>
@@ -941,9 +944,9 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
           {/* Progress bar */}
           <div className="mt-2.5">
-            <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
+            <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
               <div
-                className="h-full bg-slate-900 rounded-full transition-all duration-300"
+                className="h-full bg-blue-500 rounded-full transition-all duration-300"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -960,7 +963,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
               {/* Question header */}
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
-                  <span className="inline-block mb-3 text-[10px] font-medium text-slate-400 border border-slate-200 rounded px-1.5 py-0.5 uppercase tracking-wider">
+                  <span className="inline-block mb-3 text-[10px] font-medium text-zinc-500 border border-white/[0.08] rounded px-1.5 py-0.5 uppercase tracking-wider">
                     {currentQuestion.item_type === 'MC' && 'Multiple Choice'}
                     {currentQuestion.item_type === 'MR' && 'Select All That Apply'}
                     {currentQuestion.item_type === 'DD' && 'Drag & Drop'}
@@ -968,7 +971,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                     {currentQuestion.item_type === 'OB' && 'Matrix / Options Box'}
                     {currentQuestion.item_type === 'CJS' && 'Clinical Judgment Scenario'}
                   </span>
-                  <h2 className="text-lg font-medium text-slate-900 leading-relaxed">
+                  <h2 className="text-lg font-medium text-white leading-relaxed">
                     {currentQuestion.stem}
                   </h2>
                 </div>
@@ -976,8 +979,8 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                   onClick={toggleFlag}
                   className={`flex-shrink-0 p-2 rounded-lg transition-colors ${
                     currentFlagged
-                      ? 'text-orange-500 hover:text-orange-600'
-                      : 'text-slate-300 hover:text-slate-500'
+                      ? 'text-orange-500 hover:text-orange-400'
+                      : 'text-zinc-600 hover:text-zinc-400'
                   }`}
                   title={currentFlagged ? 'Remove flag' : 'Flag for review'}
                 >
@@ -990,7 +993,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                 <ECGStripPreview stripId={currentQuestion.ecg_strip_id} />
               )}
 
-              <div className="border-t border-slate-100 pt-6">
+              <div className="border-t border-white/[0.06] pt-6">
                 {/* Question content by type */}
                 {currentQuestion.item_type === 'MC' && (
                   <MCRenderer
@@ -1038,11 +1041,11 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
             </div>
 
             {/* Navigation buttons */}
-            <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+            <div className="flex items-center justify-between pt-4 border-t border-white/[0.06]">
               <button
                 onClick={goPrev}
                 disabled={currentIndex === 0}
-                className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 disabled:text-slate-300 disabled:cursor-not-allowed transition-colors"
+                className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-white disabled:text-zinc-600 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Previous
@@ -1053,7 +1056,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                   <button
                     onClick={() => setShowConfirm(true)}
                     disabled={submitting}
-                    className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50 transition-colors"
+                    className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-100 disabled:opacity-50 transition-colors"
                   >
                     {submitting ? (
                       <>
@@ -1070,7 +1073,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                 ) : (
                   <button
                     onClick={goNext}
-                    className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 transition-colors"
+                    className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-white transition-colors"
                   >
                     Next
                     <ChevronRight className="w-4 h-4" />
@@ -1084,7 +1087,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
           <div className="hidden lg:block">
             <div className="sticky top-20">
               <div className="space-y-3">
-                <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wider">
                   Questions
                 </h3>
                 <QuestionNav
@@ -1094,13 +1097,13 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                   current={currentIndex}
                   onJump={goToQuestion}
                 />
-                <div className="border-t border-slate-100 pt-3 text-[10px] text-slate-400 space-y-1">
+                <div className="border-t border-white/[0.06] pt-3 text-[10px] text-zinc-500 space-y-1">
                   <div className="flex items-center gap-1.5">
-                    <span className="w-3 h-3 rounded bg-slate-100" />
+                    <span className="w-3 h-3 rounded surface-2" />
                     Answered
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="w-3 h-3 rounded bg-white border border-slate-200" />
+                    <span className="w-3 h-3 rounded surface-1 border border-white/[0.06]" />
                     Unanswered
                   </div>
                   <div className="flex items-center gap-1.5">
@@ -1116,41 +1119,41 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
       {/* Confirmation dialog overlay */}
       {showConfirm && (
-        <div className="fixed inset-0 z-[100] bg-black/40 flex items-center justify-center p-4">
-          <div className="max-w-md w-full bg-white rounded-lg border border-slate-200 shadow-lg">
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="max-w-md w-full glass-card shadow-2xl">
             <div className="p-6 space-y-4">
-              <h3 className="text-lg font-semibold text-slate-900">Submit Exam?</h3>
+              <h3 className="text-lg font-semibold text-white">Submit Exam?</h3>
 
-              <div className="space-y-2 text-sm text-slate-600">
+              <div className="space-y-2 text-sm text-zinc-400">
                 <p>
-                  You have answered <strong>{answeredCount}</strong> of{' '}
-                  <strong>{questions.length}</strong> questions.
+                  You have answered <strong className="text-white">{answeredCount}</strong> of{' '}
+                  <strong className="text-white">{questions.length}</strong> questions.
                 </p>
                 {answeredCount < questions.length && (
-                  <p className="text-red-600">
+                  <p className="text-red-400">
                     {questions.length - answeredCount} question
                     {questions.length - answeredCount !== 1 ? 's are' : ' is'} unanswered.
                   </p>
                 )}
                 {flagged.size > 0 && (
-                  <p className="text-orange-600">
+                  <p className="text-orange-400">
                     {flagged.size} question{flagged.size !== 1 ? 's are' : ' is'} flagged for review.
                   </p>
                 )}
-                <p className="text-xs text-slate-400 mt-2">
+                <p className="text-xs text-zinc-500 mt-2">
                   Time elapsed: {formatTime(elapsed)}
                 </p>
               </div>
 
-              <div className="flex gap-3 pt-2 border-t border-slate-100">
+              <div className="flex gap-3 pt-2 border-t border-white/[0.06]">
                 <button
-                  className="flex-1 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                  className="flex-1 rounded-lg border border-white/[0.08] px-4 py-2 text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/[0.04] transition-colors"
                   onClick={() => setShowConfirm(false)}
                 >
                   Keep Working
                 </button>
                 <button
-                  className="flex-1 rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50 transition-colors"
+                  className="flex-1 rounded-lg bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-100 disabled:opacity-50 transition-colors"
                   onClick={handleSubmit}
                   disabled={submitting}
                 >

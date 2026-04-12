@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import { ClipboardList } from 'lucide-react';
 import { useUser } from '@/components/auth/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 
@@ -28,9 +29,9 @@ function formatDuration(seconds: number | null): string {
 }
 
 function getScoreColor(score: number | null): string {
-  if (score == null) return 'text-slate-400';
-  if (score >= 70) return 'text-emerald-600';
-  return 'text-red-600';
+  if (score == null) return 'text-zinc-500';
+  if (score >= 70) return 'text-emerald-400';
+  return 'text-red-400';
 }
 
 export default function StudentResultsPage() {
@@ -121,32 +122,32 @@ export default function StudentResultsPage() {
   if (authLoading || loading) {
     return (
       <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-6">
-        <div className="h-8 w-32 bg-slate-100 rounded animate-pulse" />
-        <div className="h-16 bg-slate-100 rounded animate-pulse" />
-        <div className="h-64 bg-slate-100 rounded animate-pulse" />
+        <div className="h-8 w-32 bg-zinc-800 rounded-md animate-pulse" />
+        <div className="h-16 bg-zinc-800 rounded-md animate-pulse" />
+        <div className="h-64 bg-zinc-800 rounded-md animate-pulse" />
       </div>
     );
   }
 
   return (
     <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-10">
-      <h1 className="text-2xl font-semibold text-slate-900">Results</h1>
+      <h1 className="text-2xl font-semibold text-white">Results</h1>
 
       {/* Summary Stats */}
       {completedSessions.length > 0 && (
-        <div className="flex items-center gap-8 border border-slate-200 rounded-lg bg-white px-6 py-4">
+        <div className="glass-card flex items-center gap-8 px-6 py-4">
           <div>
-            <p className="text-xs text-slate-500 uppercase tracking-wide font-medium">Total Exams</p>
-            <p className="text-lg font-semibold text-slate-900">{completedSessions.length}</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">Total Exams</p>
+            <p className="text-lg font-semibold text-white">{completedSessions.length}</p>
           </div>
-          <div className="w-px h-8 bg-slate-200" />
+          <div className="w-px h-8 bg-white/[0.06]" />
           <div>
-            <p className="text-xs text-slate-500 uppercase tracking-wide font-medium">Average Score</p>
-            <p className="text-lg font-semibold text-slate-900">{avgScore ?? '--'}%</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">Average Score</p>
+            <p className="text-lg font-semibold text-white">{avgScore ?? '--'}%</p>
           </div>
-          <div className="w-px h-8 bg-slate-200" />
+          <div className="w-px h-8 bg-white/[0.06]" />
           <div>
-            <p className="text-xs text-slate-500 uppercase tracking-wide font-medium">Best Score</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">Best Score</p>
             <p className={`text-lg font-semibold ${getScoreColor(bestScore)}`}>
               {bestScore ?? '--'}%
             </p>
@@ -156,34 +157,37 @@ export default function StudentResultsPage() {
 
       {/* Results Table */}
       {sessions.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-sm text-slate-400 mb-4">No results yet.</p>
+        <div className="glass-card py-16 text-center">
+          <div className="inline-flex items-center justify-center surface-2 rounded-full p-3 mb-3">
+            <ClipboardList className="w-5 h-5 text-zinc-500" />
+          </div>
+          <p className="text-sm text-zinc-400 mb-4">No results yet.</p>
           <Link
             href="/student/exams"
-            className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 transition-colors"
+            className="inline-flex items-center justify-center rounded-lg bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-100 transition-colors"
           >
             Browse Exams
           </Link>
         </div>
       ) : (
-        <div className="border border-slate-200 rounded-lg bg-white overflow-hidden">
+        <div className="glass-card overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left font-medium text-slate-500 px-5 py-3">Assessment</th>
-                <th className="text-left font-medium text-slate-500 px-5 py-3">Score</th>
-                <th className="text-left font-medium text-slate-500 px-5 py-3 hidden md:table-cell">Date</th>
-                <th className="text-left font-medium text-slate-500 px-5 py-3 hidden sm:table-cell">Time</th>
-                <th className="text-right font-medium text-slate-500 px-5 py-3" />
+              <tr className="border-b border-white/[0.06]">
+                <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3">Assessment</th>
+                <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3">Score</th>
+                <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3 hidden md:table-cell">Date</th>
+                <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3 hidden sm:table-cell">Time</th>
+                <th className="text-right text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-white/[0.06]">
               {sessions.map((session) => {
                 const dateStr = session.completed_at || session.started_at;
 
                 return (
-                  <tr key={session.id}>
-                    <td className="px-5 py-3 font-medium text-slate-900">
+                  <tr key={session.id} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="px-5 py-3 font-medium text-white">
                       {session.assessment_name}
                     </td>
                     <td className="px-5 py-3">
@@ -192,21 +196,21 @@ export default function StudentResultsPage() {
                           {session.score_percentage}%
                         </span>
                       ) : (
-                        <span className="text-slate-400">--</span>
+                        <span className="text-zinc-500">--</span>
                       )}
                     </td>
-                    <td className="px-5 py-3 text-slate-500 hidden md:table-cell">
+                    <td className="px-5 py-3 text-zinc-400 hidden md:table-cell">
                       {dateStr
                         ? format(new Date(dateStr), 'MMM d, yyyy')
                         : '--'}
                     </td>
-                    <td className="px-5 py-3 text-slate-500 hidden sm:table-cell">
+                    <td className="px-5 py-3 text-zinc-400 hidden sm:table-cell">
                       {formatDuration(session.time_spent_seconds)}
                     </td>
                     <td className="px-5 py-3 text-right">
                       <Link
                         href={`/student/results/${session.id}`}
-                        className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
+                        className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
                       >
                         View Details &rarr;
                       </Link>

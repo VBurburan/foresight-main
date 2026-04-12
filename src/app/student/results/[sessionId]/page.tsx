@@ -159,9 +159,9 @@ export default function SessionResultsPage({
   if (authLoading || loading) {
     return (
       <div className="p-6 md:p-10 max-w-3xl mx-auto space-y-6">
-        <div className="h-6 w-24 bg-slate-100 rounded animate-pulse" />
-        <div className="h-48 bg-slate-100 rounded animate-pulse" />
-        <div className="h-96 bg-slate-100 rounded animate-pulse" />
+        <div className="h-6 w-24 bg-zinc-800 rounded-md animate-pulse" />
+        <div className="h-48 bg-zinc-800 rounded-md animate-pulse" />
+        <div className="h-96 bg-zinc-800 rounded-md animate-pulse" />
       </div>
     );
   }
@@ -170,10 +170,10 @@ export default function SessionResultsPage({
     return (
       <div className="p-6 md:p-10 max-w-3xl mx-auto">
         <div className="text-center py-16">
-          <p className="text-sm text-red-600 mb-4">{error || 'Session not found'}</p>
+          <p className="text-sm text-red-400 mb-4">{error || 'Session not found'}</p>
           <Link
             href="/student/results"
-            className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
+            className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
           >
             &larr; Results
           </Link>
@@ -196,42 +196,60 @@ export default function SessionResultsPage({
       {/* Back link */}
       <Link
         href="/student/results"
-        className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
+        className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
       >
         &larr; Results
       </Link>
 
-      {/* Score Card */}
-      <div className="border border-slate-200 rounded-lg bg-white py-10 text-center">
-        <p className={`text-5xl font-bold ${passed ? 'text-emerald-600' : 'text-red-600'}`}>
-          {scorePercent}%
-        </p>
-        <p className={`text-sm font-medium mt-2 ${passed ? 'text-emerald-600' : 'text-red-600'}`}>
-          {passed ? 'Pass' : 'Needs Improvement'}
-        </p>
-        <p className="text-sm text-slate-500 mt-3">
-          {totalCorrect} / {totalQuestions} correct
-        </p>
-        <p className="text-xs text-slate-400 mt-1">
-          Time spent: {formatDuration(timeSpent)}
-        </p>
-        {assessment && (
-          <p className="text-xs text-slate-400 mt-1">{assessment.name}</p>
-        )}
+      {/* Score Card with glow */}
+      <div
+        className={`glass-card py-10 text-center relative overflow-hidden ${
+          passed
+            ? 'shadow-[0_0_60px_-12px_rgba(52,211,153,0.15)]'
+            : 'shadow-[0_0_60px_-12px_rgba(248,113,113,0.15)]'
+        }`}
+      >
+        {/* Subtle glow background */}
+        <div
+          className={`absolute inset-0 ${
+            passed
+              ? 'bg-gradient-to-b from-emerald-500/[0.05] to-transparent'
+              : 'bg-gradient-to-b from-red-500/[0.05] to-transparent'
+          }`}
+        />
+        <div className="relative">
+          <p className={`text-5xl font-bold ${passed ? 'text-emerald-400' : 'text-red-400'}`}>
+            {scorePercent}%
+          </p>
+          <p className={`text-sm font-medium mt-2 ${passed ? 'text-emerald-400' : 'text-red-400'}`}>
+            {passed ? 'Pass' : 'Needs Improvement'}
+          </p>
+          <p className="text-sm text-zinc-400 mt-3">
+            {totalCorrect} / {totalQuestions} correct
+          </p>
+          <p className="text-xs text-zinc-500 mt-1">
+            Time spent: {formatDuration(timeSpent)}
+          </p>
+          {assessment && (
+            <p className="text-xs text-zinc-500 mt-1">{assessment.name}</p>
+          )}
+        </div>
       </div>
 
       {/* Question Review */}
       <section className="space-y-3">
-        <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wide">
+        <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-500">
           Question Review
         </h2>
 
         {questions.length === 0 ? (
-          <p className="text-sm text-slate-400 py-8 text-center">
-            No questions found for this session.
-          </p>
+          <div className="glass-card py-12 text-center">
+            <p className="text-sm text-zinc-400">
+              No questions found for this session.
+            </p>
+          </div>
         ) : (
-          <div className="border border-slate-200 rounded-lg bg-white divide-y divide-slate-100">
+          <div className="glass-card overflow-hidden divide-y divide-white/[0.06]">
             {questions.map((q, idx) => {
               const response = responseMap.get(q.id);
               const isCorrect = response?.is_correct === true;
@@ -242,14 +260,14 @@ export default function SessionResultsPage({
                 <div key={q.id} className="px-5 py-4">
                   <div className="flex items-start gap-3">
                     {/* Number */}
-                    <span className="text-sm font-medium text-slate-400 w-6 flex-shrink-0 pt-0.5">
+                    <span className="text-sm font-medium text-zinc-500 w-6 flex-shrink-0 pt-0.5">
                       {idx + 1}
                     </span>
 
                     {/* Stem + badge */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-slate-900">{q.stem}</p>
-                      <span className="inline-block mt-1.5 text-[10px] font-medium text-slate-400 border border-slate-200 rounded px-1.5 py-0.5 uppercase tracking-wide">
+                      <p className="text-sm text-white">{q.stem}</p>
+                      <span className="inline-block mt-1.5 text-[10px] font-medium text-zinc-500 border border-white/[0.08] rounded px-1.5 py-0.5 uppercase tracking-wide">
                         {ITEM_TYPE_LABELS[q.item_type] || q.item_type}
                       </span>
 
@@ -258,7 +276,7 @@ export default function SessionResultsPage({
                         <div className="mt-2">
                           <button
                             onClick={() => toggleRationale(q.id)}
-                            className="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600 transition-colors"
+                            className="flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
                           >
                             {isExpanded ? (
                               <ChevronDown className="w-3 h-3" />
@@ -268,7 +286,7 @@ export default function SessionResultsPage({
                             Rationale
                           </button>
                           {isExpanded && (
-                            <p className="text-xs text-slate-500 mt-1.5 leading-relaxed pl-4 border-l-2 border-slate-100">
+                            <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed pl-4 border-l-2 border-white/[0.08]">
                               {q.rationale}
                             </p>
                           )}
@@ -279,11 +297,11 @@ export default function SessionResultsPage({
                     {/* Correct/Incorrect indicator */}
                     <span className="flex-shrink-0 pt-0.5">
                       {!wasAnswered ? (
-                        <span className="text-xs text-slate-300">--</span>
+                        <span className="text-xs text-zinc-500">--</span>
                       ) : isCorrect ? (
-                        <span className="text-emerald-600 text-sm font-medium">&check;</span>
+                        <span className="text-emerald-400 text-sm font-medium">&check;</span>
                       ) : (
-                        <span className="text-red-600 text-sm font-medium">&times;</span>
+                        <span className="text-red-400 text-sm font-medium">&times;</span>
                       )}
                     </span>
                   </div>
@@ -298,14 +316,14 @@ export default function SessionResultsPage({
       <div className="flex items-center justify-center gap-4 pb-8">
         <Link
           href="/student/results"
-          className="inline-flex items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+          className="inline-flex items-center justify-center rounded-lg border border-white/[0.08] px-4 py-2 text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/[0.04] transition-colors"
         >
           &larr; Back
         </Link>
         {session.assessment_id && (
           <Link
             href={`/student/exam/${session.assessment_id}`}
-            className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 transition-colors"
+            className="inline-flex items-center justify-center rounded-lg bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-100 transition-colors"
           >
             Retake Exam
           </Link>
