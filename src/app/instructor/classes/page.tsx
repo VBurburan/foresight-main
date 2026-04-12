@@ -71,7 +71,7 @@ function CopyButton({ text }: { text: string }) {
       {copied ? (
         <Check className="h-3 w-3 text-emerald-400" />
       ) : (
-        <Copy className="h-3 w-3 text-zinc-500" />
+        <Copy className="h-3 w-3 text-zinc-400" />
       )}
     </button>
   );
@@ -322,7 +322,7 @@ function ClassesContent() {
               <Plus className="h-6 w-6 text-zinc-400" />
             </div>
             <p className="text-sm font-medium text-zinc-300">No classes yet</p>
-            <p className="mt-1 text-sm text-zinc-500">
+            <p className="mt-1 text-sm text-zinc-400">
               Create your first class to start tracking student progress.
             </p>
             <Button
@@ -338,13 +338,13 @@ function ClassesContent() {
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-transparent border-white/[0.06]">
-                  <TableHead className="text-xs uppercase tracking-wider text-zinc-500 font-medium">Class Name</TableHead>
-                  <TableHead className="text-xs uppercase tracking-wider text-zinc-500 font-medium">Cert Level</TableHead>
-                  <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-500 font-medium">Students</TableHead>
-                  <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-500 font-medium">Avg Score</TableHead>
-                  <TableHead className="text-xs uppercase tracking-wider text-zinc-500 font-medium">Enrollment Code</TableHead>
-                  <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-500 font-medium">Status</TableHead>
-                  <TableHead className="text-right text-xs uppercase tracking-wider text-zinc-500 font-medium">Action</TableHead>
+                  <TableHead className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Class Name</TableHead>
+                  <TableHead className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Cert Level</TableHead>
+                  <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-400 font-medium">Students</TableHead>
+                  <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-400 font-medium">Avg Score</TableHead>
+                  <TableHead className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Enrollment Code</TableHead>
+                  <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-400 font-medium">Status</TableHead>
+                  <TableHead className="text-right text-xs uppercase tracking-wider text-zinc-400 font-medium">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

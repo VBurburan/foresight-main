@@ -13,7 +13,7 @@ export default function LoginPageWrapper() {
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center bg-background">
-          <p className="text-zinc-500 text-sm">Loading...</p>
+          <p className="text-zinc-400 text-sm">Loading...</p>
         </div>
       }
     >
@@ -116,7 +116,7 @@ function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500 focus:ring-blue-500/40 focus:border-blue-500/40"
+              className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-400 focus:ring-blue-500/40 focus:border-blue-500/40"
             />
           </div>
 
@@ -132,7 +132,7 @@ function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
-              className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500 focus:ring-blue-500/40 focus:border-blue-500/40"
+              className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-400 focus:ring-blue-500/40 focus:border-blue-500/40"
             />
           </div>
 
@@ -151,7 +151,7 @@ function LoginPage() {
           </Button>
         </form>
 
-        <p className="text-xs text-zinc-500 text-center mt-5">
+        <p className="text-xs text-zinc-400 text-center mt-5">
           Students: use credentials from your instructor
         </p>
       </div>
@@ -160,7 +160,7 @@ function LoginPage() {
       <div className="relative z-10 mt-6">
         <a
           href="mailto:vincent@foresight.edu"
-          className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+          className="text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
         >
           Need access? Contact us
         </a>

@@ -213,7 +213,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
     return (
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl text-center py-20">
-          <p className="text-zinc-500">Student not found.</p>
+          <p className="text-zinc-400">Student not found.</p>
           <Link href="/instructor/classes" className="mt-4 inline-block text-sm text-zinc-400 hover:text-white transition-colors">
             &larr; Classes
           </Link>
@@ -233,7 +233,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         {/* Back link */}
         <Link
           href="/instructor/classes"
-          className="text-sm text-zinc-500 hover:text-white transition-colors"
+          className="text-sm text-zinc-400 hover:text-white transition-colors"
         >
           &larr; Classes
         </Link>
@@ -257,7 +257,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
             {overallAvg !== null && (
               <div className="text-right">
                 <p className={`text-4xl font-bold ${scoreColor(overallAvg)}`}>{overallAvg}%</p>
-                <p className="text-xs text-zinc-500 mt-0.5">Overall Score</p>
+                <p className="text-xs text-zinc-400 mt-0.5">Overall Score</p>
               </div>
             )}
           </div>
@@ -267,7 +267,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         {scoreTrend.length > 0 && (
           <div>
             <h2 className="text-sm font-semibold text-white mb-1">Score Trend</h2>
-            <p className="text-xs text-zinc-500 mb-4">
+            <p className="text-xs text-zinc-400 mb-4">
               {scoreTrend.length} session{scoreTrend.length !== 1 ? 's' : ''}
               {scoreTrend.length >= 2 && (
                 <>
@@ -314,7 +314,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         {domainMastery.length > 0 && (
           <div>
             <h2 className="text-sm font-semibold text-white mb-1">Domain Mastery</h2>
-            <p className="text-xs text-zinc-500 mb-4">Weakest areas shown first</p>
+            <p className="text-xs text-zinc-400 mb-4">Weakest areas shown first</p>
             <div className="space-y-3">
               {domainMastery.map((d) => (
                 <div key={d.domain}>
@@ -340,7 +340,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
           {/* TEI Performance */}
           <div>
             <h2 className="text-sm font-semibold text-white mb-1">TEI Performance</h2>
-            <p className="text-xs text-zinc-500 mb-4">By item type</p>
+            <p className="text-xs text-zinc-400 mb-4">By item type</p>
             {teiPerf.length > 0 ? (
               <div className="space-y-3">
                 {teiPerf.map((item) => (
@@ -361,14 +361,14 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-zinc-500 py-8 text-center">No TEI data available yet.</p>
+              <p className="text-sm text-zinc-400 py-8 text-center">No TEI data available yet.</p>
             )}
           </div>
 
           {/* Error Patterns */}
           <div>
             <h2 className="text-sm font-semibold text-white mb-1">Error Patterns</h2>
-            <p className="text-xs text-zinc-500 mb-4">Identified weakness patterns</p>
+            <p className="text-xs text-zinc-400 mb-4">Identified weakness patterns</p>
             {errorPatterns.length > 0 ? (
               <ul className="space-y-2">
                 {errorPatterns.map((pattern, idx) => (
@@ -379,7 +379,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-zinc-500 py-8 text-center">No error patterns identified yet.</p>
+              <p className="text-sm text-zinc-400 py-8 text-center">No error patterns identified yet.</p>
             )}
           </div>
         </div>
@@ -388,25 +388,25 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         {sessions.length > 0 && (
           <div>
             <h2 className="text-sm font-semibold text-white mb-1">Exam History</h2>
-            <p className="text-xs text-zinc-500 mb-4">
+            <p className="text-xs text-zinc-400 mb-4">
               Last {sessions.length} assessment{sessions.length !== 1 ? 's' : ''}
             </p>
             <div className="glass-card overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-white/[0.06]">
-                    <th className="text-left py-2.5 px-4 font-medium text-zinc-500 text-xs uppercase tracking-wider">Date</th>
-                    <th className="text-left py-2.5 px-4 font-medium text-zinc-500 text-xs uppercase tracking-wider">Level</th>
-                    <th className="text-center py-2.5 px-4 font-medium text-zinc-500 text-xs uppercase tracking-wider">Score</th>
-                    <th className="text-center py-2.5 px-4 font-medium text-zinc-500 text-xs uppercase tracking-wider">Questions</th>
-                    <th className="text-right py-2.5 px-4 font-medium text-zinc-500 text-xs uppercase tracking-wider">Time</th>
+                    <th className="text-left py-2.5 px-4 font-medium text-zinc-400 text-xs uppercase tracking-wider">Date</th>
+                    <th className="text-left py-2.5 px-4 font-medium text-zinc-400 text-xs uppercase tracking-wider">Level</th>
+                    <th className="text-center py-2.5 px-4 font-medium text-zinc-400 text-xs uppercase tracking-wider">Score</th>
+                    <th className="text-center py-2.5 px-4 font-medium text-zinc-400 text-xs uppercase tracking-wider">Questions</th>
+                    <th className="text-right py-2.5 px-4 font-medium text-zinc-400 text-xs uppercase tracking-wider">Time</th>
                   </tr>
                 </thead>
                 <tbody>
                   {sessions.map((session) => (
                     <tr key={session.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
                       <td className="py-2.5 px-4 text-zinc-300">{session.date}</td>
-                      <td className="py-2.5 px-4 text-zinc-500 font-mono text-xs">{session.certLevel || '--'}</td>
+                      <td className="py-2.5 px-4 text-zinc-400 font-mono text-xs">{session.certLevel || '--'}</td>
                       <td className="py-2.5 px-4 text-center">
                         {session.score != null ? (
                           <span className={`font-semibold tabular-nums ${scoreColor(session.score)}`}>
@@ -419,7 +419,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
                       <td className="py-2.5 px-4 text-center text-zinc-400 tabular-nums">
                         {session.questionCount ?? '--'}
                       </td>
-                      <td className="py-2.5 px-4 text-right text-zinc-500 tabular-nums">
+                      <td className="py-2.5 px-4 text-right text-zinc-400 tabular-nums">
                         {session.timeSpent != null
                           ? `${Math.round(session.timeSpent / 60)} min`
                           : '--'}

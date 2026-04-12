@@ -31,7 +31,7 @@ interface ExamSessionRow {
 }
 
 function getScoreColor(score: number | null): string {
-  if (score == null) return 'text-zinc-500';
+  if (score == null) return 'text-zinc-400';
   if (score >= 70) return 'text-emerald-400';
   return 'text-red-400';
 }
@@ -119,14 +119,14 @@ export default function StudentExamsPage() {
 
       {/* Available Assessments */}
       <section className="space-y-4">
-        <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+        <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-400">
           Available Assessments
         </h2>
 
         {assessments.length === 0 ? (
           <div className="glass-card py-12 text-center">
             <div className="inline-flex items-center justify-center surface-2 rounded-full p-3 mb-3">
-              <BookOpen className="w-5 h-5 text-zinc-500" />
+              <BookOpen className="w-5 h-5 text-zinc-400" />
             </div>
             <p className="text-sm text-zinc-400">No assessments available right now.</p>
           </div>
@@ -141,10 +141,10 @@ export default function StudentExamsPage() {
                   <p className="text-sm font-medium text-white truncate">
                     {assessment.name}
                   </p>
-                  <p className="text-xs text-zinc-500 mt-0.5">
+                  <p className="text-xs text-zinc-400 mt-0.5">
                     {assessment.question_count ?? '?'} questions
                     {assessment.certification_level && (
-                      <span className="ml-2 text-zinc-500">
+                      <span className="ml-2 text-zinc-400">
                         {assessment.certification_level}
                       </span>
                     )}
@@ -164,14 +164,14 @@ export default function StudentExamsPage() {
 
       {/* Past Attempts */}
       <section className="space-y-4">
-        <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+        <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-400">
           Past Attempts
         </h2>
 
         {sessions.length === 0 ? (
           <div className="glass-card py-12 text-center">
             <div className="inline-flex items-center justify-center surface-2 rounded-full p-3 mb-3">
-              <ClipboardList className="w-5 h-5 text-zinc-500" />
+              <ClipboardList className="w-5 h-5 text-zinc-400" />
             </div>
             <p className="text-sm text-zinc-400">No exam attempts yet.</p>
           </div>
@@ -180,10 +180,10 @@ export default function StudentExamsPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/[0.06]">
-                  <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3">Assessment</th>
-                  <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3">Score</th>
-                  <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3 hidden md:table-cell">Date</th>
-                  <th className="text-right text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3" />
+                  <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3">Assessment</th>
+                  <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3">Score</th>
+                  <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3 hidden md:table-cell">Date</th>
+                  <th className="text-right text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3" />
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/[0.06]">
@@ -204,7 +204,7 @@ export default function StudentExamsPage() {
                             {session.score_percentage}%
                           </span>
                         ) : (
-                          <span className="text-zinc-500">--</span>
+                          <span className="text-zinc-400">--</span>
                         )}
                       </td>
                       <td className="px-5 py-3 text-zinc-400 hidden md:table-cell">

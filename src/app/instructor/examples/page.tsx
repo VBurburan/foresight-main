@@ -154,7 +154,7 @@ function ExamplesContent() {
                   </div>
                   {tei.example.rationale && (
                     <div className="border-l-2 border-zinc-700 pl-4 mt-3">
-                      <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1">Rationale</p>
+                      <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1">Rationale</p>
                       <p className="text-sm text-zinc-400">{tei.example.rationale}</p>
                     </div>
                   )}
@@ -175,7 +175,7 @@ function ExamplesContent() {
                   <div className="grid grid-cols-3 gap-2 mt-2">
                     {((tei.example as any).categories || []).map((cat: string) => (
                       <div key={cat} className="rounded border-2 border-dashed border-zinc-700 p-3 text-center">
-                        <p className="text-xs font-semibold text-zinc-500">{cat}</p>
+                        <p className="text-xs font-semibold text-zinc-400">{cat}</p>
                       </div>
                     ))}
                   </div>
@@ -189,7 +189,7 @@ function ExamplesContent() {
                   <div className="space-y-1.5">
                     {((tei.example as any).items || []).map((item: string, i: number) => (
                       <div key={i} className="flex items-center gap-2 rounded surface-1 ring-1 ring-white/[0.06] px-3 py-2">
-                        <span className="text-xs font-mono font-semibold text-zinc-500 w-5 text-center">{i + 1}</span>
+                        <span className="text-xs font-mono font-semibold text-zinc-400 w-5 text-center">{i + 1}</span>
                         <span className="text-sm text-zinc-300">{item.replace(/^\d+\.\s*/, '')}</span>
                       </div>
                     ))}
@@ -205,9 +205,9 @@ function ExamplesContent() {
                     <table className="w-full text-xs">
                       <thead>
                         <tr className="border-b border-white/[0.06]">
-                          <th className="text-left py-2 px-3 font-medium text-zinc-500">Intervention</th>
+                          <th className="text-left py-2 px-3 font-medium text-zinc-400">Intervention</th>
                           {((tei.example as any).columns || []).map((col: string) => (
-                            <th key={col} className="text-center py-2 px-3 font-medium text-zinc-500">{col}</th>
+                            <th key={col} className="text-center py-2 px-3 font-medium text-zinc-400">{col}</th>
                           ))}
                         </tr>
                       </thead>
@@ -236,13 +236,13 @@ function ExamplesContent() {
                   {(tei.example.phases as any[]).map((phase: any, pi: number) => (
                     <div key={pi} className="border-l-2 border-zinc-700 pl-4">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-mono text-zinc-500">Phase {pi + 1}</span>
+                        <span className="text-xs font-mono text-zinc-400">Phase {pi + 1}</span>
                         <span className="text-sm font-semibold text-zinc-300">{phase.label}</span>
                       </div>
                       <p className="text-xs text-zinc-400 mb-2 leading-relaxed">{phase.context}</p>
                       <div className="space-y-1">
                         {phase.questions.map((q: string, qi: number) => (
-                          <div key={qi} className="flex items-center gap-2 text-xs text-zinc-500">
+                          <div key={qi} className="flex items-center gap-2 text-xs text-zinc-400">
                             <Layers className="h-3 w-3 flex-shrink-0" />
                             {q}
                           </div>

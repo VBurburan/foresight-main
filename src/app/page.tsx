@@ -121,7 +121,7 @@ export default function HomePage() {
             <span className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
               <Image
                 src="/images/foresight-logo.png"
-                alt="Foresight"
+                alt=""
                 width={22}
                 height={22}
               />
@@ -215,7 +215,7 @@ export default function HomePage() {
                   <p className="font-heading text-2xl font-bold text-white tabular-nums">
                     {s.value}
                   </p>
-                  <p className="text-xs text-zinc-500 font-medium uppercase tracking-wider mt-1">
+                  <p className="text-xs text-zinc-400 font-medium uppercase tracking-wider mt-1">
                     {s.label}
                   </p>
                 </div>
@@ -292,7 +292,7 @@ export default function HomePage() {
                     <div className="md:hidden absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-px bg-white/[0.06]" />
                   )}
 
-                  <p className="text-xs font-bold text-blue-400/50 tracking-[0.25em] uppercase mb-4">
+                  <p className="text-xs font-bold text-blue-400/80 tracking-[0.25em] uppercase mb-4">
                     {s.num}
                   </p>
                   <div className="w-12 h-12 rounded-xl surface-2 flex items-center justify-center mx-auto mb-5">
@@ -373,13 +373,13 @@ export default function HomePage() {
             <table className="w-full text-sm min-w-[640px]">
               <thead>
                 <tr className="border-b border-white/[0.06]">
-                  <th className="text-left py-3 pr-4 font-medium text-zinc-500 text-xs uppercase tracking-wider">
+                  <th className="text-left py-3 pr-4 font-medium text-zinc-400 text-xs uppercase tracking-wider">
                     Platform
                   </th>
                   {compCols.map((c) => (
                     <th
                       key={c.key}
-                      className="text-center py-3 px-2 font-medium text-zinc-500 text-xs uppercase tracking-wider"
+                      className="text-center py-3 px-2 font-medium text-zinc-400 text-xs uppercase tracking-wider"
                     >
                       {c.label}
                     </th>
@@ -503,7 +503,7 @@ export default function HomePage() {
               Foresight
             </span>
           </div>
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-zinc-400">
             &copy; 2026 Foresight
           </p>
         </div>

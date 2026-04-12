@@ -275,7 +275,7 @@ export default function StudentDashboardPage() {
     return (
       <div className="flex min-h-screen items-center justify-center px-4 md:pt-0 pt-20">
         <div className="text-center">
-          <p className="text-sm text-zinc-500">Please sign in to view your dashboard.</p>
+          <p className="text-sm text-zinc-400">Please sign in to view your dashboard.</p>
           <Link
             href="/login"
             className="mt-4 inline-block rounded-lg bg-white px-4 py-2 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-100"
@@ -300,7 +300,7 @@ export default function StudentDashboardPage() {
           <div className="mt-8">
             <div className="glass-card px-5 py-5">
               <p className="text-sm font-medium text-white">Join a class</p>
-              <p className="mt-1 text-xs text-zinc-500">
+              <p className="mt-1 text-xs text-zinc-400">
                 Enter the enrollment code provided by your instructor to get started.
               </p>
               <div className="mt-3 flex items-center gap-2">
@@ -314,7 +314,7 @@ export default function StudentDashboardPage() {
                     setEnrollSuccess(null);
                   }}
                   onKeyDown={(e) => e.key === 'Enter' && handleJoinClass()}
-                  className="h-9 w-48 rounded-lg border border-zinc-700 bg-zinc-900/50 px-3 font-mono text-sm tracking-wider uppercase text-white placeholder:text-zinc-500 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40"
+                  className="h-9 w-48 rounded-lg border border-zinc-700 bg-zinc-900/50 px-3 font-mono text-sm tracking-wider uppercase text-white placeholder:text-zinc-400 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40"
                   maxLength={12}
                 />
                 <button
@@ -340,13 +340,13 @@ export default function StudentDashboardPage() {
           <>
             <div className="mt-8 grid grid-cols-3 gap-8">
               <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+                <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">
                   Exams Taken
                 </p>
                 <p className="mt-1 text-2xl font-semibold text-white">{examsTaken}</p>
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+                <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">
                   Avg Score
                 </p>
                 <p className="mt-1 text-2xl font-semibold text-white">
@@ -354,7 +354,7 @@ export default function StudentDashboardPage() {
                 </p>
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+                <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">
                   Best Score
                 </p>
                 <p className="mt-1 text-2xl font-semibold text-white">
@@ -391,7 +391,7 @@ export default function StudentDashboardPage() {
                           </p>
                           <div className="mt-0.5 flex items-center gap-3">
                             {a.question_count != null && (
-                              <span className="text-xs text-zinc-500">
+                              <span className="text-xs text-zinc-400">
                                 {a.question_count} question{a.question_count !== 1 ? 's' : ''}
                               </span>
                             )}
@@ -414,10 +414,10 @@ export default function StudentDashboardPage() {
                 ) : (
                   <div className="px-5 py-8 text-center">
                     <div className="inline-flex items-center justify-center surface-2 rounded-full p-3 mb-3">
-                      <BookOpen className="w-5 h-5 text-zinc-500" />
+                      <BookOpen className="w-5 h-5 text-zinc-400" />
                     </div>
                     <p className="text-sm text-zinc-400">No assessments available yet.</p>
-                    <p className="mt-0.5 text-xs text-zinc-500">
+                    <p className="mt-0.5 text-xs text-zinc-400">
                       Your instructor will publish assessments when they are ready.
                     </p>
                   </div>
@@ -445,7 +445,7 @@ export default function StudentDashboardPage() {
                           <p className="text-sm font-medium text-white truncate">
                             {r.assessment_name}
                           </p>
-                          <p className="mt-0.5 text-xs text-zinc-500">
+                          <p className="mt-0.5 text-xs text-zinc-400">
                             {r.completed_at ? formatDate(r.completed_at) : '--'}
                           </p>
                         </div>
@@ -461,7 +461,7 @@ export default function StudentDashboardPage() {
                               {r.score_percentage}%
                             </span>
                           ) : (
-                            <span className="text-sm text-zinc-500">--</span>
+                            <span className="text-sm text-zinc-400">--</span>
                           )}
                         </div>
                       </div>
@@ -470,10 +470,10 @@ export default function StudentDashboardPage() {
                 ) : (
                   <div className="px-5 py-8 text-center">
                     <div className="inline-flex items-center justify-center surface-2 rounded-full p-3 mb-3">
-                      <BarChart3 className="w-5 h-5 text-zinc-500" />
+                      <BarChart3 className="w-5 h-5 text-zinc-400" />
                     </div>
                     <p className="text-sm text-zinc-400">No results yet.</p>
-                    <p className="mt-0.5 text-xs text-zinc-500">
+                    <p className="mt-0.5 text-xs text-zinc-400">
                       Complete an assessment to see your scores here.
                     </p>
                   </div>
@@ -487,7 +487,7 @@ export default function StudentDashboardPage() {
         {classes.length > 0 && (
           <div className="mt-8">
             <div className="flex items-center gap-3">
-              <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+              <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">
                 Join another class
               </p>
               <input
@@ -500,7 +500,7 @@ export default function StudentDashboardPage() {
                   setEnrollSuccess(null);
                 }}
                 onKeyDown={(e) => e.key === 'Enter' && handleJoinClass()}
-                className="h-8 w-28 rounded-lg border border-zinc-700 bg-zinc-900/50 px-2.5 font-mono text-xs tracking-wider uppercase text-white placeholder:text-zinc-500 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40"
+                className="h-8 w-28 rounded-lg border border-zinc-700 bg-zinc-900/50 px-2.5 font-mono text-xs tracking-wider uppercase text-white placeholder:text-zinc-400 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40"
                 maxLength={12}
               />
               <button
@@ -523,7 +523,7 @@ export default function StudentDashboardPage() {
         {/* ---- Your Classes ---- */}
         {classes.length > 0 && (
           <div className="mt-6">
-            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+            <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">
               Your Classes
             </p>
             <div className="mt-2 flex flex-wrap gap-2">

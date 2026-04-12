@@ -249,7 +249,7 @@ function DashboardContent() {
               <Plus className="h-6 w-6 text-zinc-400" />
             </div>
             <p className="text-sm font-medium text-zinc-300">No classes yet</p>
-            <p className="mt-1 text-sm text-zinc-500">
+            <p className="mt-1 text-sm text-zinc-400">
               Create your first class to start tracking student progress and building assessments.
             </p>
             <Link href="/instructor/classes">
@@ -265,7 +265,7 @@ function DashboardContent() {
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {stats.map((stat, idx) => (
             <div key={idx} className="glass-card p-5">
-              <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+              <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">
                 {stat.label}
               </p>
               <div className="mt-1 flex items-baseline gap-2">
@@ -274,7 +274,7 @@ function DashboardContent() {
                   <span className="inline-block h-2 w-2 rounded-full bg-red-400" />
                 )}
               </div>
-              <p className="mt-0.5 text-xs text-zinc-500">{stat.subtext}</p>
+              <p className="mt-0.5 text-xs text-zinc-400">{stat.subtext}</p>
             </div>
           ))}
         </div>
@@ -290,7 +290,7 @@ function DashboardContent() {
               <div className="glass-card">
                 <div className="px-5 py-4">
                   <h2 className="text-sm font-medium text-white">Class Performance</h2>
-                  <p className="mt-0.5 text-xs text-zinc-500">Average score by class</p>
+                  <p className="mt-0.5 text-xs text-zinc-400">Average score by class</p>
                 </div>
                 <div className="px-5 pb-5">
                   {classPerformance.length > 0 ? (
@@ -328,7 +328,7 @@ function DashboardContent() {
                     <div className="flex h-[280px] items-center justify-center">
                       <div className="text-center">
                         <p className="text-sm text-zinc-400">No data yet</p>
-                        <p className="mt-1 text-xs text-zinc-500">
+                        <p className="mt-1 text-xs text-zinc-400">
                           Scores will appear after students complete exams.
                         </p>
                       </div>
@@ -343,7 +343,7 @@ function DashboardContent() {
               <div className="glass-card">
                 <div className="px-5 py-4">
                   <h2 className="text-sm font-medium text-white">Recent Activity</h2>
-                  <p className="mt-0.5 text-xs text-zinc-500">Latest student submissions</p>
+                  <p className="mt-0.5 text-xs text-zinc-400">Latest student submissions</p>
                 </div>
                 <div className="px-2 pb-3">
                   {recentActivity.length > 0 ? (
@@ -362,7 +362,7 @@ function DashboardContent() {
                             <p className="truncate text-sm font-medium text-white">
                               {activity.studentName}
                             </p>
-                            <p className="truncate text-xs text-zinc-500">
+                            <p className="truncate text-xs text-zinc-400">
                               {activity.action}
                               {activity.score != null && (
                                 <>
@@ -393,7 +393,7 @@ function DashboardContent() {
                     <div className="flex h-[240px] items-center justify-center">
                       <div className="text-center">
                         <p className="text-sm text-zinc-400">No activity yet</p>
-                        <p className="mt-1 text-xs text-zinc-500">
+                        <p className="mt-1 text-xs text-zinc-400">
                           Student submissions will appear here.
                         </p>
                       </div>

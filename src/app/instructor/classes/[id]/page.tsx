@@ -202,7 +202,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
     return (
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl py-20 text-center">
-          <p className="text-sm text-zinc-500">Class not found.</p>
+          <p className="text-sm text-zinc-400">Class not found.</p>
           <Link href="/instructor/classes">
             <Button variant="outline" className="mt-4 glass-card text-zinc-300 hover:text-white">
               Back to Classes
@@ -219,7 +219,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
         {/* Back link */}
         <Link
           href="/instructor/classes"
-          className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1 text-sm text-zinc-400 hover:text-white transition-colors"
         >
           &larr; Classes
         </Link>
@@ -235,7 +235,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
                 {classInfo.max_students && ` / ${classInfo.max_students} max`}
               </p>
               {classInfo.description && (
-                <p className="mt-2 text-sm text-zinc-500">{classInfo.description}</p>
+                <p className="mt-2 text-sm text-zinc-400">{classInfo.description}</p>
               )}
             </div>
             <span className="inline-flex items-center gap-1.5 text-xs text-zinc-400">
@@ -250,7 +250,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
 
           {classInfo.enrollment_code && (
             <div className="mt-4 flex items-center gap-3 border-t border-white/[0.06] pt-4">
-              <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+              <span className="text-xs font-medium uppercase tracking-wider text-zinc-400">
                 Enrollment Code
               </span>
               <code className="rounded surface-2 px-2.5 py-1 text-sm font-mono font-medium text-zinc-200">
@@ -258,7 +258,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
               </code>
               <button
                 onClick={handleCopyCode}
-                className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-white transition-colors"
+                className="inline-flex items-center gap-1 text-xs text-zinc-400 hover:text-white transition-colors"
               >
                 {copied ? (
                   <>
@@ -293,7 +293,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
               {students.length === 0 ? (
                 <div className="py-16 text-center">
                   <p className="text-sm font-medium text-zinc-300">No students enrolled yet</p>
-                  <p className="mt-1 text-sm text-zinc-500">
+                  <p className="mt-1 text-sm text-zinc-400">
                     Share the enrollment code{' '}
                     <code className="font-mono font-medium text-zinc-200">{classInfo.enrollment_code}</code>
                     {' '}with your students.
@@ -303,13 +303,13 @@ function ClassDetailContent({ classId }: { classId: string }) {
                 <Table>
                   <TableHeader>
                     <TableRow className="hover:bg-transparent border-white/[0.06]">
-                      <TableHead className="text-xs uppercase tracking-wider text-zinc-500 font-medium">Name</TableHead>
-                      <TableHead className="text-xs uppercase tracking-wider text-zinc-500 font-medium">Email</TableHead>
-                      <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-500 font-medium">Avg Score</TableHead>
-                      <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-500 font-medium">Sessions</TableHead>
-                      <TableHead className="text-xs uppercase tracking-wider text-zinc-500 font-medium">Last Active</TableHead>
-                      <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-500 font-medium">Status</TableHead>
-                      <TableHead className="text-right text-xs uppercase tracking-wider text-zinc-500 font-medium">Action</TableHead>
+                      <TableHead className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Name</TableHead>
+                      <TableHead className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Email</TableHead>
+                      <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-400 font-medium">Avg Score</TableHead>
+                      <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-400 font-medium">Sessions</TableHead>
+                      <TableHead className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Last Active</TableHead>
+                      <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-400 font-medium">Status</TableHead>
+                      <TableHead className="text-right text-xs uppercase tracking-wider text-zinc-400 font-medium">Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -325,7 +325,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
                               {student.fullName}
                             </Link>
                           </TableCell>
-                          <TableCell className="text-xs text-zinc-500">
+                          <TableCell className="text-xs text-zinc-400">
                             {student.email}
                           </TableCell>
                           <TableCell className="text-center">
@@ -340,7 +340,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
                           <TableCell className="text-center text-sm text-zinc-400">
                             {student.sessionsCompleted}
                           </TableCell>
-                          <TableCell className="text-xs text-zinc-500">
+                          <TableCell className="text-xs text-zinc-400">
                             {student.lastActivity
                               ? new Date(student.lastActivity).toLocaleDateString()
                               : 'Never'}
@@ -373,7 +373,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
           <TabsContent value="analytics" className="mt-4">
             <div className="glass-card p-6">
               <h3 className="text-sm font-medium text-white">Domain Performance</h3>
-              <p className="mt-0.5 text-xs text-zinc-500">Aggregated average scores across all students</p>
+              <p className="mt-0.5 text-xs text-zinc-400">Aggregated average scores across all students</p>
 
               {domainPerf.length > 0 ? (
                 <div className="mt-6">
@@ -398,7 +398,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
                 </div>
               ) : (
                 <div className="flex h-[300px] items-center justify-center">
-                  <p className="text-sm text-zinc-500">Not enough data yet. Students need to complete exams.</p>
+                  <p className="text-sm text-zinc-400">Not enough data yet. Students need to complete exams.</p>
                 </div>
               )}
             </div>

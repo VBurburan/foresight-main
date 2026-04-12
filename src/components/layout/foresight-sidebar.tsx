@@ -55,7 +55,7 @@ export function ForesightSidebar() {
             <p className="text-sm font-semibold text-white leading-none">
               Foresight
             </p>
-            <p className="text-[10px] text-zinc-500 uppercase tracking-widest mt-0.5">
+            <p className="text-[10px] text-zinc-400 uppercase tracking-widest mt-0.5">
               Instructor
             </p>
           </div>
@@ -83,7 +83,7 @@ export function ForesightSidebar() {
               <Icon
                 className={cn(
                   "w-4 h-4 shrink-0",
-                  isActive ? "text-zinc-200" : "text-zinc-500"
+                  isActive ? "text-zinc-200" : "text-zinc-400"
                 )}
               />
               {item.label}
@@ -99,7 +99,7 @@ export function ForesightSidebar() {
         )}
         <button
           onClick={handleSignOut}
-          className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
+          className="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-300 transition-colors"
         >
           <LogOut className="w-4 h-4" />
           Sign Out

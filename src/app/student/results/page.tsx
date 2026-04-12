@@ -29,7 +29,7 @@ function formatDuration(seconds: number | null): string {
 }
 
 function getScoreColor(score: number | null): string {
-  if (score == null) return 'text-zinc-500';
+  if (score == null) return 'text-zinc-400';
   if (score >= 70) return 'text-emerald-400';
   return 'text-red-400';
 }
@@ -137,17 +137,17 @@ export default function StudentResultsPage() {
       {completedSessions.length > 0 && (
         <div className="glass-card flex items-center gap-8 px-6 py-4">
           <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">Total Exams</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">Total Exams</p>
             <p className="text-lg font-semibold text-white">{completedSessions.length}</p>
           </div>
           <div className="w-px h-8 bg-white/[0.06]" />
           <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">Average Score</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">Average Score</p>
             <p className="text-lg font-semibold text-white">{avgScore ?? '--'}%</p>
           </div>
           <div className="w-px h-8 bg-white/[0.06]" />
           <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">Best Score</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">Best Score</p>
             <p className={`text-lg font-semibold ${getScoreColor(bestScore)}`}>
               {bestScore ?? '--'}%
             </p>
@@ -159,7 +159,7 @@ export default function StudentResultsPage() {
       {sessions.length === 0 ? (
         <div className="glass-card py-16 text-center">
           <div className="inline-flex items-center justify-center surface-2 rounded-full p-3 mb-3">
-            <ClipboardList className="w-5 h-5 text-zinc-500" />
+            <ClipboardList className="w-5 h-5 text-zinc-400" />
           </div>
           <p className="text-sm text-zinc-400 mb-4">No results yet.</p>
           <Link
@@ -174,11 +174,11 @@ export default function StudentResultsPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/[0.06]">
-                <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3">Assessment</th>
-                <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3">Score</th>
-                <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3 hidden md:table-cell">Date</th>
-                <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3 hidden sm:table-cell">Time</th>
-                <th className="text-right text-xs font-medium uppercase tracking-wider text-zinc-500 px-5 py-3" />
+                <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3">Assessment</th>
+                <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3">Score</th>
+                <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3 hidden md:table-cell">Date</th>
+                <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3 hidden sm:table-cell">Time</th>
+                <th className="text-right text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3" />
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.06]">
@@ -196,7 +196,7 @@ export default function StudentResultsPage() {
                           {session.score_percentage}%
                         </span>
                       ) : (
-                        <span className="text-zinc-500">--</span>
+                        <span className="text-zinc-400">--</span>
                       )}
                     </td>
                     <td className="px-5 py-3 text-zinc-400 hidden md:table-cell">

@@ -164,7 +164,7 @@ function MCRenderer({
               className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-semibold ${
                 selected
                   ? 'bg-blue-500 text-white'
-                  : 'surface-2 text-zinc-500'
+                  : 'surface-2 text-zinc-400'
               }`}
             >
               {opt.key}
@@ -198,7 +198,7 @@ function MRRenderer({
 
   return (
     <div className="space-y-2">
-      <p className="text-xs text-zinc-500 mb-2 font-medium uppercase tracking-wide">
+      <p className="text-xs text-zinc-400 mb-2 font-medium uppercase tracking-wide">
         Select all that apply
       </p>
       {data.options.map((opt) => {
@@ -218,7 +218,7 @@ function MRRenderer({
               className={`flex-shrink-0 w-7 h-7 rounded flex items-center justify-center text-sm font-semibold ${
                 selected
                   ? 'bg-blue-500 text-white'
-                  : 'surface-2 text-zinc-500'
+                  : 'surface-2 text-zinc-400'
               }`}
             >
               {selected ? <CheckCircle2 className="w-4 h-4" /> : opt.key}
@@ -244,7 +244,7 @@ function DDRenderer({
 }) {
   return (
     <div className="space-y-3">
-      <p className="text-xs text-zinc-500 mb-2 font-medium uppercase tracking-wide">
+      <p className="text-xs text-zinc-400 mb-2 font-medium uppercase tracking-wide">
         Assign each item to a category
       </p>
       {data.items.map((item) => (
@@ -293,7 +293,7 @@ function BLRenderer({
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-zinc-500 mb-2 font-medium uppercase tracking-wide">
+      <p className="text-xs text-zinc-400 mb-2 font-medium uppercase tracking-wide">
         Arrange in correct order (use dropdown to set position)
       </p>
       {currentOrder.map((origIdx, pos) => (
@@ -330,19 +330,19 @@ function OBRenderer({
 }) {
   return (
     <div className="overflow-x-auto">
-      <p className="text-xs text-zinc-500 mb-3 font-medium uppercase tracking-wide">
+      <p className="text-xs text-zinc-400 mb-3 font-medium uppercase tracking-wide">
         Select one option per row
       </p>
       <table className="w-full border-collapse">
         <thead>
           <tr>
-            <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-500 py-2 px-3 border-b border-white/[0.06]">
+            <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 py-2 px-3 border-b border-white/[0.06]">
               Statement
             </th>
             {data.columns.map((col, idx) => (
               <th
                 key={idx}
-                className="text-center text-xs font-medium uppercase tracking-wider text-zinc-500 py-2 px-3 border-b border-white/[0.06] min-w-[100px]"
+                className="text-center text-xs font-medium uppercase tracking-wider text-zinc-400 py-2 px-3 border-b border-white/[0.06] min-w-[100px]"
               >
                 {col}
               </th>
@@ -412,53 +412,53 @@ function CJSRenderer({
 
             {phase.vitals && (
               <div className="rounded-lg surface-2 border border-white/[0.06] p-3">
-                <p className="text-xs font-semibold text-zinc-500 uppercase mb-2">Vitals</p>
+                <p className="text-xs font-semibold text-zinc-400 uppercase mb-2">Vitals</p>
                 <div className="grid grid-cols-4 gap-2 text-xs">
                   {phase.vitals.hr && (
                     <div>
-                      <span className="font-semibold text-zinc-500">HR:</span>{' '}
+                      <span className="font-semibold text-zinc-400">HR:</span>{' '}
                       <span className="text-zinc-300">{phase.vitals.hr}</span>
                     </div>
                   )}
                   {phase.vitals.bp && (
                     <div>
-                      <span className="font-semibold text-zinc-500">BP:</span>{' '}
+                      <span className="font-semibold text-zinc-400">BP:</span>{' '}
                       <span className="text-zinc-300">{phase.vitals.bp}</span>
                     </div>
                   )}
                   {phase.vitals.rr && (
                     <div>
-                      <span className="font-semibold text-zinc-500">RR:</span>{' '}
+                      <span className="font-semibold text-zinc-400">RR:</span>{' '}
                       <span className="text-zinc-300">{phase.vitals.rr}</span>
                     </div>
                   )}
                   {phase.vitals.spo2 && (
                     <div>
-                      <span className="font-semibold text-zinc-500">SpO2:</span>{' '}
+                      <span className="font-semibold text-zinc-400">SpO2:</span>{' '}
                       <span className="text-zinc-300">{phase.vitals.spo2}</span>
                     </div>
                   )}
                   {phase.vitals.etco2 && (
                     <div>
-                      <span className="font-semibold text-zinc-500">EtCO2:</span>{' '}
+                      <span className="font-semibold text-zinc-400">EtCO2:</span>{' '}
                       <span className="text-zinc-300">{phase.vitals.etco2}</span>
                     </div>
                   )}
                   {phase.vitals.temp && (
                     <div>
-                      <span className="font-semibold text-zinc-500">Temp:</span>{' '}
+                      <span className="font-semibold text-zinc-400">Temp:</span>{' '}
                       <span className="text-zinc-300">{phase.vitals.temp}</span>
                     </div>
                   )}
                   {phase.vitals.bgl && (
                     <div>
-                      <span className="font-semibold text-zinc-500">BGL:</span>{' '}
+                      <span className="font-semibold text-zinc-400">BGL:</span>{' '}
                       <span className="text-zinc-300">{phase.vitals.bgl}</span>
                     </div>
                   )}
                   {phase.vitals.map && (
                     <div>
-                      <span className="font-semibold text-zinc-500">MAP:</span>{' '}
+                      <span className="font-semibold text-zinc-400">MAP:</span>{' '}
                       <span className="text-zinc-300">{phase.vitals.map}</span>
                     </div>
                   )}
@@ -468,14 +468,14 @@ function CJSRenderer({
 
             {phase.history && (
               <div className="rounded-lg surface-2 border border-white/[0.06] p-3">
-                <p className="text-xs font-semibold text-zinc-500 uppercase mb-1">History</p>
+                <p className="text-xs font-semibold text-zinc-400 uppercase mb-1">History</p>
                 <p className="text-sm text-zinc-300">{phase.history}</p>
               </div>
             )}
 
             {phase.ecgFindings && (
               <div className="rounded-lg surface-2 border border-white/[0.06] p-3">
-                <p className="text-xs font-semibold text-zinc-500 uppercase mb-1">ECG Findings</p>
+                <p className="text-xs font-semibold text-zinc-400 uppercase mb-1">ECG Findings</p>
                 <p className="text-sm text-zinc-300">{phase.ecgFindings}</p>
               </div>
             )}
@@ -644,7 +644,7 @@ function QuestionNav({
                 ? 'ring-2 ring-blue-400 surface-1 text-white'
                 : answered
                 ? 'surface-2 text-zinc-300 hover:bg-zinc-700'
-                : 'surface-1 text-zinc-500 border border-white/[0.06] hover:bg-white/[0.04]'
+                : 'surface-1 text-zinc-400 border border-white/[0.06] hover:bg-white/[0.04]'
             }`}
           >
             {idx + 1}
@@ -894,8 +894,8 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-3">
-          <Loader2 className="w-8 h-8 animate-spin text-zinc-500 mx-auto" />
-          <p className="text-zinc-500 text-sm">Loading exam...</p>
+          <Loader2 className="w-8 h-8 animate-spin text-zinc-400 mx-auto" />
+          <p className="text-zinc-400 text-sm">Loading exam...</p>
         </div>
       </div>
     );
@@ -905,7 +905,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="max-w-md mx-auto text-center space-y-4">
-          <AlertTriangle className="w-10 h-10 text-zinc-500 mx-auto" />
+          <AlertTriangle className="w-10 h-10 text-zinc-400 mx-auto" />
           <p className="text-sm text-zinc-300">{error}</p>
           <button
             onClick={() => router.back()}
@@ -963,7 +963,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
               {/* Question header */}
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
-                  <span className="inline-block mb-3 text-[10px] font-medium text-zinc-500 border border-white/[0.08] rounded px-1.5 py-0.5 uppercase tracking-wider">
+                  <span className="inline-block mb-3 text-[10px] font-medium text-zinc-400 border border-white/[0.08] rounded px-1.5 py-0.5 uppercase tracking-wider">
                     {currentQuestion.item_type === 'MC' && 'Multiple Choice'}
                     {currentQuestion.item_type === 'MR' && 'Select All That Apply'}
                     {currentQuestion.item_type === 'DD' && 'Drag & Drop'}
@@ -1087,7 +1087,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
           <div className="hidden lg:block">
             <div className="sticky top-20">
               <div className="space-y-3">
-                <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wider">
+                <h3 className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
                   Questions
                 </h3>
                 <QuestionNav
@@ -1097,7 +1097,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                   current={currentIndex}
                   onJump={goToQuestion}
                 />
-                <div className="border-t border-white/[0.06] pt-3 text-[10px] text-zinc-500 space-y-1">
+                <div className="border-t border-white/[0.06] pt-3 text-[10px] text-zinc-400 space-y-1">
                   <div className="flex items-center gap-1.5">
                     <span className="w-3 h-3 rounded surface-2" />
                     Answered
@@ -1140,7 +1140,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                     {flagged.size} question{flagged.size !== 1 ? 's are' : ' is'} flagged for review.
                   </p>
                 )}
-                <p className="text-xs text-zinc-500 mt-2">
+                <p className="text-xs text-zinc-400 mt-2">
                   Time elapsed: {formatTime(elapsed)}
                 </p>
               </div>
