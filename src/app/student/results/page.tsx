@@ -3,19 +3,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { BarChart3, Eye, Clock, Trophy, AlertTriangle } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableCell,
-} from '@/components/ui/table';
 import { useUser } from '@/components/auth/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 
@@ -40,10 +27,10 @@ function formatDuration(seconds: number | null): string {
   return `${mins}m ${secs}s`;
 }
 
-function getScoreBadgeVariant(score: number | null): 'success' | 'destructive' | 'secondary' {
-  if (score == null) return 'secondary';
-  if (score >= 70) return 'success';
-  return 'destructive';
+function getScoreColor(score: number | null): string {
+  if (score == null) return 'text-slate-400';
+  if (score >= 70) return 'text-emerald-600';
+  return 'text-red-600';
 }
 
 export default function StudentResultsPage() {
@@ -60,7 +47,6 @@ export default function StudentResultsPage() {
       setLoading(true);
 
       try {
-        // 1. Fetch all exam sessions with an assessment_id
         const { data: sessionData } = await supabase
           .from('exam_sessions')
           .select('*')
@@ -74,7 +60,6 @@ export default function StudentResultsPage() {
           return;
         }
 
-        // 2. Collect unique assessment IDs and fetch their names
         const assessmentIds = [
           ...new Set(
             sessionData
@@ -96,7 +81,6 @@ export default function StudentResultsPage() {
           }
         }
 
-        // 3. Merge into display rows
         const merged: SessionWithAssessment[] = sessionData.map((s: any) => ({
           id: s.id,
           assessment_id: s.assessment_id,
@@ -121,7 +105,6 @@ export default function StudentResultsPage() {
     fetchResults();
   }, [user, authLoading, supabase]);
 
-  // Summary stats
   const completedSessions = sessions.filter((s) => s.score_percentage != null);
   const avgScore =
     completedSessions.length > 0
@@ -135,145 +118,105 @@ export default function StudentResultsPage() {
       ? Math.max(...completedSessions.map((s) => s.score_percentage ?? 0))
       : null;
 
-  // Loading state
   if (authLoading || loading) {
     return (
-      <div className="p-6 md:p-10 max-w-6xl mx-auto space-y-6">
-        <Skeleton className="h-8 w-48" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-24 rounded-lg" />
-          ))}
-        </div>
-        <Skeleton className="h-64 rounded-lg" />
+      <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-6">
+        <div className="h-8 w-32 bg-slate-100 rounded animate-pulse" />
+        <div className="h-16 bg-slate-100 rounded animate-pulse" />
+        <div className="h-64 bg-slate-100 rounded animate-pulse" />
       </div>
     );
   }
 
   return (
-    <div className="p-6 md:p-10 max-w-6xl mx-auto space-y-8">
-      {/* Page Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-[#0D1B2A] flex items-center gap-2">
-          <BarChart3 className="w-6 h-6" />
-          My Results
-        </h1>
-        <p className="text-sm text-slate-500 mt-1">
-          Review your past exam scores and performance.
-        </p>
-      </div>
+    <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-10">
+      <h1 className="text-2xl font-semibold text-slate-900">Results</h1>
 
       {/* Summary Stats */}
       {completedSessions.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card>
-            <CardContent className="p-5 flex items-center gap-4">
-              <div className="w-11 h-11 rounded-lg bg-blue-100 flex items-center justify-center">
-                <BarChart3 className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-xs text-slate-500 uppercase font-medium">Exams Taken</p>
-                <p className="text-xl font-bold text-slate-900">{completedSessions.length}</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-5 flex items-center gap-4">
-              <div className="w-11 h-11 rounded-lg bg-green-100 flex items-center justify-center">
-                <Trophy className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-xs text-slate-500 uppercase font-medium">Best Score</p>
-                <p className="text-xl font-bold text-green-600">{bestScore ?? '--'}%</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-5 flex items-center gap-4">
-              <div className="w-11 h-11 rounded-lg bg-amber-100 flex items-center justify-center">
-                <Clock className="w-5 h-5 text-amber-600" />
-              </div>
-              <div>
-                <p className="text-xs text-slate-500 uppercase font-medium">Avg Score</p>
-                <p className="text-xl font-bold text-slate-900">{avgScore ?? '--'}%</p>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="flex items-center gap-8 border border-slate-200 rounded-lg bg-white px-6 py-4">
+          <div>
+            <p className="text-xs text-slate-500 uppercase tracking-wide font-medium">Total Exams</p>
+            <p className="text-lg font-semibold text-slate-900">{completedSessions.length}</p>
+          </div>
+          <div className="w-px h-8 bg-slate-200" />
+          <div>
+            <p className="text-xs text-slate-500 uppercase tracking-wide font-medium">Average Score</p>
+            <p className="text-lg font-semibold text-slate-900">{avgScore ?? '--'}%</p>
+          </div>
+          <div className="w-px h-8 bg-slate-200" />
+          <div>
+            <p className="text-xs text-slate-500 uppercase tracking-wide font-medium">Best Score</p>
+            <p className={`text-lg font-semibold ${getScoreColor(bestScore)}`}>
+              {bestScore ?? '--'}%
+            </p>
+          </div>
         </div>
       )}
 
       {/* Results Table */}
       {sessions.length === 0 ? (
-        <Card>
-          <CardContent className="p-12 text-center">
-            <AlertTriangle className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-            <h2 className="text-lg font-semibold text-slate-900 mb-2">No Results Yet</h2>
-            <p className="text-sm text-slate-500 mb-6">
-              Once you complete an exam, your results will appear here.
-            </p>
-            <Button asChild>
-              <Link href="/student/exams">Browse Exams</Link>
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="text-center py-16">
+          <p className="text-sm text-slate-400 mb-4">No results yet.</p>
+          <Link
+            href="/student/exams"
+            className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 transition-colors"
+          >
+            Browse Exams
+          </Link>
+        </div>
       ) : (
-        <Card>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Assessment</TableHead>
-                <TableHead className="text-center">Score</TableHead>
-                <TableHead className="text-center hidden sm:table-cell">Correct</TableHead>
-                <TableHead className="hidden md:table-cell">Date</TableHead>
-                <TableHead className="text-center hidden sm:table-cell">Time</TableHead>
-                <TableHead className="text-right">Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+        <div className="border border-slate-200 rounded-lg bg-white overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-200">
+                <th className="text-left font-medium text-slate-500 px-5 py-3">Assessment</th>
+                <th className="text-left font-medium text-slate-500 px-5 py-3">Score</th>
+                <th className="text-left font-medium text-slate-500 px-5 py-3 hidden md:table-cell">Date</th>
+                <th className="text-left font-medium text-slate-500 px-5 py-3 hidden sm:table-cell">Time</th>
+                <th className="text-right font-medium text-slate-500 px-5 py-3" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
               {sessions.map((session) => {
                 const dateStr = session.completed_at || session.started_at;
 
                 return (
-                  <TableRow key={session.id}>
-                    <TableCell className="font-medium text-slate-900">
+                  <tr key={session.id}>
+                    <td className="px-5 py-3 font-medium text-slate-900">
                       {session.assessment_name}
-                    </TableCell>
-                    <TableCell className="text-center">
+                    </td>
+                    <td className="px-5 py-3">
                       {session.score_percentage != null ? (
-                        <Badge variant={getScoreBadgeVariant(session.score_percentage)}>
+                        <span className={`font-semibold ${getScoreColor(session.score_percentage)}`}>
                           {session.score_percentage}%
-                        </Badge>
+                        </span>
                       ) : (
-                        <span className="text-xs text-slate-400">--</span>
+                        <span className="text-slate-400">--</span>
                       )}
-                    </TableCell>
-                    <TableCell className="text-center text-sm text-slate-600 hidden sm:table-cell">
-                      {session.total_correct != null && session.question_count != null
-                        ? `${session.total_correct}/${session.question_count}`
-                        : '--'}
-                    </TableCell>
-                    <TableCell className="text-slate-500 text-sm hidden md:table-cell">
+                    </td>
+                    <td className="px-5 py-3 text-slate-500 hidden md:table-cell">
                       {dateStr
-                        ? format(new Date(dateStr), 'MMM d, yyyy h:mm a')
+                        ? format(new Date(dateStr), 'MMM d, yyyy')
                         : '--'}
-                    </TableCell>
-                    <TableCell className="text-center text-slate-500 text-sm hidden sm:table-cell">
+                    </td>
+                    <td className="px-5 py-3 text-slate-500 hidden sm:table-cell">
                       {formatDuration(session.time_spent_seconds)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" asChild>
-                        <Link href={`/student/results/${session.id}`}>
-                          <Eye className="w-4 h-4 mr-1" />
-                          View Details
-                        </Link>
-                      </Button>
-                    </TableCell>
-                  </TableRow>
+                    </td>
+                    <td className="px-5 py-3 text-right">
+                      <Link
+                        href={`/student/results/${session.id}`}
+                        className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
+                      >
+                        View Details &rarr;
+                      </Link>
+                    </td>
+                  </tr>
                 );
               })}
-            </TableBody>
-          </Table>
-        </Card>
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

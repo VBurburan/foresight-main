@@ -6,21 +6,6 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   ReferenceLine,
 } from 'recharts';
-import { Mail, Calendar, Award, ArrowLeft, TrendingUp, AlertTriangle, BookOpen } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Separator } from '@/components/ui/separator';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { InstructorGuard } from '@/components/auth/instructor-guard';
 import { useUser } from '@/components/auth/auth-provider';
 import { createClient } from '@/lib/supabase/client';
@@ -58,29 +43,10 @@ interface TEIPerformance {
   score: number;
 }
 
-function getScoreBadgeClasses(score: number): string {
-  if (score >= 75) return 'bg-green-100 text-green-800 border border-green-200';
-  if (score >= 60) return 'bg-yellow-100 text-yellow-800 border border-yellow-200';
-  return 'bg-red-100 text-red-800 border border-red-200';
-}
-
-function getReadinessBadge(score: number): { classes: string; label: string } {
-  if (score >= 80) return { classes: 'bg-green-100 text-green-800 border border-green-200', label: 'Ready' };
-  if (score >= 70) return { classes: 'bg-green-100 text-green-700 border border-green-200', label: 'Near Ready' };
-  if (score >= 60) return { classes: 'bg-yellow-100 text-yellow-800 border border-yellow-200', label: 'Progressing' };
-  return { classes: 'bg-red-100 text-red-800 border border-red-200', label: 'At Risk' };
-}
-
-function getBarColor(score: number): string {
-  if (score >= 75) return '#16a34a';
-  if (score >= 60) return '#eab308';
-  return '#dc2626';
-}
-
-function getProgressColor(score: number): string {
-  if (score >= 75) return 'bg-green-500';
-  if (score >= 60) return 'bg-yellow-500';
-  return 'bg-red-500';
+function scoreColor(score: number): string {
+  if (score >= 75) return 'text-emerald-600';
+  if (score >= 60) return 'text-amber-600';
+  return 'text-red-600';
 }
 
 function StudentDetailContent({ studentId }: { studentId: string }) {
@@ -227,11 +193,11 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl space-y-8">
-          <Skeleton className="h-32 rounded-lg" />
-          <Skeleton className="h-64 rounded-lg" />
-          <Skeleton className="h-64 rounded-lg" />
+      <div className="min-h-screen bg-white px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-5xl space-y-6">
+          <div className="h-6 w-48 rounded bg-slate-100 animate-pulse" />
+          <div className="h-32 rounded bg-slate-100 animate-pulse" />
+          <div className="h-64 rounded bg-slate-100 animate-pulse" />
         </div>
       </div>
     );
@@ -239,11 +205,11 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl text-center py-20">
-          <p className="text-[#334155]/60">Student not found.</p>
-          <Link href="/instructor/classes">
-            <Button className="mt-4 bg-[#b45309] hover:bg-[#92400e]">Back to Classes</Button>
+      <div className="min-h-screen bg-white px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-5xl text-center py-20">
+          <p className="text-slate-400">Student not found.</p>
+          <Link href="/instructor/classes" className="mt-4 inline-block text-sm text-slate-600 hover:text-slate-900">
+            &larr; Classes
           </Link>
         </div>
       </div>
@@ -255,311 +221,206 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
       ? Math.round(((profile.totalCorrect ?? 0) / profile.totalAnswered) * 100)
       : null;
 
-  const readiness = readinessScore !== null ? getReadinessBadge(readinessScore) : null;
-
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl space-y-8">
+    <div className="min-h-screen bg-white px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl space-y-8">
         {/* Back link */}
         <Link
           href="/instructor/classes"
-          className="inline-flex items-center gap-1.5 text-sm text-[#334155]/60 hover:text-[#1e293b] transition-colors"
+          className="text-sm text-slate-400 hover:text-slate-700 transition-colors"
         >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Classes
+          &larr; Classes
         </Link>
 
-        {/* Profile Card */}
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-          <Card className="shadow-sm">
-            <CardContent className="p-6">
-              <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-                <div className="flex gap-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#1e293b] text-white shadow-md">
-                    <span className="text-xl font-bold">
-                      {profile.fullName.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                  <div>
-                    <h1 className="font-heading text-3xl font-bold text-[#1e293b]">{profile.fullName}</h1>
-                    <p className="mt-1 text-[#334155]/70">
-                      {profile.certLevel || 'Unknown Level'} Student
-                    </p>
-                    <div className="mt-3 flex flex-wrap gap-4 text-sm text-[#334155]/60">
-                      <div className="flex items-center gap-1.5">
-                        <Mail className="h-3.5 w-3.5" />
-                        <span>{profile.email}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <Calendar className="h-3.5 w-3.5" />
-                        <span>Joined {new Date(profile.createdAt).toLocaleDateString()}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <BookOpen className="h-3.5 w-3.5" />
-                        <span>{sessions.length} session{sessions.length !== 1 ? 's' : ''}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col items-start gap-3 sm:items-end">
-                  {overallAvg !== null && (
-                    <div className="text-center sm:text-right">
-                      <p className="text-4xl font-bold text-[#b45309]">{overallAvg}%</p>
-                      <p className="text-xs text-[#334155]/50">Overall Score</p>
-                    </div>
-                  )}
-                  {readinessScore !== null && readiness && (
-                    <Badge className={`${readiness.classes} px-3 py-1.5 text-sm`}>
-                      {readiness.label}: {readinessScore}%
-                    </Badge>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+        {/* Student profile row */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-slate-900">{profile.fullName}</h1>
+            <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500">
+              <span>{profile.email}</span>
+              <span>{profile.certLevel || 'Unknown Level'}</span>
+              <span>Joined {new Date(profile.createdAt).toLocaleDateString()}</span>
+              {readinessScore !== null && (
+                <span className={scoreColor(readinessScore)}>
+                  Readiness: {readinessScore}%
+                </span>
+              )}
+            </div>
+          </div>
+          {overallAvg !== null && (
+            <div className="text-right">
+              <p className={`text-4xl font-bold ${scoreColor(overallAvg)}`}>{overallAvg}%</p>
+              <p className="text-xs text-slate-400 mt-0.5">Overall Score</p>
+            </div>
+          )}
+        </div>
 
         {/* Score Trend */}
         {scoreTrend.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            <Card className="shadow-sm">
-              <CardHeader>
-                <CardTitle className="font-heading text-[#1e293b]">Score Trend</CardTitle>
-                <CardDescription>
-                  Progress over {scoreTrend.length} completed session{scoreTrend.length !== 1 ? 's' : ''}
-                  {scoreTrend.length >= 2 && (
-                    <>
-                      {' '}&middot;{' '}
-                      {scoreTrend[scoreTrend.length - 1].score > scoreTrend[0].score
-                        ? 'Trending up'
-                        : scoreTrend[scoreTrend.length - 1].score < scoreTrend[0].score
-                        ? 'Trending down'
-                        : 'Stable'}
-                    </>
-                  )}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={scoreTrend}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis dataKey="date" tick={{ fill: '#334155', fontSize: 12 }} />
-                    <YAxis domain={[0, 100]} tick={{ fill: '#334155', fontSize: 12 }} />
-                    <ReferenceLine y={70} stroke="#16a34a" strokeDasharray="5 5" label={{ value: '70% pass', fill: '#16a34a', fontSize: 11 }} />
-                    <Tooltip
-                      contentStyle={{
-                        borderRadius: '8px',
-                        border: '1px solid #e2e8f0',
-                        boxShadow: '0 4px 6px rgba(27, 58, 92, 0.15)',
-                      }}
-                      formatter={(value: number) => [`${value}%`, 'Score']}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="score"
-                      stroke="#b45309"
-                      strokeWidth={2.5}
-                      dot={{ r: 5, fill: '#b45309', stroke: '#fff', strokeWidth: 2 }}
-                      activeDot={{ r: 7, fill: '#92400e' }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </motion.div>
+          <div>
+            <h2 className="text-sm font-semibold text-slate-900 mb-1">Score Trend</h2>
+            <p className="text-xs text-slate-400 mb-4">
+              {scoreTrend.length} session{scoreTrend.length !== 1 ? 's' : ''}
+              {scoreTrend.length >= 2 && (
+                <>
+                  {' '}&middot;{' '}
+                  {scoreTrend[scoreTrend.length - 1].score > scoreTrend[0].score
+                    ? 'Trending up'
+                    : scoreTrend[scoreTrend.length - 1].score < scoreTrend[0].score
+                    ? 'Trending down'
+                    : 'Stable'}
+                </>
+              )}
+            </p>
+            <div className="rounded-lg border border-slate-200 bg-white p-4">
+              <ResponsiveContainer width="100%" height={280}>
+                <LineChart data={scoreTrend}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  <XAxis dataKey="date" tick={{ fill: '#64748b', fontSize: 12 }} />
+                  <YAxis domain={[0, 100]} tick={{ fill: '#64748b', fontSize: 12 }} />
+                  <ReferenceLine y={70} stroke="#cbd5e1" strokeDasharray="5 5" label={{ value: '70% pass', fill: '#94a3b8', fontSize: 11 }} />
+                  <Tooltip
+                    contentStyle={{
+                      borderRadius: '6px',
+                      border: '1px solid #e2e8f0',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                    }}
+                    formatter={(value: number) => [`${value}%`, 'Score']}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="score"
+                    stroke="#334155"
+                    strokeWidth={2}
+                    dot={{ r: 4, fill: '#334155', stroke: '#fff', strokeWidth: 2 }}
+                    activeDot={{ r: 6, fill: '#1e293b' }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
         )}
 
-        {/* Domain Mastery - horizontal bars */}
+        {/* Domain Mastery */}
         {domainMastery.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <Card className="shadow-sm">
-              <CardHeader>
-                <CardTitle className="font-heading text-[#1e293b]">Domain Mastery</CardTitle>
-                <CardDescription>Performance across clinical domains -- weakest areas shown first</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {domainMastery.map((d, idx) => (
-                  <motion.div
-                    key={d.domain}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.05 }}
-                  >
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-sm font-medium text-[#334155]">{d.domain}</span>
-                      <Badge className={getScoreBadgeClasses(d.score)}>
-                        {d.score}%
-                      </Badge>
-                    </div>
-                    <div className="h-3 w-full rounded-full bg-slate-100 overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${d.score}%` }}
-                        transition={{ duration: 0.6, delay: idx * 0.1 }}
-                        className={`h-full rounded-full ${getProgressColor(d.score)}`}
-                      />
-                    </div>
-                  </motion.div>
-                ))}
-              </CardContent>
-            </Card>
-          </motion.div>
+          <div>
+            <h2 className="text-sm font-semibold text-slate-900 mb-1">Domain Mastery</h2>
+            <p className="text-xs text-slate-400 mb-4">Weakest areas shown first</p>
+            <div className="space-y-3">
+              {domainMastery.map((d) => (
+                <div key={d.domain}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm text-slate-700">{d.domain}</span>
+                    <span className={`text-sm font-semibold tabular-nums ${scoreColor(d.score)}`}>
+                      {d.score}%
+                    </span>
+                  </div>
+                  <div className="h-2 w-full rounded-full bg-slate-200 overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-slate-600 transition-all"
+                      style={{ width: `${d.score}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
 
         <div className="grid gap-8 lg:grid-cols-2">
           {/* TEI Performance */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <Card className="shadow-sm h-full">
-              <CardHeader>
-                <CardTitle className="font-heading text-[#1e293b]">TEI Performance</CardTitle>
-                <CardDescription>Scores by technology-enhanced item type</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {teiPerf.length > 0 ? (
-                  <div className="space-y-4">
-                    {teiPerf.map((item, idx) => (
-                      <div key={idx}>
-                        <div className="flex items-center justify-between mb-1.5">
-                          <span className="text-sm font-medium text-[#334155]">{item.itemType}</span>
-                          <span className="text-sm font-bold" style={{ color: getBarColor(item.score) }}>
-                            {item.score}%
-                          </span>
-                        </div>
-                        <div className="h-2.5 w-full rounded-full bg-slate-100 overflow-hidden">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: `${item.score}%` }}
-                            transition={{ duration: 0.5, delay: idx * 0.1 }}
-                            className={`h-full rounded-full ${getProgressColor(item.score)}`}
-                          />
-                        </div>
-                      </div>
-                    ))}
+          <div>
+            <h2 className="text-sm font-semibold text-slate-900 mb-1">TEI Performance</h2>
+            <p className="text-xs text-slate-400 mb-4">By item type</p>
+            {teiPerf.length > 0 ? (
+              <div className="space-y-3">
+                {teiPerf.map((item) => (
+                  <div key={item.itemType}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm text-slate-700">{item.itemType}</span>
+                      <span className={`text-sm font-semibold tabular-nums ${scoreColor(item.score)}`}>
+                        {item.score}%
+                      </span>
+                    </div>
+                    <div className="h-2 w-full rounded-full bg-slate-200 overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-slate-600 transition-all"
+                        style={{ width: `${item.score}%` }}
+                      />
+                    </div>
                   </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-8 text-[#334155]/40">
-                    <TrendingUp className="h-8 w-8 mb-2" />
-                    <p className="text-sm">No TEI data available yet.</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-slate-400 py-8 text-center">No TEI data available yet.</p>
+            )}
+          </div>
 
           {/* Error Patterns */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <Card className="shadow-sm h-full">
-              <CardHeader>
-                <CardTitle className="font-heading text-[#1e293b]">Error Patterns</CardTitle>
-                <CardDescription>Identified weakness patterns from exam analysis</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {errorPatterns.length > 0 ? (
-                  <div className="space-y-2">
-                    {errorPatterns.map((pattern, idx) => (
-                      <motion.div
-                        key={idx}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.05 }}
-                        className="flex items-start gap-3 rounded-lg border border-orange-200 bg-orange-50 px-4 py-3"
-                      >
-                        <AlertTriangle className="h-4 w-4 mt-0.5 text-[#b45309] flex-shrink-0" />
-                        <p className="text-sm text-orange-900">{pattern}</p>
-                      </motion.div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-8 text-[#334155]/40">
-                    <Award className="h-8 w-8 mb-2" />
-                    <p className="text-sm">No error patterns identified yet.</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
+          <div>
+            <h2 className="text-sm font-semibold text-slate-900 mb-1">Error Patterns</h2>
+            <p className="text-xs text-slate-400 mb-4">Identified weakness patterns</p>
+            {errorPatterns.length > 0 ? (
+              <ul className="space-y-2">
+                {errorPatterns.map((pattern, idx) => (
+                  <li key={idx} className="flex items-start gap-2 text-sm text-slate-700">
+                    <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-slate-400 flex-shrink-0" />
+                    {pattern}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-slate-400 py-8 text-center">No error patterns identified yet.</p>
+            )}
+          </div>
         </div>
 
         {/* Exam Session History */}
         {sessions.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <Card className="shadow-sm">
-              <CardHeader>
-                <CardTitle className="font-heading text-[#1e293b]">Exam Session History</CardTitle>
-                <CardDescription>
-                  Last {sessions.length} completed assessment{sessions.length !== 1 ? 's' : ''}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow className="hover:bg-transparent">
-                      <TableHead className="font-semibold text-[#1e293b]">Date</TableHead>
-                      <TableHead className="font-semibold text-[#1e293b]">Level</TableHead>
-                      <TableHead className="text-center font-semibold text-[#1e293b]">Score</TableHead>
-                      <TableHead className="text-center font-semibold text-[#1e293b]">Questions</TableHead>
-                      <TableHead className="text-right font-semibold text-[#1e293b]">Time</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {sessions.map((session, idx) => (
-                      <motion.tr
-                        key={session.id}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: idx * 0.03 }}
-                        className="border-b transition-colors hover:bg-slate-50"
-                      >
-                        <TableCell className="text-[#334155]">{session.date}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="font-mono text-xs">
-                            {session.certLevel || '--'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          {session.score != null ? (
-                            <Badge className={getScoreBadgeClasses(session.score)}>
-                              {session.score}%
-                            </Badge>
-                          ) : (
-                            <span className="text-[#334155]/40">--</span>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-center text-[#334155]">
-                          {session.questionCount ?? '--'}
-                        </TableCell>
-                        <TableCell className="text-right text-[#334155]/70">
-                          {session.timeSpent != null
-                            ? `${Math.round(session.timeSpent / 60)} min`
-                            : '--'}
-                        </TableCell>
-                      </motion.tr>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </motion.div>
+          <div>
+            <h2 className="text-sm font-semibold text-slate-900 mb-1">Exam History</h2>
+            <p className="text-xs text-slate-400 mb-4">
+              Last {sessions.length} assessment{sessions.length !== 1 ? 's' : ''}
+            </p>
+            <div className="rounded-lg border border-slate-200 overflow-hidden">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-50">
+                    <th className="text-left py-2.5 px-4 font-medium text-slate-500 text-xs uppercase tracking-wider">Date</th>
+                    <th className="text-left py-2.5 px-4 font-medium text-slate-500 text-xs uppercase tracking-wider">Level</th>
+                    <th className="text-center py-2.5 px-4 font-medium text-slate-500 text-xs uppercase tracking-wider">Score</th>
+                    <th className="text-center py-2.5 px-4 font-medium text-slate-500 text-xs uppercase tracking-wider">Questions</th>
+                    <th className="text-right py-2.5 px-4 font-medium text-slate-500 text-xs uppercase tracking-wider">Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sessions.map((session) => (
+                    <tr key={session.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                      <td className="py-2.5 px-4 text-slate-700">{session.date}</td>
+                      <td className="py-2.5 px-4 text-slate-500 font-mono text-xs">{session.certLevel || '--'}</td>
+                      <td className="py-2.5 px-4 text-center">
+                        {session.score != null ? (
+                          <span className={`font-semibold tabular-nums ${scoreColor(session.score)}`}>
+                            {session.score}%
+                          </span>
+                        ) : (
+                          <span className="text-slate-300">--</span>
+                        )}
+                      </td>
+                      <td className="py-2.5 px-4 text-center text-slate-600 tabular-nums">
+                        {session.questionCount ?? '--'}
+                      </td>
+                      <td className="py-2.5 px-4 text-right text-slate-500 tabular-nums">
+                        {session.timeSpent != null
+                          ? `${Math.round(session.timeSpent / 60)} min`
+                          : '--'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         )}
       </div>
     </div>

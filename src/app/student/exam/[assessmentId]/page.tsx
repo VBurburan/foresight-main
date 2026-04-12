@@ -13,11 +13,6 @@ import {
   Loader2,
   CheckCircle2,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
 import { useUser } from '@/components/auth/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 
@@ -90,12 +85,12 @@ interface Assessment {
 }
 
 /* Answer types per question */
-type MCAnswer = string; // selected key
-type MRAnswer = string[]; // selected keys
-type DDAnswer = Record<string, string>; // itemId -> category
-type BLAnswer = number[]; // ordered indices
-type OBAnswer = Record<string, string>; // row -> column
-type CJSAnswer = Record<string, any>; // phaseIdx_qIdx -> answer
+type MCAnswer = string;
+type MRAnswer = string[];
+type DDAnswer = Record<string, string>;
+type BLAnswer = number[];
+type OBAnswer = Record<string, string>;
+type CJSAnswer = Record<string, any>;
 
 type AnyAnswer = MCAnswer | MRAnswer | DDAnswer | BLAnswer | OBAnswer | CJSAnswer;
 
@@ -159,22 +154,22 @@ function MCRenderer({
             key={opt.key}
             type="button"
             onClick={() => onChange(opt.key)}
-            className={`w-full text-left rounded-lg border-2 px-4 py-3 transition-all flex items-start gap-3 ${
+            className={`w-full text-left rounded-lg border px-4 py-3 transition-colors flex items-start gap-3 ${
               selected
-                ? 'border-[#0D1B2A] bg-[#0D1B2A]/5 shadow-sm'
-                : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                ? 'border-slate-900 bg-slate-50'
+                : 'border-slate-200 hover:border-slate-400'
             }`}
           >
             <span
-              className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold ${
+              className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-semibold ${
                 selected
-                  ? 'bg-[#0D1B2A] text-white'
+                  ? 'bg-slate-900 text-white'
                   : 'bg-slate-100 text-slate-500'
               }`}
             >
               {opt.key}
             </span>
-            <span className={`text-sm pt-0.5 ${selected ? 'text-[#0D1B2A] font-medium' : 'text-slate-700'}`}>
+            <span className={`text-sm pt-0.5 ${selected ? 'text-slate-900 font-medium' : 'text-slate-700'}`}>
               {opt.text}
             </span>
           </button>
@@ -213,22 +208,22 @@ function MRRenderer({
             key={opt.key}
             type="button"
             onClick={() => toggle(opt.key)}
-            className={`w-full text-left rounded-lg border-2 px-4 py-3 transition-all flex items-start gap-3 ${
+            className={`w-full text-left rounded-lg border px-4 py-3 transition-colors flex items-start gap-3 ${
               selected
-                ? 'border-[#0D1B2A] bg-[#0D1B2A]/5 shadow-sm'
-                : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                ? 'border-slate-900 bg-slate-50'
+                : 'border-slate-200 hover:border-slate-400'
             }`}
           >
             <span
-              className={`flex-shrink-0 w-7 h-7 rounded flex items-center justify-center text-sm font-bold ${
+              className={`flex-shrink-0 w-7 h-7 rounded flex items-center justify-center text-sm font-semibold ${
                 selected
-                  ? 'bg-[#0D1B2A] text-white'
+                  ? 'bg-slate-900 text-white'
                   : 'bg-slate-100 text-slate-500'
               }`}
             >
               {selected ? <CheckCircle2 className="w-4 h-4" /> : opt.key}
             </span>
-            <span className={`text-sm pt-0.5 ${selected ? 'text-[#0D1B2A] font-medium' : 'text-slate-700'}`}>
+            <span className={`text-sm pt-0.5 ${selected ? 'text-slate-900 font-medium' : 'text-slate-700'}`}>
               {opt.text}
             </span>
           </button>
@@ -261,7 +256,7 @@ function DDRenderer({
           <select
             value={answer[item.id] || ''}
             onChange={(e) => onChange({ ...answer, [item.id]: e.target.value })}
-            className="rounded-md border border-slate-300 px-3 py-1.5 text-sm bg-white focus:border-[#0D1B2A] focus:ring-1 focus:ring-[#0D1B2A] outline-none"
+            className="rounded-md border border-slate-200 px-3 py-1.5 text-sm bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 outline-none"
           >
             <option value="">-- Select --</option>
             {data.categories.map((cat, idx) => (
@@ -285,12 +280,9 @@ function BLRenderer({
   answer: BLAnswer;
   onChange: (val: BLAnswer) => void;
 }) {
-  // answer is the student's ordering: answer[position] = original item index
-  // Initialize with identity order if empty
   const currentOrder = answer.length === data.items.length ? answer : data.items.map((_, i) => i);
 
   const setPosition = (itemOrigIdx: number, newPos: number) => {
-    // Remove item from current position and insert at new position
     const updated = [...currentOrder];
     const currentPos = updated.indexOf(itemOrigIdx);
     if (currentPos === -1) return;
@@ -312,7 +304,7 @@ function BLRenderer({
           <select
             value={pos}
             onChange={(e) => setPosition(origIdx, parseInt(e.target.value))}
-            className="rounded-md border border-slate-300 px-2 py-1 text-sm bg-white w-16 text-center font-mono font-bold focus:border-[#0D1B2A] focus:ring-1 focus:ring-[#0D1B2A] outline-none"
+            className="rounded-md border border-slate-200 px-2 py-1 text-sm bg-white w-16 text-center font-mono font-bold focus:border-slate-900 focus:ring-1 focus:ring-slate-900 outline-none"
           >
             {data.items.map((_, i) => (
               <option key={i} value={i}>
@@ -344,13 +336,13 @@ function OBRenderer({
       <table className="w-full border-collapse">
         <thead>
           <tr>
-            <th className="text-left text-sm font-semibold text-slate-600 py-2 px-3 border-b-2 border-slate-200">
+            <th className="text-left text-sm font-semibold text-slate-600 py-2 px-3 border-b border-slate-200">
               Statement
             </th>
             {data.columns.map((col, idx) => (
               <th
                 key={idx}
-                className="text-center text-sm font-semibold text-slate-600 py-2 px-3 border-b-2 border-slate-200 min-w-[100px]"
+                className="text-center text-sm font-semibold text-slate-600 py-2 px-3 border-b border-slate-200 min-w-[100px]"
               >
                 {col}
               </th>
@@ -366,9 +358,9 @@ function OBRenderer({
                   <button
                     type="button"
                     onClick={() => onChange({ ...answer, [row]: col })}
-                    className={`w-6 h-6 rounded-full border-2 transition-all mx-auto flex items-center justify-center ${
+                    className={`w-6 h-6 rounded-full border-2 transition-colors mx-auto flex items-center justify-center ${
                       answer[row] === col
-                        ? 'border-[#0D1B2A] bg-[#0D1B2A]'
+                        ? 'border-slate-900 bg-slate-900'
                         : 'border-slate-300 hover:border-slate-400'
                     }`}
                   >
@@ -406,17 +398,15 @@ function CJSRenderer({
   return (
     <div className="space-y-6">
       {data.phases.map((phase, phaseIdx) => (
-        <div key={phaseIdx} className="rounded-xl border border-slate-200 overflow-hidden">
+        <div key={phaseIdx} className="rounded-lg border border-slate-200 overflow-hidden">
           {/* Phase header */}
-          <div className="bg-[#0D1B2A] text-white px-4 py-2.5">
-            <h4 className="text-sm font-bold">{phase.label}</h4>
+          <div className="bg-slate-900 text-white px-4 py-2.5">
+            <h4 className="text-sm font-semibold">{phase.label}</h4>
           </div>
 
           <div className="p-4 space-y-4">
-            {/* Phase context */}
             <p className="text-sm text-slate-700 leading-relaxed">{phase.content}</p>
 
-            {/* Vitals */}
             {phase.vitals && (
               <div className="rounded-lg bg-slate-50 border border-slate-200 p-3">
                 <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Vitals</p>
@@ -473,23 +463,20 @@ function CJSRenderer({
               </div>
             )}
 
-            {/* History */}
             {phase.history && (
-              <div className="rounded-lg bg-amber-50 border border-amber-200 p-3">
-                <p className="text-xs font-semibold text-amber-700 uppercase mb-1">History</p>
-                <p className="text-sm text-amber-900">{phase.history}</p>
+              <div className="rounded-lg bg-slate-50 border border-slate-200 p-3">
+                <p className="text-xs font-semibold text-slate-500 uppercase mb-1">History</p>
+                <p className="text-sm text-slate-700">{phase.history}</p>
               </div>
             )}
 
-            {/* ECG Findings */}
             {phase.ecgFindings && (
-              <div className="rounded-lg bg-blue-50 border border-blue-200 p-3">
-                <p className="text-xs font-semibold text-blue-700 uppercase mb-1">ECG Findings</p>
-                <p className="text-sm text-blue-900">{phase.ecgFindings}</p>
+              <div className="rounded-lg bg-slate-50 border border-slate-200 p-3">
+                <p className="text-xs font-semibold text-slate-500 uppercase mb-1">ECG Findings</p>
+                <p className="text-sm text-slate-700">{phase.ecgFindings}</p>
               </div>
             )}
 
-            {/* Phase questions */}
             {phase.questions.map((pq, qIdx) => {
               const subKey = `${phaseIdx}_${qIdx}`;
               const subAnswer = answer[subKey];
@@ -509,7 +496,6 @@ function CJSRenderer({
   );
 }
 
-/** Render a CJS phase sub-question by type */
 function renderSubQuestion(
   pq: CJSPhaseQuestion,
   answer: any,
@@ -566,8 +552,6 @@ function scoreQuestion(question: ExamQuestion, answer: AnyAnswer): boolean {
   if (type === 'BL') {
     const data = opts as BLData;
     const studentOrder = answer as BLAnswer;
-    // correctOrder is an array where correctOrder[i] = the original index that should be at position i
-    // Items in data.items are already in correct order, so correctOrder is [0,1,2,...]
     const expected = data.correctOrder.length > 0 ? data.correctOrder : data.items.map((_, i) => i);
     return expected.every((v, i) => studentOrder[i] === v);
   }
@@ -581,7 +565,6 @@ function scoreQuestion(question: ExamQuestion, answer: AnyAnswer): boolean {
   return false;
 }
 
-/** Score a CJS question: returns [correct, total] for all sub-questions */
 function scoreCJSQuestion(question: ExamQuestion, answer: CJSAnswer): [number, number] {
   const cjs = question.cjs_data;
   if (!cjs || !cjs.phases) return [0, 0];
@@ -653,17 +636,17 @@ function QuestionNav({
           <button
             key={q.id}
             onClick={() => onJump(idx)}
-            className={`w-9 h-9 rounded-lg text-xs font-bold transition-all relative ${
+            className={`w-9 h-9 rounded-lg text-xs font-semibold transition-colors relative ${
               isCurrent
-                ? 'bg-[#0D1B2A] text-white shadow-md scale-110'
+                ? 'ring-2 ring-slate-900 bg-white text-slate-900'
                 : answered
-                ? 'bg-green-100 text-green-800 border border-green-300 hover:bg-green-200'
-                : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-100'
+                ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                : 'bg-white text-slate-400 border border-slate-200 hover:bg-slate-50'
             }`}
           >
             {idx + 1}
             {isFlagged && (
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full" />
+              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-orange-500 rounded-full" />
             )}
           </button>
         );
@@ -680,16 +663,13 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
   const router = useRouter();
   const { user, loading: authLoading } = useUser();
 
-  // Exam data
   const [assessment, setAssessment] = useState<Assessment | null>(null);
   const [questions, setQuestions] = useState<ExamQuestion[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Session
   const [sessionId, setSessionId] = useState<string | null>(null);
 
-  // State
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, AnyAnswer>>({});
   const [flagged, setFlagged] = useState<Set<string>>(new Set());
@@ -713,7 +693,6 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
     async function loadExam() {
       const supabase = createClient();
 
-      // Get assessment info
       const { data: assessData, error: assessErr } = await supabase
         .from('instructor_assessments')
         .select('id, name, certification_level, question_count')
@@ -728,7 +707,6 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
       setAssessment(assessData);
 
-      // Get questions
       const { data: questionData, error: qErr } = await supabase
         .from('instructor_questions')
         .select('id, display_order, item_type, stem, options, cjs_data, ecg_strip_id')
@@ -743,7 +721,6 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
       setQuestions(questionData as unknown as ExamQuestion[]);
 
-      // Create exam session
       const { data: sessionData, error: sessionErr } = await supabase
         .from('exam_sessions')
         .insert({
@@ -836,7 +813,6 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
     const supabase = createClient();
 
-    // Score all questions
     let totalCorrect = 0;
     let totalPossible = 0;
     const responses: {
@@ -877,7 +853,6 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
     const scorePercentage = totalPossible > 0 ? Math.round((totalCorrect / totalPossible) * 100) : 0;
 
-    // Update session
     await supabase
       .from('exam_sessions')
       .update({
@@ -890,12 +865,10 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
       })
       .eq('id', sessionId);
 
-    // Save responses
     if (responses.length > 0) {
       await supabase.from('session_responses').insert(responses);
     }
 
-    // Redirect to results
     router.push(`/student/results/${sessionId}`);
   };
 
@@ -916,10 +889,10 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
   if (loading || authLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <Loader2 className="w-10 h-10 animate-spin text-[#0D1B2A] mx-auto" />
-          <p className="text-slate-500 text-sm">Loading exam...</p>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <Loader2 className="w-8 h-8 animate-spin text-slate-400 mx-auto" />
+          <p className="text-slate-400 text-sm">Loading exam...</p>
         </div>
       </div>
     );
@@ -927,16 +900,17 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <Card className="max-w-md mx-auto shadow-lg">
-          <CardContent className="p-8 text-center space-y-4">
-            <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto" />
-            <p className="text-slate-700 font-medium">{error}</p>
-            <Button variant="outline" onClick={() => router.back()}>
-              Go Back
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="max-w-md mx-auto text-center space-y-4">
+          <AlertTriangle className="w-10 h-10 text-slate-400 mx-auto" />
+          <p className="text-sm text-slate-700">{error}</p>
+          <button
+            onClick={() => router.back()}
+            className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
+          >
+            &larr; Go Back
+          </button>
+        </div>
       </div>
     );
   }
@@ -946,36 +920,33 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
   /* ---- Render ---- */
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       {/* Top bar */}
-      <div className="sticky top-0 z-50 bg-[#0D1B2A] text-white shadow-lg">
+      <div className="sticky top-0 z-50 bg-white border-b border-slate-200">
         <div className="max-w-5xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <h1 className="text-sm font-bold truncate">{assessment.name}</h1>
-              {assessment.certification_level && (
-                <p className="text-xs text-slate-300">{assessment.certification_level}</p>
-              )}
+              <h1 className="text-sm font-semibold text-slate-900 truncate">{assessment.name}</h1>
             </div>
 
-            <div className="flex items-center gap-3 text-xs">
-              <Badge className="bg-white/10 text-white border-white/20 hover:bg-white/20">
-                {currentIndex + 1} / {questions.length}
-              </Badge>
-              <div className="flex items-center gap-1.5 text-slate-300">
-                <Clock className="w-3.5 h-3.5" />
-                <span className="font-mono">{formatTime(elapsed)}</span>
-              </div>
+            <div className="text-sm text-slate-500">
+              Q {currentIndex + 1} of {questions.length}
+            </div>
+
+            <div className="flex items-center gap-1.5 text-sm text-slate-500">
+              <Clock className="w-3.5 h-3.5" />
+              <span className="font-mono">{formatTime(elapsed)}</span>
             </div>
           </div>
 
           {/* Progress bar */}
-          <div className="mt-2">
-            <Progress value={progressPercent} className="h-1.5 bg-white/10" />
-          </div>
-          <div className="flex justify-between text-[10px] text-slate-400 mt-1">
-            <span>{answeredCount} of {questions.length} answered</span>
-            {flagged.size > 0 && <span>{flagged.size} flagged</span>}
+          <div className="mt-2.5">
+            <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-slate-900 rounded-full transition-all duration-300"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -985,43 +956,41 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_200px] gap-6">
           {/* Question area */}
           <div className="space-y-4">
-            <Card className="shadow-sm">
-              <CardContent className="p-6 space-y-6">
-                {/* Question header */}
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <Badge variant="secondary" className="mb-3 text-[10px] uppercase tracking-wider">
-                      {currentQuestion.item_type === 'MC' && 'Multiple Choice'}
-                      {currentQuestion.item_type === 'MR' && 'Select All That Apply'}
-                      {currentQuestion.item_type === 'DD' && 'Drag & Drop'}
-                      {currentQuestion.item_type === 'BL' && 'Ordered Response'}
-                      {currentQuestion.item_type === 'OB' && 'Matrix / Options Box'}
-                      {currentQuestion.item_type === 'CJS' && 'Clinical Judgment Scenario'}
-                    </Badge>
-                    <h2 className="text-base font-semibold text-slate-800 leading-relaxed">
-                      {currentQuestion.stem}
-                    </h2>
-                  </div>
-                  <button
-                    onClick={toggleFlag}
-                    className={`flex-shrink-0 p-2 rounded-lg transition-colors ${
-                      currentFlagged
-                        ? 'bg-orange-100 text-orange-600 hover:bg-orange-200'
-                        : 'bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-600'
-                    }`}
-                    title={currentFlagged ? 'Remove flag' : 'Flag for review'}
-                  >
-                    {currentFlagged ? <Flag className="w-5 h-5" /> : <FlagOff className="w-5 h-5" />}
-                  </button>
+            <div className="space-y-6">
+              {/* Question header */}
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1">
+                  <span className="inline-block mb-3 text-[10px] font-medium text-slate-400 border border-slate-200 rounded px-1.5 py-0.5 uppercase tracking-wider">
+                    {currentQuestion.item_type === 'MC' && 'Multiple Choice'}
+                    {currentQuestion.item_type === 'MR' && 'Select All That Apply'}
+                    {currentQuestion.item_type === 'DD' && 'Drag & Drop'}
+                    {currentQuestion.item_type === 'BL' && 'Ordered Response'}
+                    {currentQuestion.item_type === 'OB' && 'Matrix / Options Box'}
+                    {currentQuestion.item_type === 'CJS' && 'Clinical Judgment Scenario'}
+                  </span>
+                  <h2 className="text-lg font-medium text-slate-900 leading-relaxed">
+                    {currentQuestion.stem}
+                  </h2>
                 </div>
+                <button
+                  onClick={toggleFlag}
+                  className={`flex-shrink-0 p-2 rounded-lg transition-colors ${
+                    currentFlagged
+                      ? 'text-orange-500 hover:text-orange-600'
+                      : 'text-slate-300 hover:text-slate-500'
+                  }`}
+                  title={currentFlagged ? 'Remove flag' : 'Flag for review'}
+                >
+                  {currentFlagged ? <Flag className="w-5 h-5" /> : <FlagOff className="w-5 h-5" />}
+                </button>
+              </div>
 
-                {/* ECG strip */}
-                {currentQuestion.ecg_strip_id && (
-                  <ECGStripPreview stripId={currentQuestion.ecg_strip_id} />
-                )}
+              {/* ECG strip */}
+              {currentQuestion.ecg_strip_id && (
+                <ECGStripPreview stripId={currentQuestion.ecg_strip_id} />
+              )}
 
-                <Separator />
-
+              <div className="border-t border-slate-100 pt-6">
                 {/* Question content by type */}
                 {currentQuestion.item_type === 'MC' && (
                   <MCRenderer
@@ -1065,27 +1034,26 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                     onChange={updateAnswer}
                   />
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Navigation buttons */}
-            <div className="flex items-center justify-between">
-              <Button
-                variant="outline"
+            <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+              <button
                 onClick={goPrev}
                 disabled={currentIndex === 0}
-                className="gap-2"
+                className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 disabled:text-slate-300 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Previous
-              </Button>
+              </button>
 
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 {isLastQuestion ? (
-                  <Button
+                  <button
                     onClick={() => setShowConfirm(true)}
-                    className="gap-2 bg-[#0D1B2A] hover:bg-[#0D1B2A]/90 text-white"
                     disabled={submitting}
+                    className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50 transition-colors"
                   >
                     {submitting ? (
                       <>
@@ -1098,15 +1066,15 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                         Submit Exam
                       </>
                     )}
-                  </Button>
+                  </button>
                 ) : (
-                  <Button
+                  <button
                     onClick={goNext}
-                    className="gap-2 bg-[#0D1B2A] hover:bg-[#0D1B2A]/90 text-white"
+                    className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 transition-colors"
                   >
                     Next
                     <ChevronRight className="w-4 h-4" />
-                  </Button>
+                  </button>
                 )}
               </div>
             </div>
@@ -1114,36 +1082,33 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
           {/* Question navigation sidebar */}
           <div className="hidden lg:block">
-            <div className="sticky top-28">
-              <Card className="shadow-sm">
-                <CardContent className="p-4 space-y-3">
-                  <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                    Questions
-                  </h3>
-                  <QuestionNav
-                    questions={questions}
-                    answers={answers}
-                    flagged={flagged}
-                    current={currentIndex}
-                    onJump={goToQuestion}
-                  />
-                  <Separator />
-                  <div className="text-[10px] text-slate-500 space-y-1">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-3 h-3 rounded bg-green-100 border border-green-300" />
-                      Answered
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-3 h-3 rounded bg-white border border-slate-200" />
-                      Unanswered
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-3 h-3 rounded bg-orange-500" />
-                      Flagged
-                    </div>
+            <div className="sticky top-20">
+              <div className="space-y-3">
+                <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                  Questions
+                </h3>
+                <QuestionNav
+                  questions={questions}
+                  answers={answers}
+                  flagged={flagged}
+                  current={currentIndex}
+                  onJump={goToQuestion}
+                />
+                <div className="border-t border-slate-100 pt-3 text-[10px] text-slate-400 space-y-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-3 h-3 rounded bg-slate-100" />
+                    Answered
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-3 h-3 rounded bg-white border border-slate-200" />
+                    Unanswered
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-orange-500" />
+                    Flagged
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1151,15 +1116,10 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
       {/* Confirmation dialog overlay */}
       {showConfirm && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <Card className="max-w-md w-full shadow-2xl">
-            <CardContent className="p-6 space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                  <AlertTriangle className="w-5 h-5 text-amber-600" />
-                </div>
-                <h3 className="text-lg font-bold text-slate-800">Submit Exam?</h3>
-              </div>
+        <div className="fixed inset-0 z-[100] bg-black/40 flex items-center justify-center p-4">
+          <div className="max-w-md w-full bg-white rounded-lg border border-slate-200 shadow-lg">
+            <div className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold text-slate-900">Submit Exam?</h3>
 
               <div className="space-y-2 text-sm text-slate-600">
                 <p>
@@ -1167,46 +1127,42 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                   <strong>{questions.length}</strong> questions.
                 </p>
                 {answeredCount < questions.length && (
-                  <p className="text-amber-600 font-medium">
+                  <p className="text-red-600">
                     {questions.length - answeredCount} question
                     {questions.length - answeredCount !== 1 ? 's are' : ' is'} unanswered.
                   </p>
                 )}
                 {flagged.size > 0 && (
-                  <p className="text-orange-600 font-medium">
+                  <p className="text-orange-600">
                     {flagged.size} question{flagged.size !== 1 ? 's are' : ' is'} flagged for review.
                   </p>
                 )}
-                <p className="text-slate-500 text-xs mt-2">
+                <p className="text-xs text-slate-400 mt-2">
                   Time elapsed: {formatTime(elapsed)}
                 </p>
               </div>
 
-              <Separator />
-
-              <div className="flex gap-3">
-                <Button
-                  variant="outline"
-                  className="flex-1"
+              <div className="flex gap-3 pt-2 border-t border-slate-100">
+                <button
+                  className="flex-1 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
                   onClick={() => setShowConfirm(false)}
                 >
                   Keep Working
-                </Button>
-                <Button
-                  className="flex-1 bg-[#0D1B2A] hover:bg-[#0D1B2A]/90 text-white"
+                </button>
+                <button
+                  className="flex-1 rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50 transition-colors"
                   onClick={handleSubmit}
                   disabled={submitting}
                 >
                   {submitting ? (
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    <Loader2 className="w-4 h-4 animate-spin mx-auto" />
                   ) : (
-                    <Send className="w-4 h-4 mr-2" />
+                    'Submit'
                   )}
-                  Submit
-                </Button>
+                </button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       )}
     </div>

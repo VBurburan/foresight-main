@@ -1,29 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import {
   Plus,
-  FileText,
   GripVertical,
   Trash2,
-  Sparkles,
   ChevronDown,
   ChevronUp,
   Save,
   Eye,
-  ArrowLeft,
   CheckCircle2,
   X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import {
   Select,
   SelectContent,
@@ -135,7 +128,7 @@ function ECGPreviewInline({ stripId }: { stripId: string }) {
   }, [stripId]);
   if (!strip) return null;
   return (
-    <div className="rounded-lg border border-slate-200 bg-slate-50 overflow-hidden mb-4">
+    <div className="rounded-lg border border-slate-200 overflow-hidden mb-4">
       <img src={strip.image_url} alt="ECG Strip" className="w-full h-auto object-contain" />
       <p className="text-[9px] text-slate-300 px-2 py-1">PhysioNet - CC BY 4.0</p>
     </div>
@@ -413,22 +406,17 @@ function TestBuilderContent() {
   const filledCount = questions.filter((q) => q.stem.trim() !== '').length;
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1e293b]">
-              <FileText className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-semibold text-slate-900">Test Builder</h1>
-              <p className="text-sm text-slate-500">Create assessments with real TEI formats</p>
-            </div>
+          <div>
+            <h1 className="text-2xl font-semibold text-slate-900">Test Builder</h1>
+            <p className="text-sm text-slate-500 mt-0.5">Create assessments with real TEI formats</p>
           </div>
           <div className="flex items-center gap-2">
             {saveMessage && (
-              <span className="text-xs text-green-600 font-medium">{saveMessage}</span>
+              <span className="text-xs text-emerald-600 font-medium">{saveMessage}</span>
             )}
             {questions.length > 0 && (
               <Button variant="ghost" size="sm" onClick={handleClearDraft} className="text-slate-400 hover:text-red-500 text-xs">
@@ -440,13 +428,14 @@ function TestBuilderContent() {
               size="sm"
               disabled={questions.length === 0}
               onClick={() => setPreviewIndex(0)}
+              className="border-slate-200"
             >
               <Eye className="h-4 w-4 mr-1.5" />
               Preview
             </Button>
             <Button
               size="sm"
-              className="bg-[#1e293b] hover:bg-slate-700 text-white"
+              className="bg-slate-900 hover:bg-slate-800 text-white"
               disabled={questions.length === 0 || saving}
               onClick={handleSaveDraft}
             >
@@ -456,93 +445,81 @@ function TestBuilderContent() {
           </div>
         </div>
 
-        <Separator />
-
         {/* Assessment Config */}
-        <Card>
-          <CardContent className="p-6">
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="assessment-name" className="text-sm font-medium text-slate-700">
-                  Assessment Name
-                </Label>
-                <Input
-                  id="assessment-name"
-                  value={assessmentName}
-                  onChange={(e) => setAssessmentName(e.target.value)}
-                  placeholder="e.g., Cardiology Midterm — Spring 2026"
-                  className="border-slate-200"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-sm font-medium text-slate-700">Certification Level</Label>
-                <Select value={certLevel} onValueChange={setCertLevel}>
-                  <SelectTrigger className="border-slate-200">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="EMT">EMT</SelectItem>
-                    <SelectItem value="AEMT">AEMT</SelectItem>
-                    <SelectItem value="Paramedic">Paramedic</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <label htmlFor="assessment-name" className="text-xs uppercase tracking-wider text-slate-400 font-medium">
+              Assessment Name
+            </label>
+            <Input
+              id="assessment-name"
+              value={assessmentName}
+              onChange={(e) => setAssessmentName(e.target.value)}
+              placeholder="e.g., Cardiology Midterm — Spring 2026"
+              className="border-slate-200"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs uppercase tracking-wider text-slate-400 font-medium">Certification Level</label>
+            <Select value={certLevel} onValueChange={setCertLevel}>
+              <SelectTrigger className="border-slate-200">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="EMT">EMT</SelectItem>
+                <SelectItem value="AEMT">AEMT</SelectItem>
+                <SelectItem value="Paramedic">Paramedic</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
         {/* Question Count Summary */}
         {questions.length > 0 && (
-          <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-3">
-            <div className="flex items-center gap-4 text-sm text-slate-600">
-              <span className="font-medium text-slate-900">{questions.length} question{questions.length !== 1 ? 's' : ''}</span>
+          <div className="flex items-center justify-between py-2 text-sm">
+            <div className="flex items-center gap-3 text-slate-600">
+              <span className="font-semibold text-slate-900">{questions.length} question{questions.length !== 1 ? 's' : ''}</span>
               <span className="text-slate-300">|</span>
               <span>{filledCount} completed</span>
               <span className="text-slate-300">|</span>
               <span>{questions.length - filledCount} blank</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              {(['MC', 'MR', 'DD', 'BL', 'OB', 'CJS'] as TEIType[]).map((type) => {
-                const count = questions.filter((q) => q.type === type).length;
-                if (count === 0) return null;
-                return (
-                  <Badge
-                    key={type}
-                    variant="outline"
-                    className="text-[10px] font-mono border-slate-200 text-slate-500"
-                  >
-                    {type} {count}
-                  </Badge>
-                );
-              })}
-            </div>
+            <span className="text-xs text-slate-500 font-mono tabular-nums">
+              {(['MC', 'MR', 'DD', 'BL', 'OB', 'CJS'] as TEIType[])
+                .map((type) => {
+                  const count = questions.filter((q) => q.type === type).length;
+                  return count > 0 ? `${type} ${count}` : null;
+                })
+                .filter(Boolean)
+                .join(' \u00b7 ')}
+            </span>
           </div>
         )}
 
         {/* Question Cards */}
         <div className="space-y-3">
           {questions.map((q, idx) => (
-            <Card key={q.id} className="border-slate-200">
-              {/* Card Header */}
+            <div key={q.id} className="rounded-lg border border-slate-200 bg-white">
+              {/* Collapsed row */}
               <div
                 className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-slate-50 transition-colors"
                 onClick={() => toggleExpand(q.id)}
               >
-                <div className="flex items-center gap-3">
-                  <GripVertical className="h-4 w-4 text-slate-300" />
-                  <span className="text-sm font-medium text-slate-500">Q{idx + 1}</span>
-                  <Badge variant="outline" className="text-[10px] font-mono border-slate-200">
+                <div className="flex items-center gap-3 min-w-0">
+                  <GripVertical className="h-4 w-4 text-slate-300 flex-shrink-0" />
+                  <span className="text-sm font-medium text-slate-400 tabular-nums flex-shrink-0">Q{idx + 1}</span>
+                  <span className="text-xs font-mono text-slate-500 border border-slate-200 rounded px-1.5 py-0.5 flex-shrink-0">
                     {q.type}
-                  </Badge>
+                  </span>
                   {q.stem ? (
-                    <span className="text-sm text-slate-700 truncate max-w-[300px]">{q.stem}</span>
+                    <span className="text-sm text-slate-700 truncate">{q.stem}</span>
                   ) : (
                     <span className="text-sm text-slate-400 italic">Blank — click to edit</span>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-shrink-0 ml-2">
                   {q.stem && (
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                   )}
                   <button
                     onClick={(e) => { e.stopPropagation(); removeQuestion(q.id); }}
@@ -560,11 +537,11 @@ function TestBuilderContent() {
 
               {/* Expanded Form */}
               {q.expanded && (
-                <CardContent className="px-4 pb-4 pt-0 border-t border-slate-100">
+                <div className="px-4 pb-4 pt-0 border-t border-slate-100">
                   <div className="space-y-4 mt-4">
                     {/* Stem */}
                     <div className="space-y-1.5">
-                      <Label className="text-xs font-medium text-slate-600">Question Stem</Label>
+                      <label className="text-xs uppercase tracking-wider text-slate-400 font-medium">Question Stem</label>
                       <Textarea
                         value={q.stem}
                         onChange={(e) => updateQuestion(q.id, 'stem', e.target.value)}
@@ -574,22 +551,22 @@ function TestBuilderContent() {
                       />
                     </div>
 
-                    {/* ── MC Editor ── */}
+                    {/* MC Editor */}
                     {q.type === 'MC' && (() => {
                       const d = q.data as MCData;
                       return (
                         <div className="space-y-2">
-                          <Label className="text-xs font-medium text-slate-600">Options — click the radio to mark correct</Label>
+                          <label className="text-xs uppercase tracking-wider text-slate-400 font-medium">Options — click the radio to mark correct</label>
                           {d.options.map((opt, oi) => (
                             <div key={opt.key} className="flex items-center gap-2">
                               <button
                                 type="button"
                                 onClick={() => updateData(q.id, (prev: MCData) => ({ ...prev, correctKey: opt.key }))}
                                 className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                                  d.correctKey === opt.key ? 'border-green-500 bg-green-500' : 'border-slate-300 hover:border-slate-400'
+                                  d.correctKey === opt.key ? 'border-emerald-500 ring-2 ring-emerald-200 bg-white' : 'border-slate-300 hover:border-slate-400'
                                 }`}
                               >
-                                {d.correctKey === opt.key && <CheckCircle2 className="w-4 h-4 text-white" />}
+                                {d.correctKey === opt.key && <div className="w-3 h-3 rounded-full bg-emerald-500" />}
                               </button>
                               <span className="text-xs font-mono text-slate-400 w-4">{opt.key}.</span>
                               <Input
@@ -607,12 +584,12 @@ function TestBuilderContent() {
                       );
                     })()}
 
-                    {/* ── MR Editor ── */}
+                    {/* MR Editor */}
                     {q.type === 'MR' && (() => {
                       const d = q.data as MRData;
                       return (
                         <div className="space-y-2">
-                          <Label className="text-xs font-medium text-slate-600">Options — check all correct answers</Label>
+                          <label className="text-xs uppercase tracking-wider text-slate-400 font-medium">Options — check all correct answers</label>
                           {d.options.map((opt, oi) => (
                             <div key={opt.key} className="flex items-center gap-2">
                               <button
@@ -624,10 +601,10 @@ function TestBuilderContent() {
                                     : [...prev.correctKeys, opt.key],
                                 }))}
                                 className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                                  d.correctKeys.includes(opt.key) ? 'border-green-500 bg-green-500' : 'border-slate-300 hover:border-slate-400'
+                                  d.correctKeys.includes(opt.key) ? 'border-emerald-500 ring-2 ring-emerald-200 bg-white' : 'border-slate-300 hover:border-slate-400'
                                 }`}
                               >
-                                {d.correctKeys.includes(opt.key) && <CheckCircle2 className="w-3 h-3 text-white" />}
+                                {d.correctKeys.includes(opt.key) && <CheckCircle2 className="w-3 h-3 text-emerald-500" />}
                               </button>
                               <span className="text-xs font-mono text-slate-400 w-4">{opt.key}.</span>
                               <Input
@@ -642,23 +619,23 @@ function TestBuilderContent() {
                             </div>
                           ))}
                           {d.correctKeys.length > 0 && (
-                            <p className="text-[10px] text-green-600">{d.correctKeys.length} correct answer{d.correctKeys.length !== 1 ? 's' : ''} selected</p>
+                            <p className="text-[10px] text-emerald-600">{d.correctKeys.length} correct answer{d.correctKeys.length !== 1 ? 's' : ''} selected</p>
                           )}
                         </div>
                       );
                     })()}
 
-                    {/* ── DD Editor ── */}
+                    {/* DD Editor */}
                     {q.type === 'DD' && (() => {
                       const d = q.data as DDData;
                       return (
                         <div className="space-y-4">
                           {/* Categories */}
                           <div className="space-y-2">
-                            <Label className="text-xs font-medium text-slate-600">Categories (drop zones)</Label>
+                            <label className="text-xs uppercase tracking-wider text-slate-400 font-medium">Categories (drop zones)</label>
                             {d.categories.map((cat, ci) => (
                               <div key={ci} className="flex items-center gap-2">
-                                <span className="text-[10px] font-mono text-white bg-[#1B4F72] rounded px-1.5 py-0.5">Category {ci + 1}</span>
+                                <span className="text-[10px] font-mono text-slate-500 border border-slate-200 rounded px-1.5 py-0.5">Cat {ci + 1}</span>
                                 <Input
                                   value={cat}
                                   onChange={(e) => updateData(q.id, (prev: DDData) => ({
@@ -677,12 +654,12 @@ function TestBuilderContent() {
                             ))}
                             <Button variant="outline" size="sm" onClick={() => updateData(q.id, (prev: DDData) => ({
                               ...prev, categories: [...prev.categories, ''],
-                            }))} className="text-xs"><Plus className="h-3 w-3 mr-1" />Add Category</Button>
+                            }))} className="text-xs border-slate-200"><Plus className="h-3 w-3 mr-1" />Add Category</Button>
                           </div>
 
                           {/* Items */}
                           <div className="space-y-2">
-                            <Label className="text-xs font-medium text-slate-600">Draggable Items — select which category each belongs to</Label>
+                            <label className="text-xs uppercase tracking-wider text-slate-400 font-medium">Draggable Items — select which category each belongs to</label>
                             {d.items.map((item, ii) => (
                               <div key={item.id} className="flex items-center gap-2">
                                 <Input
@@ -716,23 +693,23 @@ function TestBuilderContent() {
                             ))}
                             <Button variant="outline" size="sm" onClick={() => updateData(q.id, (prev: DDData) => ({
                               ...prev, items: [...prev.items, { id: `item${prev.items.length + 1}`, text: '' }],
-                            }))} className="text-xs"><Plus className="h-3 w-3 mr-1" />Add Item</Button>
+                            }))} className="text-xs border-slate-200"><Plus className="h-3 w-3 mr-1" />Add Item</Button>
                           </div>
                         </div>
                       );
                     })()}
 
-                    {/* ── BL Editor ── */}
+                    {/* BL Editor */}
                     {q.type === 'BL' && (() => {
                       const d = q.data as BLData;
                       return (
                         <div className="space-y-2">
-                          <Label className="text-xs font-medium text-slate-600">
+                          <label className="text-xs uppercase tracking-wider text-slate-400 font-medium">
                             Enter items in the CORRECT order — they will be shuffled when delivered to students
-                          </Label>
+                          </label>
                           {d.items.map((item, ii) => (
                             <div key={ii} className="flex items-center gap-2">
-                              <span className="text-xs font-mono text-white bg-green-600 rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0">{ii + 1}</span>
+                              <span className="text-xs font-mono text-slate-400 w-5 text-center flex-shrink-0">{ii + 1}</span>
                               <Input
                                 value={item}
                                 onChange={(e) => updateData(q.id, (prev: BLData) => ({
@@ -751,19 +728,19 @@ function TestBuilderContent() {
                           ))}
                           <Button variant="outline" size="sm" onClick={() => updateData(q.id, (prev: BLData) => ({
                             ...prev, items: [...prev.items, ''],
-                          }))} className="text-xs"><Plus className="h-3 w-3 mr-1" />Add Step</Button>
+                          }))} className="text-xs border-slate-200"><Plus className="h-3 w-3 mr-1" />Add Step</Button>
                         </div>
                       );
                     })()}
 
-                    {/* ── OB Editor (Matrix / Options Box) ── */}
+                    {/* OB Editor (Matrix / Options Box) */}
                     {q.type === 'OB' && (() => {
                       const d = q.data as OBData;
                       return (
                         <div className="space-y-4">
                           {/* Column headers */}
                           <div className="space-y-2">
-                            <Label className="text-xs font-medium text-slate-600">Column Headers</Label>
+                            <label className="text-xs uppercase tracking-wider text-slate-400 font-medium">Column Headers</label>
                             <div className="flex gap-2 flex-wrap">
                               {d.columns.map((col, ci) => (
                                 <div key={ci} className="flex items-center gap-1">
@@ -785,13 +762,13 @@ function TestBuilderContent() {
                               ))}
                               <Button variant="outline" size="sm" onClick={() => updateData(q.id, (prev: OBData) => ({
                                 ...prev, columns: [...prev.columns, ''],
-                              }))} className="text-xs h-9"><Plus className="h-3 w-3 mr-1" />Col</Button>
+                              }))} className="text-xs h-9 border-slate-200"><Plus className="h-3 w-3 mr-1" />Col</Button>
                             </div>
                           </div>
 
                           {/* Row statements with correct answer selectors */}
                           <div className="space-y-2">
-                            <Label className="text-xs font-medium text-slate-600">Row Statements — select the correct column for each</Label>
+                            <label className="text-xs uppercase tracking-wider text-slate-400 font-medium">Row Statements — select the correct column for each</label>
                             {d.rows.map((row, ri) => (
                               <div key={ri} className="flex items-center gap-2">
                                 <Input
@@ -825,12 +802,12 @@ function TestBuilderContent() {
                             ))}
                             <Button variant="outline" size="sm" onClick={() => updateData(q.id, (prev: OBData) => ({
                               ...prev, rows: [...prev.rows, ''],
-                            }))} className="text-xs"><Plus className="h-3 w-3 mr-1" />Add Row</Button>
+                            }))} className="text-xs border-slate-200"><Plus className="h-3 w-3 mr-1" />Add Row</Button>
                           </div>
 
                           {/* Live preview */}
                           {d.columns.some(c => c.trim()) && d.rows.some(r => r.trim()) && (
-                            <div className="rounded-lg border border-slate-200 bg-white overflow-hidden">
+                            <div className="rounded-lg border border-slate-200 overflow-hidden">
                               <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wide px-3 pt-2">Preview</p>
                               <table className="w-full text-xs mt-1">
                                 <thead>
@@ -848,7 +825,7 @@ function TestBuilderContent() {
                                       {d.columns.filter(c => c.trim()).map((col) => (
                                         <td key={col} className="text-center px-3 py-1.5">
                                           <div className={`w-4 h-4 rounded-full border-2 mx-auto ${
-                                            d.correctAnswers[row] === col ? 'border-green-500 bg-green-500' : 'border-slate-200'
+                                            d.correctAnswers[row] === col ? 'border-slate-700 bg-slate-700' : 'border-slate-200'
                                           }`} />
                                         </td>
                                       ))}
@@ -862,20 +839,20 @@ function TestBuilderContent() {
                       );
                     })()}
 
-                    {/* ── CJS Editor ── */}
+                    {/* CJS Editor */}
                     {q.type === 'CJS' && (() => {
                       const d = q.data as CJSData;
                       return (
                         <div className="space-y-4">
-                          <Label className="text-xs font-medium text-slate-600">
+                          <label className="text-xs uppercase tracking-wider text-slate-400 font-medium">
                             Clinical Judgment Scenario — each phase reveals new patient info and has associated questions
-                          </Label>
+                          </label>
                           {d.phases.map((phase, pi) => (
-                            <div key={pi} className="rounded-lg border border-slate-200 bg-slate-50/50 p-4 space-y-3">
+                            <div key={pi} className="rounded-lg border border-slate-200 p-4 space-y-3">
                               {/* Phase header */}
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                  <span className="text-[10px] font-mono text-white bg-[#1B4F72] rounded px-2 py-0.5">Phase {pi + 1}</span>
+                                  <span className="text-[10px] font-mono text-slate-500 border border-slate-200 rounded px-2 py-0.5">Phase {pi + 1}</span>
                                   <Input
                                     value={phase.label}
                                     onChange={(e) => updateData(q.id, (prev: CJSData) => ({
@@ -895,7 +872,7 @@ function TestBuilderContent() {
 
                               {/* Phase context */}
                               <div>
-                                <Label className="text-[10px] font-medium text-slate-500 uppercase tracking-wide">Patient Information</Label>
+                                <label className="text-[10px] font-medium text-slate-400 uppercase tracking-wide">Patient Information</label>
                                 <Textarea
                                   value={phase.content}
                                   onChange={(e) => updateData(q.id, (prev: CJSData) => ({
@@ -904,7 +881,7 @@ function TestBuilderContent() {
                                   }))}
                                   placeholder={
                                     pi === 0 ? 'Dispatch: 72M, chest pain, hx of MI, on aspirin and metoprolol...'
-                                    : pi === 1 ? 'On scene: VS HR 110, BP 88/60, SpO₂ 94%, diaphoretic, JVD present...'
+                                    : pi === 1 ? 'On scene: VS HR 110, BP 88/60, SpO\u2082 94%, diaphoretic, JVD present...'
                                     : 'Post-treatment: after NTG and IV fluid bolus, BP now 96/64...'
                                   }
                                   rows={2}
@@ -915,7 +892,7 @@ function TestBuilderContent() {
                               {/* Vitals (Scene/Post-Scene phases) */}
                               {pi >= 1 && (
                                 <div>
-                                  <Label className="text-[10px] font-medium text-slate-500 uppercase tracking-wide">Vitals (optional)</Label>
+                                  <label className="text-[10px] font-medium text-slate-400 uppercase tracking-wide">Vitals (optional)</label>
                                   <div className="grid grid-cols-4 gap-1.5 mt-1">
                                     {[
                                       { key: 'hr', label: 'HR', placeholder: '110/min' },
@@ -951,7 +928,7 @@ function TestBuilderContent() {
                               {pi >= 1 && (
                                 <div className="grid grid-cols-2 gap-2">
                                   <div>
-                                    <Label className="text-[10px] font-medium text-slate-500 uppercase tracking-wide">History / Meds</Label>
+                                    <label className="text-[10px] font-medium text-slate-400 uppercase tracking-wide">History / Meds</label>
                                     <Input
                                       value={phase.history || ''}
                                       onChange={(e) => updateData(q.id, (prev: CJSData) => ({
@@ -963,7 +940,7 @@ function TestBuilderContent() {
                                     />
                                   </div>
                                   <div>
-                                    <Label className="text-[10px] font-medium text-slate-500 uppercase tracking-wide">ECG Findings</Label>
+                                    <label className="text-[10px] font-medium text-slate-400 uppercase tracking-wide">ECG Findings</label>
                                     <Input
                                       value={phase.ecgFindings || ''}
                                       onChange={(e) => updateData(q.id, (prev: CJSData) => ({
@@ -979,9 +956,9 @@ function TestBuilderContent() {
 
                               {/* Phase questions */}
                               <div className="space-y-2">
-                                <Label className="text-[10px] font-medium text-slate-500 uppercase tracking-wide">
+                                <label className="text-[10px] font-medium text-slate-400 uppercase tracking-wide">
                                   Questions for this phase ({phase.questions.length})
-                                </Label>
+                                </label>
                                 {phase.questions.map((pq, qi) => (
                                   <div key={qi} className="rounded border border-slate-200 bg-white p-3 space-y-2">
                                     <div className="flex items-center justify-between">
@@ -1055,10 +1032,10 @@ function TestBuilderContent() {
                                                     ...prev, correctKeys: prev.correctKeys.includes(opt.key)
                                                       ? prev.correctKeys.filter((k: string) => k !== opt.key)
                                                       : [...prev.correctKeys, opt.key],
-                                                  }))} className={`w-4 h-4 rounded border flex-shrink-0 ${(d as MRData).correctKeys?.includes(opt.key) ? 'border-green-500 bg-green-500' : 'border-slate-300'}`} />
+                                                  }))} className={`w-4 h-4 rounded border-2 flex-shrink-0 ${(d as MRData).correctKeys?.includes(opt.key) ? 'border-emerald-500 ring-1 ring-emerald-200' : 'border-slate-300'}`} />
                                                 ) : (
                                                   <button type="button" onClick={() => updatePQ((prev: MCData) => ({ ...prev, correctKey: opt.key }))}
-                                                    className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${(d as MCData).correctKey === opt.key ? 'border-green-500 bg-green-500' : 'border-slate-300'}`} />
+                                                    className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${(d as MCData).correctKey === opt.key ? 'border-emerald-500 ring-1 ring-emerald-200' : 'border-slate-300'}`} />
                                                 )}
                                                 <span className="text-[10px] font-mono text-slate-400">{opt.key}.</span>
                                                 <Input value={opt.text} onChange={(e) => updatePQ((prev: any) => ({
@@ -1096,7 +1073,7 @@ function TestBuilderContent() {
                                             ))}
                                             <Button variant="outline" size="sm" onClick={() => updatePQ((prev: DDData) => ({
                                               ...prev, items: [...prev.items, { id: `i${prev.items.length + 1}`, text: '' }],
-                                            }))} className="text-[10px] h-6"><Plus className="h-2.5 w-2.5 mr-1" />Item</Button>
+                                            }))} className="text-[10px] h-6 border-slate-200"><Plus className="h-2.5 w-2.5 mr-1" />Item</Button>
                                           </div>
                                         );
                                       }
@@ -1108,7 +1085,7 @@ function TestBuilderContent() {
                                             <p className="text-[10px] text-slate-500 font-medium">Steps in correct order:</p>
                                             {d.items.map((item, ii) => (
                                               <div key={ii} className="flex items-center gap-1.5">
-                                                <span className="text-[10px] font-mono text-white bg-green-600 rounded-full w-4 h-4 flex items-center justify-center flex-shrink-0">{ii + 1}</span>
+                                                <span className="text-[10px] font-mono text-slate-400 w-4 text-center flex-shrink-0">{ii + 1}</span>
                                                 <Input value={item} onChange={(e) => updatePQ((prev: BLData) => ({
                                                   ...prev, items: prev.items.map((it, i) => i === ii ? e.target.value : it),
                                                 }))} placeholder={`Step ${ii + 1}`} className="border-slate-200 text-xs h-8 flex-1" />
@@ -1116,7 +1093,7 @@ function TestBuilderContent() {
                                             ))}
                                             <Button variant="outline" size="sm" onClick={() => updatePQ((prev: BLData) => ({
                                               ...prev, items: [...prev.items, ''],
-                                            }))} className="text-[10px] h-6"><Plus className="h-2.5 w-2.5 mr-1" />Step</Button>
+                                            }))} className="text-[10px] h-6 border-slate-200"><Plus className="h-2.5 w-2.5 mr-1" />Step</Button>
                                           </div>
                                         );
                                       }
@@ -1134,7 +1111,7 @@ function TestBuilderContent() {
                                               ))}
                                               <Button variant="outline" size="sm" onClick={() => updatePQ((prev: OBData) => ({
                                                 ...prev, columns: [...prev.columns, ''],
-                                              }))} className="text-[10px] h-8"><Plus className="h-2.5 w-2.5" /></Button>
+                                              }))} className="text-[10px] h-8 border-slate-200"><Plus className="h-2.5 w-2.5" /></Button>
                                             </div>
                                             <p className="text-[10px] text-slate-500 font-medium">Rows — select correct column:</p>
                                             {d.rows.map((row, ri) => (
@@ -1152,7 +1129,7 @@ function TestBuilderContent() {
                                             ))}
                                             <Button variant="outline" size="sm" onClick={() => updatePQ((prev: OBData) => ({
                                               ...prev, rows: [...prev.rows, ''],
-                                            }))} className="text-[10px] h-6"><Plus className="h-2.5 w-2.5 mr-1" />Row</Button>
+                                            }))} className="text-[10px] h-6 border-slate-200"><Plus className="h-2.5 w-2.5 mr-1" />Row</Button>
                                           </div>
                                         );
                                       }
@@ -1178,13 +1155,13 @@ function TestBuilderContent() {
                                     ...p,
                                     questions: [...p.questions, newPhaseQuestion('MC')],
                                   } : p),
-                                }))} className="text-xs h-7"><Plus className="h-3 w-3 mr-1" />Add Question to Phase</Button>
+                                }))} className="text-xs h-7 border-slate-200"><Plus className="h-3 w-3 mr-1" />Add Question to Phase</Button>
                               </div>
                             </div>
                           ))}
                           <Button variant="outline" size="sm" onClick={() => updateData(q.id, (prev: CJSData) => ({
                             ...prev, phases: [...prev.phases, { label: `Phase ${prev.phases.length + 1}`, content: '', questions: [newPhaseQuestion('MC')] }],
-                          }))} className="text-xs"><Plus className="h-3 w-3 mr-1" />Add Phase</Button>
+                          }))} className="text-xs border-slate-200"><Plus className="h-3 w-3 mr-1" />Add Phase</Button>
                         </div>
                       );
                     })()}
@@ -1192,7 +1169,7 @@ function TestBuilderContent() {
                     {/* ECG Strip Attachment */}
                     {q.type !== 'CJS' && (
                       <div className="space-y-1.5">
-                        <Label className="text-xs font-medium text-slate-600">ECG Strip (optional)</Label>
+                        <label className="text-xs uppercase tracking-wider text-slate-400 font-medium">ECG Strip (optional)</label>
                         <ECGStripPicker
                           onSelect={(strip) => updateQuestion(q.id, 'ecgStripId' as any, strip?.id || null)}
                         />
@@ -1201,7 +1178,7 @@ function TestBuilderContent() {
 
                     {/* Rationale */}
                     <div className="space-y-1.5">
-                      <Label className="text-xs font-medium text-slate-600">Rationale (shown after answering)</Label>
+                      <label className="text-xs uppercase tracking-wider text-slate-400 font-medium">Rationale (shown after answering)</label>
                       <Textarea
                         value={q.rationale}
                         onChange={(e) => updateQuestion(q.id, 'rationale', e.target.value)}
@@ -1211,59 +1188,54 @@ function TestBuilderContent() {
                       />
                     </div>
                   </div>
-                </CardContent>
+                </div>
               )}
-            </Card>
+            </div>
           ))}
         </div>
 
         {/* Empty state / Add button */}
         {questions.length === 0 ? (
-          <Card className="border-dashed border-2 border-slate-200">
-            <CardContent className="flex flex-col items-center justify-center py-16">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 mb-4">
-                <FileText className="h-6 w-6 text-slate-400" />
-              </div>
-              <h3 className="text-lg font-semibold text-slate-800">
-                No questions yet
-              </h3>
-              <p className="mt-2 text-center text-slate-500 max-w-sm text-sm">
-                Start building your assessment by adding questions. Choose from any of the
-                6 NREMT TEI formats.
-              </p>
-              <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
-                <DialogTrigger asChild>
-                  <Button className="mt-6 gap-2 bg-[#1e293b] hover:bg-slate-700 text-white">
-                    <Plus className="h-4 w-4" />
-                    Add First Question
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle className="text-slate-900">Select Question Type</DialogTitle>
-                    <DialogDescription>
-                      Choose the TEI format for this question.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 py-4">
-                    {(Object.keys(TEI_LABELS) as TEIType[]).map((type) => (
-                      <button
-                        key={type}
-                        onClick={() => addQuestion(type)}
-                        className="flex items-start gap-3 rounded-lg border border-slate-200 p-4 text-left hover:border-[#1B4F72] hover:bg-[#1B4F72]/5 transition-colors"
-                      >
-                        <span className="text-sm font-mono font-bold text-[#1B4F72] bg-[#1B4F72]/10 rounded px-2 py-1 leading-none">{type}</span>
-                        <div>
-                          <span className="text-sm font-medium text-slate-800 block">{TEI_LABELS[type]}</span>
-                          <span className="text-xs text-slate-500 mt-0.5 block">{TEI_DESCRIPTIONS[type]}</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </CardContent>
-          </Card>
+          <div className="rounded-lg border-2 border-dashed border-slate-200 flex flex-col items-center justify-center py-16">
+            <h3 className="text-lg font-semibold text-slate-800">
+              No questions yet
+            </h3>
+            <p className="mt-2 text-center text-slate-500 max-w-sm text-sm">
+              Start building your assessment by adding questions. Choose from any of the
+              6 NREMT TEI formats.
+            </p>
+            <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
+              <DialogTrigger asChild>
+                <Button className="mt-6 gap-2 bg-slate-900 hover:bg-slate-800 text-white">
+                  <Plus className="h-4 w-4" />
+                  Add First Question
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="text-slate-900">Select Question Type</DialogTitle>
+                  <DialogDescription>
+                    Choose the TEI format for this question.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 py-4">
+                  {(Object.keys(TEI_LABELS) as TEIType[]).map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => addQuestion(type)}
+                      className="flex items-start gap-3 rounded-lg border border-slate-200 p-4 text-left hover:border-slate-400 hover:bg-slate-50 transition-colors"
+                    >
+                      <span className="text-sm font-mono font-bold text-slate-600 border border-slate-200 rounded px-2 py-1 leading-none">{type}</span>
+                      <div>
+                        <span className="text-sm font-medium text-slate-800 block">{TEI_LABELS[type]}</span>
+                        <span className="text-xs text-slate-500 mt-0.5 block">{TEI_DESCRIPTIONS[type]}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         ) : (
           <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
             <DialogTrigger asChild>
@@ -1284,9 +1256,9 @@ function TestBuilderContent() {
                   <button
                     key={type}
                     onClick={() => addQuestion(type)}
-                    className="flex flex-col items-start rounded-lg border border-slate-200 p-3 text-left hover:border-[#1B4F72] hover:bg-[#1B4F72]/5 transition-colors"
+                    className="flex flex-col items-start rounded-lg border border-slate-200 p-3 text-left hover:border-slate-400 hover:bg-slate-50 transition-colors"
                   >
-                    <span className="text-xs font-mono font-semibold text-[#1B4F72]">{type}</span>
+                    <span className="text-xs font-mono font-semibold text-slate-600">{type}</span>
                     <span className="text-xs text-slate-500 mt-0.5">{TEI_DESCRIPTIONS[type]}</span>
                   </button>
                 ))}
@@ -1294,13 +1266,14 @@ function TestBuilderContent() {
             </DialogContent>
           </Dialog>
         )}
-        {/* ─── Preview Modal ─── */}
+
+        {/* Preview Modal */}
         {previewIndex !== null && questions.length > 0 && (
-          <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={() => setPreviewIndex(null)}>
-            <div className="bg-white rounded-xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
+          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => setPreviewIndex(null)}>
+            <div className="bg-white rounded-lg max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 space-y-4 border border-slate-200" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <Badge className="bg-[#1B4F72] text-white font-mono">{questions[previewIndex].type}</Badge>
+                  <span className="text-xs font-mono text-slate-500 border border-slate-200 rounded px-2 py-0.5">{questions[previewIndex].type}</span>
                   <span className="text-sm text-slate-500">Question {previewIndex + 1} of {questions.length}</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -1309,6 +1282,7 @@ function TestBuilderContent() {
                     size="sm"
                     disabled={previewIndex === 0}
                     onClick={() => setPreviewIndex(Math.max(0, previewIndex - 1))}
+                    className="border-slate-200"
                   >
                     Prev
                   </Button>
@@ -1317,6 +1291,7 @@ function TestBuilderContent() {
                     size="sm"
                     disabled={previewIndex === questions.length - 1}
                     onClick={() => setPreviewIndex(Math.min(questions.length - 1, previewIndex + 1))}
+                    className="border-slate-200"
                   >
                     Next
                   </Button>
@@ -1325,13 +1300,13 @@ function TestBuilderContent() {
                   </Button>
                 </div>
               </div>
-              <Separator />
+              <div className="border-t border-slate-200" />
               {/* Render the question stem + ECG if attached */}
               <div>
                 <h2 className="text-lg font-semibold text-slate-900 mb-4 leading-relaxed">
                   {questions[previewIndex].stem || '(No stem entered)'}
                 </h2>
-                {/* ECG strip preview — fetch from Supabase if attached */}
+                {/* ECG strip preview */}
                 {(questions[previewIndex] as any).ecgStripId && (
                   <ECGPreviewInline stripId={(questions[previewIndex] as any).ecgStripId} />
                 )}
@@ -1345,12 +1320,12 @@ function TestBuilderContent() {
                     return (
                       <div className="space-y-2">
                         {mc.options.map((opt) => (
-                          <div key={opt.key} className={`flex items-center gap-3 rounded-lg border-2 px-4 py-3 ${
-                            mc.correctKey === opt.key ? 'border-green-300 bg-green-50' : 'border-slate-200'
+                          <div key={opt.key} className={`flex items-center gap-3 rounded-lg border px-4 py-3 ${
+                            mc.correctKey === opt.key ? 'border-emerald-300 bg-emerald-50/50' : 'border-slate-200'
                           }`}>
                             <span className="text-sm font-mono font-bold text-slate-400">{opt.key}.</span>
                             <span className="text-sm text-slate-800">{opt.text || '(empty)'}</span>
-                            {mc.correctKey === opt.key && <CheckCircle2 className="h-4 w-4 text-green-500 ml-auto" />}
+                            {mc.correctKey === opt.key && <CheckCircle2 className="h-4 w-4 text-emerald-500 ml-auto" />}
                           </div>
                         ))}
                       </div>
@@ -1361,14 +1336,14 @@ function TestBuilderContent() {
                     const mr = d as MRData;
                     return (
                       <div className="space-y-2">
-                        <p className="text-xs text-blue-600 font-medium mb-2">Select all that apply</p>
+                        <p className="text-xs text-slate-500 font-medium mb-2">Select all that apply</p>
                         {mr.options.map((opt) => (
-                          <div key={opt.key} className={`flex items-center gap-3 rounded-lg border-2 px-4 py-3 ${
-                            mr.correctKeys.includes(opt.key) ? 'border-green-300 bg-green-50' : 'border-slate-200'
+                          <div key={opt.key} className={`flex items-center gap-3 rounded-lg border px-4 py-3 ${
+                            mr.correctKeys.includes(opt.key) ? 'border-emerald-300 bg-emerald-50/50' : 'border-slate-200'
                           }`}>
                             <span className="text-sm font-mono font-bold text-slate-400">{opt.key}.</span>
                             <span className="text-sm text-slate-800">{opt.text || '(empty)'}</span>
-                            {mr.correctKeys.includes(opt.key) && <CheckCircle2 className="h-4 w-4 text-green-500 ml-auto" />}
+                            {mr.correctKeys.includes(opt.key) && <CheckCircle2 className="h-4 w-4 text-emerald-500 ml-auto" />}
                           </div>
                         ))}
                       </div>
@@ -1379,10 +1354,10 @@ function TestBuilderContent() {
                     const bl = d as BLData;
                     return (
                       <div className="space-y-2">
-                        <p className="text-xs text-blue-600 font-medium mb-2">Arrange in correct order</p>
+                        <p className="text-xs text-slate-500 font-medium mb-2">Arrange in correct order</p>
                         {bl.items.map((item, i) => (
-                          <div key={i} className="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3">
-                            <span className="text-xs font-mono font-bold text-white bg-green-600 rounded-full w-5 h-5 flex items-center justify-center">{i + 1}</span>
+                          <div key={i} className="flex items-center gap-3 rounded-lg border border-slate-200 px-4 py-3">
+                            <span className="text-xs font-mono font-semibold text-slate-400 w-5 text-center">{i + 1}</span>
                             <span className="text-sm text-slate-800">{item || '(empty)'}</span>
                           </div>
                         ))}
@@ -1396,15 +1371,15 @@ function TestBuilderContent() {
                       <div className="space-y-3">
                         <div className="flex flex-wrap gap-2">
                           {dd.items.map((item) => (
-                            <span key={item.id} className="px-3 py-1.5 rounded bg-slate-100 border border-slate-200 text-xs font-medium">
+                            <span key={item.id} className="px-3 py-1.5 rounded border border-slate-200 text-xs font-medium text-slate-700">
                               {item.text || '(empty)'}
                             </span>
                           ))}
                         </div>
                         <div className="grid grid-cols-2 gap-2">
                           {dd.categories.filter(c => c.trim()).map((cat) => (
-                            <div key={cat} className="rounded border-2 border-dashed border-[#1B4F72]/30 bg-[#1B4F72]/5 p-4 text-center min-h-[60px]">
-                              <p className="text-xs font-semibold text-[#1B4F72]">{cat}</p>
+                            <div key={cat} className="rounded border-2 border-dashed border-slate-200 p-4 text-center min-h-[60px]">
+                              <p className="text-xs font-semibold text-slate-500">{cat}</p>
                             </div>
                           ))}
                         </div>
@@ -1415,30 +1390,32 @@ function TestBuilderContent() {
                   if (q.type === 'OB') {
                     const ob = d as OBData;
                     return (
-                      <table className="w-full text-sm border border-slate-200 rounded-lg overflow-hidden">
-                        <thead>
-                          <tr className="bg-slate-50">
-                            <th className="text-left py-2 px-3 font-semibold text-slate-600">Statement</th>
-                            {ob.columns.filter(c => c.trim()).map((col) => (
-                              <th key={col} className="text-center py-2 px-3 font-semibold text-slate-600">{col}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {ob.rows.filter(r => r.trim()).map((row, ri) => (
-                            <tr key={ri} className="border-t border-slate-100">
-                              <td className="py-2 px-3 text-slate-700">{row}</td>
+                      <div className="rounded-lg border border-slate-200 overflow-hidden">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="bg-slate-50">
+                              <th className="text-left py-2 px-3 font-medium text-slate-500">Statement</th>
                               {ob.columns.filter(c => c.trim()).map((col) => (
-                                <td key={col} className="text-center py-2 px-3">
-                                  <div className={`w-5 h-5 rounded-full border-2 mx-auto ${
-                                    ob.correctAnswers[row] === col ? 'border-green-500 bg-green-500' : 'border-slate-300'
-                                  }`} />
-                                </td>
+                                <th key={col} className="text-center py-2 px-3 font-medium text-slate-500">{col}</th>
                               ))}
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {ob.rows.filter(r => r.trim()).map((row, ri) => (
+                              <tr key={ri} className="border-t border-slate-100">
+                                <td className="py-2 px-3 text-slate-700">{row}</td>
+                                {ob.columns.filter(c => c.trim()).map((col) => (
+                                  <td key={col} className="text-center py-2 px-3">
+                                    <div className={`w-5 h-5 rounded-full border-2 mx-auto ${
+                                      ob.correctAnswers[row] === col ? 'border-slate-700 bg-slate-700' : 'border-slate-300'
+                                    }`} />
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     );
                   }
 
@@ -1448,10 +1425,10 @@ function TestBuilderContent() {
               {/* Rationale */}
               {questions[previewIndex].rationale && (
                 <>
-                  <Separator />
-                  <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
-                    <p className="text-xs font-semibold text-blue-900 mb-1">Rationale</p>
-                    <p className="text-sm text-blue-800">{questions[previewIndex].rationale}</p>
+                  <div className="border-t border-slate-200" />
+                  <div className="border-l-2 border-slate-200 pl-4">
+                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Rationale</p>
+                    <p className="text-sm text-slate-600">{questions[previewIndex].rationale}</p>
                   </div>
                 </>
               )}

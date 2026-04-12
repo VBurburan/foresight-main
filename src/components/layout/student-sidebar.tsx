@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -12,10 +12,15 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useUser } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+
+const navItems = [
+  { icon: LayoutDashboard, label: "Dashboard", href: "/student/dashboard" },
+  { icon: FileText, label: "Exams", href: "/student/exams" },
+  { icon: BarChart3, label: "Results", href: "/student/results" },
+];
 
 export function StudentSidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -24,12 +29,6 @@ export function StudentSidebar() {
   const { user } = useUser();
   const supabase = createClient();
 
-  const navItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/student/dashboard" },
-    { icon: FileText, label: "My Exams", href: "/student/exams" },
-    { icon: BarChart3, label: "Results", href: "/student/results" },
-  ];
-
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     router.push("/login");
@@ -37,26 +36,30 @@ export function StudentSidebar() {
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
-      {/* Foresight Logo */}
-      <div className="p-5 border-b border-white/10">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded bg-white/90 flex items-center justify-center">
+      {/* Brand */}
+      <div className="px-4 pt-5 pb-4">
+        <div className="flex items-center gap-2.5">
+          <div className="w-6 h-6 rounded-md bg-slate-50 flex items-center justify-center">
             <Image
               src="/images/foresight-logo.png"
               alt="Foresight"
-              width={34}
-              height={34}
+              width={24}
+              height={24}
             />
           </div>
           <div>
-            <p className="text-sm font-bold tracking-wide text-white">Foresight</p>
-            <p className="text-[10px] text-slate-400 tracking-widest uppercase">Student Portal</p>
+            <p className="text-sm font-semibold text-slate-900 leading-none">
+              Foresight
+            </p>
+            <p className="text-[10px] text-slate-400 uppercase tracking-widest mt-0.5">
+              Student
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Navigation Items */}
-      <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
+      {/* Nav */}
+      <nav className="flex-1 px-3 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname.startsWith(item.href);
@@ -65,73 +68,80 @@ export function StudentSidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={cn(
-                "flex items-center px-3 py-2.5 rounded-lg transition-all text-sm",
-                isActive
-                  ? "bg-white/10 text-[#93c5fd] border-l-[3px] border-[#93c5fd] pl-[9px]"
-                  : "text-slate-300 hover:bg-white/5 hover:text-white"
-              )}
               onClick={() => setMobileOpen(false)}
+              className={cn(
+                "flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors",
+                isActive
+                  ? "bg-slate-100 text-slate-900 font-medium"
+                  : "text-slate-600 hover:bg-slate-50"
+              )}
             >
-              <div className="flex items-center gap-3">
-                <Icon className="w-[18px] h-[18px]" />
-                <span className="font-medium">{item.label}</span>
-              </div>
+              <Icon
+                className={cn(
+                  "w-4 h-4 shrink-0",
+                  isActive ? "text-slate-700" : "text-slate-400"
+                )}
+              />
+              {item.label}
             </Link>
           );
         })}
       </nav>
 
-      {/* User Info and Sign Out */}
-      <div className="border-t border-white/10 p-4">
+      {/* Footer */}
+      <div className="px-4 py-4 mt-auto border-t border-slate-100">
         {user && (
-          <div className="mb-3 text-xs text-slate-400 truncate">
-            {user.email}
-          </div>
+          <p className="text-xs text-slate-400 truncate mb-3">{user.email}</p>
         )}
-        <Button
-          variant="outline"
-          className="w-full justify-start text-slate-300 border-white/10 bg-white/5 hover:bg-white/10 hover:text-white text-sm"
+        <button
           onClick={handleSignOut}
+          className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 transition-colors"
         >
-          <LogOut className="w-4 h-4 mr-2" />
+          <LogOut className="w-4 h-4" />
           Sign Out
-        </Button>
+        </button>
       </div>
     </div>
   );
 
   return (
     <>
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:flex w-60 bg-[#1B4F72] text-white flex-col border-r border-white/5">
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex w-56 bg-white flex-col border-r border-slate-200">
         <SidebarContent />
       </aside>
 
-      {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#1B4F72] text-white flex items-center justify-between px-4 z-40 border-b border-white/10">
-        <button onClick={() => setMobileOpen(!mobileOpen)}>
-          {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+      {/* Mobile header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-white flex items-center justify-between px-4 z-40 border-b border-slate-200">
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="text-slate-600"
+        >
+          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded bg-white/90 flex items-center justify-center">
-            <Image
-              src="/images/foresight-logo.png"
-              alt="Foresight"
-              width={22}
-              height={22}
-            />
-          </div>
-          <span className="text-sm font-bold">Foresight</span>
+          <Image
+            src="/images/foresight-logo.png"
+            alt="Foresight"
+            width={20}
+            height={20}
+          />
+          <span className="text-sm font-semibold text-slate-900">Foresight</span>
         </div>
-        <div className="w-6" />
+        <div className="w-5" />
       </div>
 
-      {/* Mobile Sidebar */}
+      {/* Mobile overlay */}
       {mobileOpen && (
-        <aside className="fixed inset-0 top-16 z-30 w-60 bg-[#1B4F72] text-white flex flex-col md:hidden">
-          <SidebarContent />
-        </aside>
+        <>
+          <div
+            className="fixed inset-0 top-14 bg-black/20 z-30 md:hidden"
+            onClick={() => setMobileOpen(false)}
+          />
+          <aside className="fixed top-14 left-0 bottom-0 z-40 w-56 bg-white border-r border-slate-200 flex flex-col md:hidden">
+            <SidebarContent />
+          </aside>
+        </>
       )}
     </>
   );

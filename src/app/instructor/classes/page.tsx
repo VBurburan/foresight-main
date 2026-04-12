@@ -1,15 +1,10 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { Plus, Users, BookOpen, Copy, Check } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Plus, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -52,10 +47,10 @@ interface ClassRow {
   avgScore: number | null;
 }
 
-function getScoreBadgeClasses(score: number): string {
-  if (score >= 75) return 'bg-green-100 text-green-800 border border-green-200';
-  if (score >= 60) return 'bg-yellow-100 text-yellow-800 border border-yellow-200';
-  return 'bg-red-100 text-red-800 border border-red-200';
+function scoreColor(score: number): string {
+  if (score >= 75) return 'text-emerald-600';
+  if (score >= 60) return 'text-amber-600';
+  return 'text-red-600';
 }
 
 function CopyButton({ text }: { text: string }) {
@@ -70,16 +65,13 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={(e) => { e.stopPropagation(); e.preventDefault(); handleCopy(); }}
-      className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium hover:bg-[#1e293b]/10 transition-colors"
+      className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs hover:bg-slate-100"
       title="Copy enrollment code"
     >
       {copied ? (
-        <>
-          <Check className="h-3 w-3 text-green-600" />
-          <span className="text-green-600">Copied</span>
-        </>
+        <Check className="h-3 w-3 text-emerald-600" />
       ) : (
-        <Copy className="h-3 w-3 text-[#1e293b]/60" />
+        <Copy className="h-3 w-3 text-slate-400" />
       )}
     </button>
   );
@@ -222,8 +214,8 @@ function ClassesContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl space-y-8">
+      <div className="px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl space-y-6">
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-64 rounded-lg" />
         </div>
@@ -232,32 +224,24 @@ function ClassesContent() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl space-y-8">
+    <div className="px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
-              <Image src="/images/foresight-logo.png" alt="Foresight" width={36} height={36} />
-            </div>
-            <div>
-              <h1 className="font-heading text-3xl font-bold text-[#1e293b]">Classes</h1>
-              <p className="text-sm font-medium text-[#334155]/60">Foresight by Path2Medic</p>
-            </div>
-          </div>
+          <h1 className="text-2xl font-semibold text-slate-900">Classes</h1>
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="gap-2 bg-amber-700 hover:bg-amber-600 shadow-sm">
+              <Button className="gap-2 bg-slate-900 hover:bg-slate-800 text-white">
                 <Plus className="h-4 w-4" />
-                Create New Class
+                Create Class
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
-                <DialogTitle className="font-heading text-[#1e293b]">Create New Class</DialogTitle>
+                <DialogTitle>Create New Class</DialogTitle>
                 <DialogDescription>
-                  Set up a new course for your students. They will join using the auto-generated enrollment code.
+                  Set up a new course. Students join using the auto-generated enrollment code.
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-2">
@@ -317,7 +301,7 @@ function ClassesContent() {
                 </Button>
                 <Button
                   onClick={handleCreateClass}
-                  className="bg-amber-700 hover:bg-amber-600"
+                  className="bg-slate-900 hover:bg-slate-800 text-white"
                   disabled={creating || !newClass.name.trim()}
                 >
                   {creating ? 'Creating...' : 'Create Class'}
@@ -327,124 +311,88 @@ function ClassesContent() {
           </Dialog>
         </div>
 
-        <Separator />
-
         {/* Classes Table */}
         {classes.length === 0 ? (
-          <Card className="border-dashed border-2 border-[#1e293b]/20">
-            <CardContent className="flex flex-col items-center justify-center py-16">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#1e293b]/10 mb-4">
-                <BookOpen className="h-8 w-8 text-[#1e293b]" />
-              </div>
-              <h3 className="font-heading text-xl font-semibold text-[#1e293b]">
-                No classes yet
-              </h3>
-              <p className="mt-2 text-center text-[#334155]/60 max-w-md">
-                Create your first class to start tracking student progress. Students will join using an enrollment code.
-              </p>
-              <Button
-                onClick={() => setIsDialogOpen(true)}
-                className="mt-6 gap-2 bg-amber-700 hover:bg-amber-600"
-              >
-                <Plus className="h-4 w-4" />
-                Create Your First Class
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="rounded-lg border border-dashed border-slate-200 py-16 text-center">
+            <p className="text-sm font-medium text-slate-900">No classes yet</p>
+            <p className="mt-1 text-sm text-slate-500">
+              Create your first class to start tracking student progress.
+            </p>
+            <Button
+              onClick={() => setIsDialogOpen(true)}
+              className="mt-4 gap-2 bg-slate-900 hover:bg-slate-800 text-white"
+            >
+              <Plus className="h-4 w-4" />
+              Create Class
+            </Button>
+          </div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <Card className="shadow-sm">
-              <CardHeader>
-                <CardTitle className="font-heading text-[#1e293b]">
-                  All Classes
-                </CardTitle>
-                <CardDescription>
-                  {classes.length} class{classes.length !== 1 ? 'es' : ''} total
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow className="hover:bg-transparent">
-                      <TableHead className="font-semibold text-[#1e293b]">Class Name</TableHead>
-                      <TableHead className="font-semibold text-[#1e293b]">Cert Level</TableHead>
-                      <TableHead className="text-center font-semibold text-[#1e293b]">Students</TableHead>
-                      <TableHead className="text-center font-semibold text-[#1e293b]">Avg Score</TableHead>
-                      <TableHead className="font-semibold text-[#1e293b]">Enrollment Code</TableHead>
-                      <TableHead className="text-center font-semibold text-[#1e293b]">Status</TableHead>
-                      <TableHead className="text-right font-semibold text-[#1e293b]">Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {classes.map((cls, idx) => (
-                      <motion.tr
-                        key={cls.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.05 }}
-                        className="border-b transition-colors hover:bg-slate-50"
-                      >
-                        <TableCell className="font-medium text-[#334155]">
-                          {cls.name}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="font-mono text-xs">
-                            {cls.certification_level || 'All'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <div className="flex items-center justify-center gap-1.5">
-                            <Users className="h-3.5 w-3.5 text-[#334155]/50" />
-                            <span className="text-[#334155]">{cls.studentCount}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          {cls.avgScore != null ? (
-                            <Badge className={getScoreBadgeClasses(cls.avgScore)}>
-                              {cls.avgScore}%
-                            </Badge>
-                          ) : (
-                            <span className="text-[#334155]/40">--</span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {cls.enrollment_code && (
-                            <div className="flex items-center gap-1">
-                              <code className="rounded bg-slate-100 px-2 py-1 text-xs font-mono font-bold text-[#1e293b]">
-                                {cls.enrollment_code}
-                              </code>
-                              <CopyButton text={cls.enrollment_code} />
-                            </div>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <Badge
-                            className={
-                              cls.is_active !== false
-                                ? 'bg-green-100 text-green-800 border border-green-200'
-                                : 'bg-gray-100 text-gray-600 border border-gray-200'
-                            }
-                          >
-                            {cls.is_active !== false ? 'Active' : 'Inactive'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Link href={`/instructor/classes/${cls.id}`}>
-                            <Button size="sm" variant="outline" className="text-[#1e293b] border-[#1e293b]/30 hover:bg-[#1e293b]/5">
-                              View
-                            </Button>
-                          </Link>
-                        </TableCell>
-                      </motion.tr>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </motion.div>
+          <div className="rounded-lg border border-slate-200 bg-white">
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-transparent border-slate-200">
+                  <TableHead className="text-xs uppercase tracking-wider text-slate-400 font-medium">Class Name</TableHead>
+                  <TableHead className="text-xs uppercase tracking-wider text-slate-400 font-medium">Cert Level</TableHead>
+                  <TableHead className="text-center text-xs uppercase tracking-wider text-slate-400 font-medium">Students</TableHead>
+                  <TableHead className="text-center text-xs uppercase tracking-wider text-slate-400 font-medium">Avg Score</TableHead>
+                  <TableHead className="text-xs uppercase tracking-wider text-slate-400 font-medium">Enrollment Code</TableHead>
+                  <TableHead className="text-center text-xs uppercase tracking-wider text-slate-400 font-medium">Status</TableHead>
+                  <TableHead className="text-right text-xs uppercase tracking-wider text-slate-400 font-medium">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {classes.map((cls) => (
+                  <TableRow key={cls.id} className="border-slate-100">
+                    <TableCell className="font-medium text-slate-900">
+                      {cls.name}
+                    </TableCell>
+                    <TableCell className="text-sm text-slate-600">
+                      {cls.certification_level || 'All'}
+                    </TableCell>
+                    <TableCell className="text-center text-sm text-slate-600">
+                      {cls.studentCount}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {cls.avgScore != null ? (
+                        <span className={`text-sm font-medium ${scoreColor(cls.avgScore)}`}>
+                          {cls.avgScore}%
+                        </span>
+                      ) : (
+                        <span className="text-slate-300">--</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {cls.enrollment_code && (
+                        <div className="flex items-center gap-1">
+                          <code className="rounded bg-slate-50 px-2 py-0.5 text-xs font-mono text-slate-700">
+                            {cls.enrollment_code}
+                          </code>
+                          <CopyButton text={cls.enrollment_code} />
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <span className="inline-flex items-center gap-1.5 text-xs text-slate-600">
+                        <span
+                          className={`inline-block h-1.5 w-1.5 rounded-full ${
+                            cls.is_active !== false ? 'bg-emerald-500' : 'bg-slate-300'
+                          }`}
+                        />
+                        {cls.is_active !== false ? 'Active' : 'Inactive'}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Link href={`/instructor/classes/${cls.id}`}>
+                        <Button size="sm" variant="ghost" className="text-slate-600 hover:text-slate-900">
+                          View
+                        </Button>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         )}
       </div>
     </div>

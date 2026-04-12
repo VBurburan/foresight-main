@@ -2,14 +2,10 @@
 
 import { useEffect, useState, use } from 'react';
 import Link from 'next/link';
-import { Copy, ArrowLeft, Users, Check } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { Copy, Check } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Table,
@@ -47,16 +43,17 @@ interface ClassInfo {
   max_students: number | null;
 }
 
-function getScoreBadgeClasses(score: number): string {
-  if (score >= 75) return 'bg-green-100 text-green-800 border border-green-200';
-  if (score >= 60) return 'bg-yellow-100 text-yellow-800 border border-yellow-200';
-  return 'bg-red-100 text-red-800 border border-red-200';
+function scoreColor(score: number): string {
+  if (score >= 75) return 'text-emerald-600';
+  if (score >= 60) return 'text-amber-600';
+  return 'text-red-600';
 }
 
-function getBarColor(score: number): string {
-  if (score >= 75) return '#16a34a';
-  if (score >= 60) return '#eab308';
-  return '#dc2626';
+function statusDot(score: number | null): { color: string; label: string } {
+  if (score === null) return { color: 'bg-slate-300', label: '' };
+  if (score < 60) return { color: 'bg-red-500', label: 'At Risk' };
+  if (score < 75) return { color: 'bg-amber-500', label: 'Monitor' };
+  return { color: 'bg-emerald-500', label: 'On Track' };
 }
 
 function ClassDetailContent({ classId }: { classId: string }) {
@@ -191,9 +188,9 @@ function ClassDetailContent({ classId }: { classId: string }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl space-y-8">
-          <Skeleton className="h-10 w-80" />
+      <div className="px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl space-y-6">
+          <Skeleton className="h-8 w-80" />
           <Skeleton className="h-4 w-48" />
           <Skeleton className="h-64 rounded-lg" />
         </div>
@@ -203,9 +200,9 @@ function ClassDetailContent({ classId }: { classId: string }) {
 
   if (!classInfo) {
     return (
-      <div className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl text-center py-20">
-          <p className="text-[#334155]/60">Class not found.</p>
+      <div className="px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl py-20 text-center">
+          <p className="text-sm text-slate-500">Class not found.</p>
           <Link href="/instructor/classes">
             <Button variant="outline" className="mt-4">
               Back to Classes
@@ -216,287 +213,193 @@ function ClassDetailContent({ classId }: { classId: string }) {
     );
   }
 
-  const atRiskStudents = students.filter((s) => s.avgScore !== null && s.avgScore < 60);
-
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl space-y-8">
+    <div className="px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl space-y-6">
         {/* Back link */}
         <Link
           href="/instructor/classes"
-          className="inline-flex items-center gap-1.5 text-sm text-[#334155]/60 hover:text-[#1e293b] transition-colors"
+          className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-900"
         >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Classes
+          &larr; Classes
         </Link>
 
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <Card className="shadow-sm">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h1 className="font-heading text-3xl font-bold text-[#1e293b]">{classInfo.name}</h1>
-                  <p className="mt-2 text-[#334155]/70">
-                    {classInfo.certification_level || 'All levels'} &middot;{' '}
-                    {students.length} student{students.length !== 1 ? 's' : ''}
-                    {classInfo.max_students && ` / ${classInfo.max_students} max`}
-                  </p>
-                  {classInfo.description && (
-                    <p className="mt-2 text-sm text-[#334155]/60">{classInfo.description}</p>
-                  )}
-                </div>
-                <Badge className={classInfo.is_active !== false ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-gray-100 text-gray-600 border border-gray-200'}>
-                  {classInfo.is_active !== false ? 'Active' : 'Inactive'}
-                </Badge>
-              </div>
-
-              {classInfo.enrollment_code && (
-                <>
-                  <Separator className="my-4" />
-                  <div className="flex items-center gap-4">
-                    <div>
-                      <p className="text-xs font-semibold uppercase text-[#334155]/50 mb-1">Enrollment Code</p>
-                      <div className="flex items-center gap-2">
-                        <code className="rounded-lg bg-slate-100 px-3 py-1.5 text-lg font-mono font-bold text-[#1e293b]">
-                          {classInfo.enrollment_code}
-                        </code>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={handleCopyCode}
-                          className="gap-1.5 text-[#334155]/60 hover:text-[#1e293b]"
-                        >
-                          {copied ? (
-                            <>
-                              <Check className="h-4 w-4 text-green-600" />
-                              <span className="text-green-600 text-xs">Copied</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="h-4 w-4" />
-                              <span className="text-xs">Copy</span>
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-                    {atRiskStudents.length > 0 && (
-                      <div className="ml-auto">
-                        <Badge className="bg-red-100 text-red-800 border border-red-200 px-3 py-1">
-                          {atRiskStudents.length} at-risk student{atRiskStudents.length !== 1 ? 's' : ''}
-                        </Badge>
-                      </div>
-                    )}
-                  </div>
-                </>
+        {/* Class header */}
+        <div className="rounded-lg border border-slate-200 bg-white p-6">
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold text-slate-900">{classInfo.name}</h1>
+              <p className="mt-1 text-sm text-slate-500">
+                {classInfo.certification_level || 'All levels'} &middot;{' '}
+                {students.length} student{students.length !== 1 ? 's' : ''}
+                {classInfo.max_students && ` / ${classInfo.max_students} max`}
+              </p>
+              {classInfo.description && (
+                <p className="mt-2 text-sm text-slate-500">{classInfo.description}</p>
               )}
-            </CardContent>
-          </Card>
-        </motion.div>
+            </div>
+            <span className="inline-flex items-center gap-1.5 text-xs text-slate-600">
+              <span
+                className={`inline-block h-1.5 w-1.5 rounded-full ${
+                  classInfo.is_active !== false ? 'bg-emerald-500' : 'bg-slate-300'
+                }`}
+              />
+              {classInfo.is_active !== false ? 'Active' : 'Inactive'}
+            </span>
+          </div>
+
+          {classInfo.enrollment_code && (
+            <div className="mt-4 flex items-center gap-3 border-t border-slate-100 pt-4">
+              <span className="text-xs font-medium uppercase tracking-wider text-slate-400">
+                Enrollment Code
+              </span>
+              <code className="rounded bg-slate-50 px-2.5 py-1 text-sm font-mono font-medium text-slate-800">
+                {classInfo.enrollment_code}
+              </code>
+              <button
+                onClick={handleCopyCode}
+                className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-700"
+              >
+                {copied ? (
+                  <>
+                    <Check className="h-3.5 w-3.5 text-emerald-600" />
+                    <span className="text-emerald-600">Copied</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-3.5 w-3.5" />
+                    Copy
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Tabs */}
         <Tabs defaultValue="students" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-white border shadow-sm">
-            <TabsTrigger
-              value="students"
-              className="data-[state=active]:bg-[#1e293b] data-[state=active]:text-white font-medium"
-            >
+          <TabsList>
+            <TabsTrigger value="students">
               Students ({students.length})
             </TabsTrigger>
-            <TabsTrigger
-              value="analytics"
-              className="data-[state=active]:bg-[#1e293b] data-[state=active]:text-white font-medium"
-            >
+            <TabsTrigger value="analytics">
               Domain Analytics
             </TabsTrigger>
           </TabsList>
 
           {/* Students Tab */}
-          <TabsContent value="students" className="mt-6">
-            <Card className="shadow-sm">
-              <CardHeader>
-                <CardTitle className="font-heading text-[#1e293b]">Class Roster</CardTitle>
-                <CardDescription>Student performance and activity -- at-risk students appear first</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {students.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-16 text-[#334155]/40">
-                    <Users className="h-10 w-10 mb-3" />
-                    <p className="font-medium">No students enrolled yet</p>
-                    <p className="text-sm mt-1">
-                      Share the enrollment code{' '}
-                      <code className="font-mono font-bold text-[#1e293b]">{classInfo.enrollment_code}</code>
-                      {' '}with your students.
-                    </p>
-                  </div>
-                ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="hover:bg-transparent">
-                        <TableHead className="font-semibold text-[#1e293b]">Name</TableHead>
-                        <TableHead className="font-semibold text-[#1e293b]">Email</TableHead>
-                        <TableHead className="text-center font-semibold text-[#1e293b]">Avg Score</TableHead>
-                        <TableHead className="text-center font-semibold text-[#1e293b]">Sessions</TableHead>
-                        <TableHead className="font-semibold text-[#1e293b]">Last Active</TableHead>
-                        <TableHead className="text-center font-semibold text-[#1e293b]">Status</TableHead>
-                        <TableHead className="text-right font-semibold text-[#1e293b]">Action</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {students.map((student, idx) => {
-                        const isAtRisk = student.avgScore !== null && student.avgScore < 60;
-                        return (
-                          <motion.tr
-                            key={student.userId}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: idx * 0.03 }}
-                            className={`border-b transition-colors hover:bg-slate-50 ${
-                              isAtRisk ? 'bg-red-50/50' : ''
-                            }`}
-                          >
-                            <TableCell>
-                              <Link
-                                href={`/instructor/students/${student.userId}`}
-                                className="font-medium text-[#334155] hover:text-[#1e293b] hover:underline transition-colors"
-                              >
-                                {student.fullName}
-                              </Link>
-                            </TableCell>
-                            <TableCell className="text-[#334155]/60 text-xs">
-                              {student.email}
-                            </TableCell>
-                            <TableCell className="text-center">
-                              {student.avgScore !== null ? (
-                                <Badge className={getScoreBadgeClasses(student.avgScore)}>
-                                  {student.avgScore}%
-                                </Badge>
-                              ) : (
-                                <span className="text-[#334155]/40">--</span>
-                              )}
-                            </TableCell>
-                            <TableCell className="text-center text-[#334155]">
-                              {student.sessionsCompleted}
-                            </TableCell>
-                            <TableCell className="text-[#334155]/60 text-xs">
-                              {student.lastActivity
-                                ? new Date(student.lastActivity).toLocaleDateString()
-                                : 'Never'}
-                            </TableCell>
-                            <TableCell className="text-center">
-                              {isAtRisk ? (
-                                <Badge className="bg-red-100 text-red-700 border border-red-200">
-                                  At Risk
-                                </Badge>
-                              ) : student.avgScore !== null && student.avgScore >= 75 ? (
-                                <Badge className="bg-green-100 text-green-700 border border-green-200">
-                                  On Track
-                                </Badge>
-                              ) : student.avgScore !== null ? (
-                                <Badge className="bg-yellow-100 text-yellow-700 border border-yellow-200">
-                                  Monitor
-                                </Badge>
-                              ) : null}
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <Link href={`/instructor/students/${student.userId}`}>
-                                <Button size="sm" variant="outline" className="text-[#1e293b] border-[#1e293b]/30 hover:bg-[#1e293b]/5">
-                                  Drill Down
-                                </Button>
-                              </Link>
-                            </TableCell>
-                          </motion.tr>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                )}
-              </CardContent>
-            </Card>
+          <TabsContent value="students" className="mt-4">
+            <div className="rounded-lg border border-slate-200 bg-white">
+              {students.length === 0 ? (
+                <div className="py-16 text-center">
+                  <p className="text-sm font-medium text-slate-900">No students enrolled yet</p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Share the enrollment code{' '}
+                    <code className="font-mono font-medium text-slate-800">{classInfo.enrollment_code}</code>
+                    {' '}with your students.
+                  </p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow className="hover:bg-transparent border-slate-200">
+                      <TableHead className="text-xs uppercase tracking-wider text-slate-400 font-medium">Name</TableHead>
+                      <TableHead className="text-xs uppercase tracking-wider text-slate-400 font-medium">Email</TableHead>
+                      <TableHead className="text-center text-xs uppercase tracking-wider text-slate-400 font-medium">Avg Score</TableHead>
+                      <TableHead className="text-center text-xs uppercase tracking-wider text-slate-400 font-medium">Sessions</TableHead>
+                      <TableHead className="text-xs uppercase tracking-wider text-slate-400 font-medium">Last Active</TableHead>
+                      <TableHead className="text-center text-xs uppercase tracking-wider text-slate-400 font-medium">Status</TableHead>
+                      <TableHead className="text-right text-xs uppercase tracking-wider text-slate-400 font-medium">Action</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {students.map((student) => {
+                      const status = statusDot(student.avgScore);
+                      return (
+                        <TableRow key={student.userId} className="border-slate-100">
+                          <TableCell>
+                            <Link
+                              href={`/instructor/students/${student.userId}`}
+                              className="font-medium text-slate-900 hover:underline"
+                            >
+                              {student.fullName}
+                            </Link>
+                          </TableCell>
+                          <TableCell className="text-xs text-slate-500">
+                            {student.email}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            {student.avgScore !== null ? (
+                              <span className={`text-sm font-medium ${scoreColor(student.avgScore)}`}>
+                                {student.avgScore}%
+                              </span>
+                            ) : (
+                              <span className="text-slate-300">--</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-center text-sm text-slate-600">
+                            {student.sessionsCompleted}
+                          </TableCell>
+                          <TableCell className="text-xs text-slate-500">
+                            {student.lastActivity
+                              ? new Date(student.lastActivity).toLocaleDateString()
+                              : 'Never'}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            {status.label && (
+                              <span className="inline-flex items-center gap-1.5 text-xs text-slate-600">
+                                <span className={`inline-block h-1.5 w-1.5 rounded-full ${status.color}`} />
+                                {status.label}
+                              </span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Link href={`/instructor/students/${student.userId}`}>
+                              <Button size="sm" variant="ghost" className="text-slate-600 hover:text-slate-900">
+                                View
+                              </Button>
+                            </Link>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              )}
+            </div>
           </TabsContent>
 
           {/* Analytics Tab */}
-          <TabsContent value="analytics" className="mt-6">
-            <Card className="shadow-sm">
-              <CardHeader>
-                <CardTitle className="font-heading text-[#1e293b]">Domain Performance</CardTitle>
-                <CardDescription>Aggregated average scores across all students -- color-coded by risk level</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {domainPerf.length > 0 ? (
-                  <div className="space-y-8">
-                    {/* Horizontal bar chart visualization */}
-                    <div className="space-y-3">
-                      {domainPerf.map((d, idx) => (
-                        <motion.div
-                          key={d.domain}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: idx * 0.05 }}
-                          className="flex items-center gap-4"
-                        >
-                          <span className="w-32 text-sm font-medium text-[#334155] text-right truncate">
-                            {d.domain}
-                          </span>
-                          <div className="flex-1 h-8 bg-slate-100 rounded-full overflow-hidden">
-                            <motion.div
-                              initial={{ width: 0 }}
-                              animate={{ width: `${d.avgScore}%` }}
-                              transition={{ duration: 0.6, delay: idx * 0.1 }}
-                              className="h-full rounded-full flex items-center justify-end pr-3"
-                              style={{ backgroundColor: getBarColor(d.avgScore) }}
-                            >
-                              {d.avgScore >= 20 && (
-                                <span className="text-xs font-bold text-white">{d.avgScore}%</span>
-                              )}
-                            </motion.div>
-                          </div>
-                          {d.avgScore < 20 && (
-                            <span className="text-xs font-bold text-[#334155]">{d.avgScore}%</span>
-                          )}
-                        </motion.div>
-                      ))}
-                    </div>
+          <TabsContent value="analytics" className="mt-4">
+            <div className="rounded-lg border border-slate-200 bg-white p-6">
+              <h3 className="text-sm font-medium text-slate-900">Domain Performance</h3>
+              <p className="mt-0.5 text-xs text-slate-500">Aggregated average scores across all students</p>
 
-                    <Separator />
-
-                    {/* Recharts bar chart */}
-                    <div>
-                      <h3 className="text-sm font-semibold text-[#334155]/60 uppercase mb-4">Chart View</h3>
-                      <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={domainPerf}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                          <XAxis dataKey="domain" tick={{ fill: '#334155', fontSize: 12 }} />
-                          <YAxis domain={[0, 100]} tick={{ fill: '#334155', fontSize: 12 }} />
-                          <Tooltip
-                            contentStyle={{
-                              borderRadius: '8px',
-                              border: '1px solid #e2e8f0',
-                              boxShadow: '0 4px 6px rgba(27, 58, 92, 0.15)',
-                            }}
-                            formatter={(value: number) => [`${value}%`, 'Avg Score']}
-                          />
-                          <Bar dataKey="avgScore" radius={[4, 4, 0, 0]}>
-                            {domainPerf.map((entry, index) => (
-                              <Cell key={index} fill={getBarColor(entry.avgScore)} />
-                            ))}
-                          </Bar>
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex h-[300px] flex-col items-center justify-center text-[#334155]/40">
-                    <Users className="h-10 w-10 mb-3" />
-                    <p>Not enough data yet. Students need to complete exams.</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+              {domainPerf.length > 0 ? (
+                <div className="mt-6">
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={domainPerf}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                      <XAxis dataKey="domain" tick={{ fill: '#64748b', fontSize: 12 }} />
+                      <YAxis domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 11 }} />
+                      <Tooltip
+                        contentStyle={{
+                          borderRadius: '6px',
+                          border: '1px solid #e2e8f0',
+                          fontSize: 12,
+                        }}
+                        formatter={(value: number) => [`${value}%`, 'Avg Score']}
+                      />
+                      <Bar dataKey="avgScore" fill="#475569" radius={[3, 3, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="flex h-[300px] items-center justify-center">
+                  <p className="text-sm text-slate-400">Not enough data yet. Students need to complete exams.</p>
+                </div>
+              )}
+            </div>
           </TabsContent>
         </Tabs>
       </div>
