@@ -233,7 +233,7 @@ function DashboardContent() {
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-white">Dashboard</h1>
+          <h1 className="text-2xl font-semibold text-zinc-50">Dashboard</h1>
           <Link href="/instructor/classes">
             <button className="inline-flex items-center gap-1.5 rounded-md bg-white px-3.5 py-2 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-100">
               <Plus className="h-4 w-4" />
@@ -269,7 +269,7 @@ function DashboardContent() {
                 {stat.label}
               </p>
               <div className="mt-1 flex items-baseline gap-2">
-                <p className="text-2xl font-semibold text-white">{stat.value}</p>
+                <p className="text-2xl font-semibold text-zinc-50">{stat.value}</p>
                 {stat.label === 'At Risk' && typeof stat.value === 'number' && stat.value > 0 && (
                   <span className="inline-block h-2 w-2 rounded-full bg-red-400" />
                 )}
@@ -289,7 +289,7 @@ function DashboardContent() {
             <div className="lg:col-span-3">
               <div className="glass-card">
                 <div className="px-5 py-4">
-                  <h2 className="text-sm font-medium text-white">Class Performance</h2>
+                  <h2 className="text-sm font-medium text-zinc-50">Class Performance</h2>
                   <p className="mt-0.5 text-xs text-zinc-400">Average score by class</p>
                 </div>
                 <div className="px-5 pb-5">
@@ -342,7 +342,7 @@ function DashboardContent() {
             <div className="lg:col-span-2">
               <div className="glass-card">
                 <div className="px-5 py-4">
-                  <h2 className="text-sm font-medium text-white">Recent Activity</h2>
+                  <h2 className="text-sm font-medium text-zinc-50">Recent Activity</h2>
                   <p className="mt-0.5 text-xs text-zinc-400">Latest student submissions</p>
                 </div>
                 <div className="px-2 pb-3">
@@ -359,7 +359,7 @@ function DashboardContent() {
                             </span>
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium text-white">
+                            <p className="truncate text-sm font-medium text-zinc-50">
                               {activity.studentName}
                             </p>
                             <p className="truncate text-xs text-zinc-400">

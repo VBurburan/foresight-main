@@ -28,8 +28,8 @@
 
     /* Surface hierarchy tokens */
     --surface-0: 240 10% 3.9%;        /* page bg: zinc-950 */
-    --surface-1: 240 5.9% 10%;        /* cards: zinc-900 */
-    --surface-2: 240 3.7% 15.9%;      /* elevated: zinc-800 */
+    --surface-1: 240 5.9% 12%;        /* cards: slightly lighter than zinc-900 */
+    --surface-2: 240 3.7% 18%;        /* elevated: slightly lighter than zinc-800 */
     --surface-3: 240 5.3% 26.1%;      /* hover: zinc-700 */
 
     /* Accent colors */
@@ -57,13 +57,13 @@
 @layer utilities {
   /* Glass morphism utilities */
   .glass {
-    @apply backdrop-blur-xl bg-white/[0.03] border border-white/[0.06] rounded-xl;
+    @apply backdrop-blur-xl bg-white/[0.06] border border-white/[0.08] rounded-xl;
   }
   .glass-card {
-    @apply backdrop-blur-xl bg-white/[0.04] border border-white/[0.08] rounded-xl;
+    @apply backdrop-blur-xl bg-white/[0.08] border border-white/[0.10] rounded-xl;
   }
   .glass-subtle {
-    @apply backdrop-blur-md bg-white/[0.02] border border-white/[0.04] rounded-lg;
+    @apply backdrop-blur-md bg-white/[0.04] border border-white/[0.06] rounded-lg;
   }
 
   /* Surface utilities matching the hierarchy */

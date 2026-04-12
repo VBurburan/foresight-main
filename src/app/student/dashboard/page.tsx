@@ -291,7 +291,7 @@ export default function StudentDashboardPage() {
     <div className="px-6 py-8 lg:px-10 md:pt-8 pt-20">
       <div className="mx-auto max-w-6xl">
         {/* ---- Header ---- */}
-        <h1 className="text-2xl font-semibold text-white">
+        <h1 className="text-2xl font-semibold text-zinc-50">
           Welcome back, {firstName}
         </h1>
 
@@ -299,7 +299,7 @@ export default function StudentDashboardPage() {
         {classes.length === 0 && (
           <div className="mt-8">
             <div className="glass-card px-5 py-5">
-              <p className="text-sm font-medium text-white">Join a class</p>
+              <p className="text-sm font-medium text-zinc-50">Join a class</p>
               <p className="mt-1 text-xs text-zinc-400">
                 Enter the enrollment code provided by your instructor to get started.
               </p>
@@ -314,7 +314,7 @@ export default function StudentDashboardPage() {
                     setEnrollSuccess(null);
                   }}
                   onKeyDown={(e) => e.key === 'Enter' && handleJoinClass()}
-                  className="h-9 w-48 rounded-lg border border-zinc-700 bg-zinc-900/50 px-3 font-mono text-sm tracking-wider uppercase text-white placeholder:text-zinc-400 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40"
+                  className="h-9 w-48 rounded-lg border border-zinc-700 bg-zinc-900/50 px-3 font-mono text-sm tracking-wider uppercase text-zinc-50 placeholder:text-zinc-400 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40"
                   maxLength={12}
                 />
                 <button
@@ -343,13 +343,13 @@ export default function StudentDashboardPage() {
                 <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">
                   Exams Taken
                 </p>
-                <p className="mt-1 text-2xl font-semibold text-white">{examsTaken}</p>
+                <p className="mt-1 text-2xl font-semibold text-zinc-50">{examsTaken}</p>
               </div>
               <div>
                 <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">
                   Avg Score
                 </p>
-                <p className="mt-1 text-2xl font-semibold text-white">
+                <p className="mt-1 text-2xl font-semibold text-zinc-50">
                   {avgScore != null ? `${avgScore}%` : '--'}
                 </p>
               </div>
@@ -357,7 +357,7 @@ export default function StudentDashboardPage() {
                 <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">
                   Best Score
                 </p>
-                <p className="mt-1 text-2xl font-semibold text-white">
+                <p className="mt-1 text-2xl font-semibold text-zinc-50">
                   {bestScore != null ? `${bestScore}%` : '--'}
                 </p>
               </div>
@@ -373,7 +373,7 @@ export default function StudentDashboardPage() {
             <div className="lg:col-span-3">
               <div className="glass-card overflow-hidden">
                 <div className="px-5 py-4 border-b border-white/[0.06]">
-                  <h2 className="text-sm font-medium text-white">Available Assessments</h2>
+                  <h2 className="text-sm font-medium text-zinc-50">Available Assessments</h2>
                 </div>
 
                 {assessments.length > 0 ? (
@@ -386,7 +386,7 @@ export default function StudentDashboardPage() {
                         }`}
                       >
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-white truncate">
+                          <p className="text-sm font-medium text-zinc-50 truncate">
                             {a.name}
                           </p>
                           <div className="mt-0.5 flex items-center gap-3">
@@ -429,7 +429,7 @@ export default function StudentDashboardPage() {
             <div className="lg:col-span-2">
               <div className="glass-card overflow-hidden">
                 <div className="px-5 py-4 border-b border-white/[0.06]">
-                  <h2 className="text-sm font-medium text-white">Recent Results</h2>
+                  <h2 className="text-sm font-medium text-zinc-50">Recent Results</h2>
                 </div>
 
                 {results.length > 0 ? (
@@ -442,7 +442,7 @@ export default function StudentDashboardPage() {
                         }`}
                       >
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-white truncate">
+                          <p className="text-sm font-medium text-zinc-50 truncate">
                             {r.assessment_name}
                           </p>
                           <p className="mt-0.5 text-xs text-zinc-400">
@@ -500,7 +500,7 @@ export default function StudentDashboardPage() {
                   setEnrollSuccess(null);
                 }}
                 onKeyDown={(e) => e.key === 'Enter' && handleJoinClass()}
-                className="h-8 w-28 rounded-lg border border-zinc-700 bg-zinc-900/50 px-2.5 font-mono text-xs tracking-wider uppercase text-white placeholder:text-zinc-400 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40"
+                className="h-8 w-28 rounded-lg border border-zinc-700 bg-zinc-900/50 px-2.5 font-mono text-xs tracking-wider uppercase text-zinc-50 placeholder:text-zinc-400 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40"
                 maxLength={12}
               />
               <button

@@ -228,7 +228,7 @@ function ClassesContent() {
       <div className="mx-auto max-w-6xl space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-white">Classes</h1>
+          <h1 className="text-2xl font-semibold text-zinc-50">Classes</h1>
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
@@ -299,7 +299,7 @@ function ClassesContent() {
                 <Button
                   variant="outline"
                   onClick={() => setIsDialogOpen(false)}
-                  className="glass-card text-zinc-300 hover:text-white"
+                  className="glass-card text-zinc-300 hover:text-zinc-50"
                 >
                   Cancel
                 </Button>
@@ -350,7 +350,7 @@ function ClassesContent() {
               <TableBody>
                 {classes.map((cls) => (
                   <TableRow key={cls.id} className="border-white/[0.04] hover:bg-white/[0.02]">
-                    <TableCell className="font-medium text-white">
+                    <TableCell className="font-medium text-zinc-50">
                       {cls.name}
                     </TableCell>
                     <TableCell className="text-sm text-zinc-400">
@@ -390,7 +390,7 @@ function ClassesContent() {
                     </TableCell>
                     <TableCell className="text-right">
                       <Link href={`/instructor/classes/${cls.id}`}>
-                        <Button size="sm" variant="ghost" className="text-zinc-400 hover:text-white">
+                        <Button size="sm" variant="ghost" className="text-zinc-400 hover:text-zinc-50">
                           View
                         </Button>
                       </Link>

@@ -204,7 +204,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
         <div className="mx-auto max-w-6xl py-20 text-center">
           <p className="text-sm text-zinc-400">Class not found.</p>
           <Link href="/instructor/classes">
-            <Button variant="outline" className="mt-4 glass-card text-zinc-300 hover:text-white">
+            <Button variant="outline" className="mt-4 glass-card text-zinc-300 hover:text-zinc-50">
               Back to Classes
             </Button>
           </Link>
@@ -219,7 +219,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
         {/* Back link */}
         <Link
           href="/instructor/classes"
-          className="inline-flex items-center gap-1 text-sm text-zinc-400 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1 text-sm text-zinc-400 hover:text-zinc-50 transition-colors"
         >
           &larr; Classes
         </Link>
@@ -228,7 +228,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
         <div className="glass-card p-6">
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-2xl font-semibold text-white">{classInfo.name}</h1>
+              <h1 className="text-2xl font-semibold text-zinc-50">{classInfo.name}</h1>
               <p className="mt-1 text-sm text-zinc-400">
                 {classInfo.certification_level || 'All levels'} &middot;{' '}
                 {students.length} student{students.length !== 1 ? 's' : ''}
@@ -258,7 +258,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
               </code>
               <button
                 onClick={handleCopyCode}
-                className="inline-flex items-center gap-1 text-xs text-zinc-400 hover:text-white transition-colors"
+                className="inline-flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-50 transition-colors"
               >
                 {copied ? (
                   <>
@@ -320,7 +320,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
                           <TableCell>
                             <Link
                               href={`/instructor/students/${student.userId}`}
-                              className="font-medium text-white hover:underline"
+                              className="font-medium text-zinc-50 hover:underline"
                             >
                               {student.fullName}
                             </Link>
@@ -355,7 +355,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
                           </TableCell>
                           <TableCell className="text-right">
                             <Link href={`/instructor/students/${student.userId}`}>
-                              <Button size="sm" variant="ghost" className="text-zinc-400 hover:text-white">
+                              <Button size="sm" variant="ghost" className="text-zinc-400 hover:text-zinc-50">
                                 View
                               </Button>
                             </Link>
@@ -372,7 +372,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="mt-4">
             <div className="glass-card p-6">
-              <h3 className="text-sm font-medium text-white">Domain Performance</h3>
+              <h3 className="text-sm font-medium text-zinc-50">Domain Performance</h3>
               <p className="mt-0.5 text-xs text-zinc-400">Aggregated average scores across all students</p>
 
               {domainPerf.length > 0 ? (

@@ -177,7 +177,7 @@ function AnalyticsContent() {
     <div className="px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl space-y-6">
         {/* Header */}
-        <h1 className="text-2xl font-semibold text-white">Analytics</h1>
+        <h1 className="text-2xl font-semibold text-zinc-50">Analytics</h1>
 
         {/* Stat blocks */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -186,7 +186,7 @@ function AnalyticsContent() {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">{m.label}</p>
-                  <p className="mt-1 text-2xl font-semibold text-white">{m.value}</p>
+                  <p className="mt-1 text-2xl font-semibold text-zinc-50">{m.value}</p>
                   <div className="mt-0.5 flex items-center gap-1 text-xs text-zinc-400">
                     {m.trend === 'up' && <ArrowUpRight className="h-3 w-3 text-emerald-400" />}
                     {m.trend === 'down' && <ArrowDownRight className="h-3 w-3 text-red-400" />}
@@ -205,7 +205,7 @@ function AnalyticsContent() {
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Domain Radar */}
           <div className="glass-card p-6">
-            <h3 className="text-sm font-medium text-white">Domain Performance</h3>
+            <h3 className="text-sm font-medium text-zinc-50">Domain Performance</h3>
             <p className="mt-0.5 text-xs text-zinc-400">Cohort average by NREMT domain</p>
             {domainScores.length > 0 ? (
               <div className="mt-4">
@@ -227,7 +227,7 @@ function AnalyticsContent() {
 
           {/* TEI Type Breakdown */}
           <div className="glass-card p-6">
-            <h3 className="text-sm font-medium text-white">TEI Type Performance</h3>
+            <h3 className="text-sm font-medium text-zinc-50">TEI Type Performance</h3>
             <p className="mt-0.5 text-xs text-zinc-400">Cohort average by question format</p>
             {teiBreakdown.length > 0 ? (
               <div className="mt-4">
@@ -261,7 +261,7 @@ function AnalyticsContent() {
         {/* Accreditation Metrics */}
         <div className="glass-card overflow-hidden">
           <div className="px-6 pt-5 pb-2">
-            <h3 className="text-sm font-medium text-white">Accreditation Metrics</h3>
+            <h3 className="text-sm font-medium text-zinc-50">Accreditation Metrics</h3>
             <p className="mt-0.5 text-xs text-zinc-400">CoAEMSP threshold tracking</p>
           </div>
           <Table>

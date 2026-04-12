@@ -411,7 +411,7 @@ function TestBuilderContent() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-white">Test Builder</h1>
+            <h1 className="text-2xl font-semibold text-zinc-50">Test Builder</h1>
             <p className="text-sm text-zinc-400 mt-0.5">Create assessments with real TEI formats</p>
           </div>
           <div className="flex items-center gap-2">
@@ -428,7 +428,7 @@ function TestBuilderContent() {
               size="sm"
               disabled={questions.length === 0}
               onClick={() => setPreviewIndex(0)}
-              className="glass-card text-zinc-300 hover:text-white"
+              className="glass-card text-zinc-300 hover:text-zinc-50"
             >
               <Eye className="h-4 w-4 mr-1.5" />
               Preview
@@ -478,7 +478,7 @@ function TestBuilderContent() {
         {questions.length > 0 && (
           <div className="flex items-center justify-between py-2 text-sm">
             <div className="flex items-center gap-3 text-zinc-400">
-              <span className="font-semibold text-white">{questions.length} question{questions.length !== 1 ? 's' : ''}</span>
+              <span className="font-semibold text-zinc-50">{questions.length} question{questions.length !== 1 ? 's' : ''}</span>
               <span className="text-zinc-600">|</span>
               <span>{filledCount} completed</span>
               <span className="text-zinc-600">|</span>
@@ -654,7 +654,7 @@ function TestBuilderContent() {
                             ))}
                             <Button variant="outline" size="sm" onClick={() => updateData(q.id, (prev: DDData) => ({
                               ...prev, categories: [...prev.categories, ''],
-                            }))} className="text-xs glass-card text-zinc-300 hover:text-white"><Plus className="h-3 w-3 mr-1" />Add Category</Button>
+                            }))} className="text-xs glass-card text-zinc-300 hover:text-zinc-50"><Plus className="h-3 w-3 mr-1" />Add Category</Button>
                           </div>
 
                           {/* Items */}
@@ -693,7 +693,7 @@ function TestBuilderContent() {
                             ))}
                             <Button variant="outline" size="sm" onClick={() => updateData(q.id, (prev: DDData) => ({
                               ...prev, items: [...prev.items, { id: `item${prev.items.length + 1}`, text: '' }],
-                            }))} className="text-xs glass-card text-zinc-300 hover:text-white"><Plus className="h-3 w-3 mr-1" />Add Item</Button>
+                            }))} className="text-xs glass-card text-zinc-300 hover:text-zinc-50"><Plus className="h-3 w-3 mr-1" />Add Item</Button>
                           </div>
                         </div>
                       );
@@ -728,7 +728,7 @@ function TestBuilderContent() {
                           ))}
                           <Button variant="outline" size="sm" onClick={() => updateData(q.id, (prev: BLData) => ({
                             ...prev, items: [...prev.items, ''],
-                          }))} className="text-xs glass-card text-zinc-300 hover:text-white"><Plus className="h-3 w-3 mr-1" />Add Step</Button>
+                          }))} className="text-xs glass-card text-zinc-300 hover:text-zinc-50"><Plus className="h-3 w-3 mr-1" />Add Step</Button>
                         </div>
                       );
                     })()}
@@ -762,7 +762,7 @@ function TestBuilderContent() {
                               ))}
                               <Button variant="outline" size="sm" onClick={() => updateData(q.id, (prev: OBData) => ({
                                 ...prev, columns: [...prev.columns, ''],
-                              }))} className="text-xs h-9 glass-card text-zinc-300 hover:text-white"><Plus className="h-3 w-3 mr-1" />Col</Button>
+                              }))} className="text-xs h-9 glass-card text-zinc-300 hover:text-zinc-50"><Plus className="h-3 w-3 mr-1" />Col</Button>
                             </div>
                           </div>
 
@@ -802,7 +802,7 @@ function TestBuilderContent() {
                             ))}
                             <Button variant="outline" size="sm" onClick={() => updateData(q.id, (prev: OBData) => ({
                               ...prev, rows: [...prev.rows, ''],
-                            }))} className="text-xs glass-card text-zinc-300 hover:text-white"><Plus className="h-3 w-3 mr-1" />Add Row</Button>
+                            }))} className="text-xs glass-card text-zinc-300 hover:text-zinc-50"><Plus className="h-3 w-3 mr-1" />Add Row</Button>
                           </div>
 
                           {/* Live preview */}
@@ -1073,7 +1073,7 @@ function TestBuilderContent() {
                                             ))}
                                             <Button variant="outline" size="sm" onClick={() => updatePQ((prev: DDData) => ({
                                               ...prev, items: [...prev.items, { id: `i${prev.items.length + 1}`, text: '' }],
-                                            }))} className="text-[10px] h-6 glass-card text-zinc-300 hover:text-white"><Plus className="h-2.5 w-2.5 mr-1" />Item</Button>
+                                            }))} className="text-[10px] h-6 glass-card text-zinc-300 hover:text-zinc-50"><Plus className="h-2.5 w-2.5 mr-1" />Item</Button>
                                           </div>
                                         );
                                       }
@@ -1093,7 +1093,7 @@ function TestBuilderContent() {
                                             ))}
                                             <Button variant="outline" size="sm" onClick={() => updatePQ((prev: BLData) => ({
                                               ...prev, items: [...prev.items, ''],
-                                            }))} className="text-[10px] h-6 glass-card text-zinc-300 hover:text-white"><Plus className="h-2.5 w-2.5 mr-1" />Step</Button>
+                                            }))} className="text-[10px] h-6 glass-card text-zinc-300 hover:text-zinc-50"><Plus className="h-2.5 w-2.5 mr-1" />Step</Button>
                                           </div>
                                         );
                                       }
@@ -1111,7 +1111,7 @@ function TestBuilderContent() {
                                               ))}
                                               <Button variant="outline" size="sm" onClick={() => updatePQ((prev: OBData) => ({
                                                 ...prev, columns: [...prev.columns, ''],
-                                              }))} className="text-[10px] h-8 glass-card text-zinc-300 hover:text-white"><Plus className="h-2.5 w-2.5" /></Button>
+                                              }))} className="text-[10px] h-8 glass-card text-zinc-300 hover:text-zinc-50"><Plus className="h-2.5 w-2.5" /></Button>
                                             </div>
                                             <p className="text-[10px] text-zinc-400 font-medium">Rows — select correct column:</p>
                                             {d.rows.map((row, ri) => (
@@ -1129,7 +1129,7 @@ function TestBuilderContent() {
                                             ))}
                                             <Button variant="outline" size="sm" onClick={() => updatePQ((prev: OBData) => ({
                                               ...prev, rows: [...prev.rows, ''],
-                                            }))} className="text-[10px] h-6 glass-card text-zinc-300 hover:text-white"><Plus className="h-2.5 w-2.5 mr-1" />Row</Button>
+                                            }))} className="text-[10px] h-6 glass-card text-zinc-300 hover:text-zinc-50"><Plus className="h-2.5 w-2.5 mr-1" />Row</Button>
                                           </div>
                                         );
                                       }
@@ -1155,13 +1155,13 @@ function TestBuilderContent() {
                                     ...p,
                                     questions: [...p.questions, newPhaseQuestion('MC')],
                                   } : p),
-                                }))} className="text-xs h-7 glass-card text-zinc-300 hover:text-white"><Plus className="h-3 w-3 mr-1" />Add Question to Phase</Button>
+                                }))} className="text-xs h-7 glass-card text-zinc-300 hover:text-zinc-50"><Plus className="h-3 w-3 mr-1" />Add Question to Phase</Button>
                               </div>
                             </div>
                           ))}
                           <Button variant="outline" size="sm" onClick={() => updateData(q.id, (prev: CJSData) => ({
                             ...prev, phases: [...prev.phases, { label: `Phase ${prev.phases.length + 1}`, content: '', questions: [newPhaseQuestion('MC')] }],
-                          }))} className="text-xs glass-card text-zinc-300 hover:text-white"><Plus className="h-3 w-3 mr-1" />Add Phase</Button>
+                          }))} className="text-xs glass-card text-zinc-300 hover:text-zinc-50"><Plus className="h-3 w-3 mr-1" />Add Phase</Button>
                         </div>
                       );
                     })()}
@@ -1285,7 +1285,7 @@ function TestBuilderContent() {
                     size="sm"
                     disabled={previewIndex === 0}
                     onClick={() => setPreviewIndex(Math.max(0, previewIndex - 1))}
-                    className="glass-card text-zinc-300 hover:text-white"
+                    className="glass-card text-zinc-300 hover:text-zinc-50"
                   >
                     Prev
                   </Button>
@@ -1294,11 +1294,11 @@ function TestBuilderContent() {
                     size="sm"
                     disabled={previewIndex === questions.length - 1}
                     onClick={() => setPreviewIndex(Math.min(questions.length - 1, previewIndex + 1))}
-                    className="glass-card text-zinc-300 hover:text-white"
+                    className="glass-card text-zinc-300 hover:text-zinc-50"
                   >
                     Next
                   </Button>
-                  <Button variant="ghost" size="sm" onClick={() => setPreviewIndex(null)} className="text-zinc-400 hover:text-white">
+                  <Button variant="ghost" size="sm" onClick={() => setPreviewIndex(null)} className="text-zinc-400 hover:text-zinc-50">
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
@@ -1306,7 +1306,7 @@ function TestBuilderContent() {
               <div className="border-t border-white/[0.06]" />
               {/* Render the question stem + ECG if attached */}
               <div>
-                <h2 className="text-lg font-semibold text-white mb-4 leading-relaxed">
+                <h2 className="text-lg font-semibold text-zinc-50 mb-4 leading-relaxed">
                   {questions[previewIndex].stem || '(No stem entered)'}
                 </h2>
                 {/* ECG strip preview */}

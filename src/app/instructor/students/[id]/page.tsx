@@ -214,7 +214,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl text-center py-20">
           <p className="text-zinc-400">Student not found.</p>
-          <Link href="/instructor/classes" className="mt-4 inline-block text-sm text-zinc-400 hover:text-white transition-colors">
+          <Link href="/instructor/classes" className="mt-4 inline-block text-sm text-zinc-400 hover:text-zinc-50 transition-colors">
             &larr; Classes
           </Link>
         </div>
@@ -233,7 +233,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         {/* Back link */}
         <Link
           href="/instructor/classes"
-          className="text-sm text-zinc-400 hover:text-white transition-colors"
+          className="text-sm text-zinc-400 hover:text-zinc-50 transition-colors"
         >
           &larr; Classes
         </Link>
@@ -242,7 +242,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         <div className="glass-card p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h1 className="text-2xl font-semibold text-white">{profile.fullName}</h1>
+              <h1 className="text-2xl font-semibold text-zinc-50">{profile.fullName}</h1>
               <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-zinc-400">
                 <span>{profile.email}</span>
                 <span>{profile.certLevel || 'Unknown Level'}</span>
@@ -266,7 +266,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         {/* Score Trend */}
         {scoreTrend.length > 0 && (
           <div>
-            <h2 className="text-sm font-semibold text-white mb-1">Score Trend</h2>
+            <h2 className="text-sm font-semibold text-zinc-50 mb-1">Score Trend</h2>
             <p className="text-xs text-zinc-400 mb-4">
               {scoreTrend.length} session{scoreTrend.length !== 1 ? 's' : ''}
               {scoreTrend.length >= 2 && (
@@ -313,7 +313,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         {/* Domain Mastery */}
         {domainMastery.length > 0 && (
           <div>
-            <h2 className="text-sm font-semibold text-white mb-1">Domain Mastery</h2>
+            <h2 className="text-sm font-semibold text-zinc-50 mb-1">Domain Mastery</h2>
             <p className="text-xs text-zinc-400 mb-4">Weakest areas shown first</p>
             <div className="space-y-3">
               {domainMastery.map((d) => (
@@ -339,7 +339,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         <div className="grid gap-8 lg:grid-cols-2">
           {/* TEI Performance */}
           <div>
-            <h2 className="text-sm font-semibold text-white mb-1">TEI Performance</h2>
+            <h2 className="text-sm font-semibold text-zinc-50 mb-1">TEI Performance</h2>
             <p className="text-xs text-zinc-400 mb-4">By item type</p>
             {teiPerf.length > 0 ? (
               <div className="space-y-3">
@@ -367,7 +367,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
 
           {/* Error Patterns */}
           <div>
-            <h2 className="text-sm font-semibold text-white mb-1">Error Patterns</h2>
+            <h2 className="text-sm font-semibold text-zinc-50 mb-1">Error Patterns</h2>
             <p className="text-xs text-zinc-400 mb-4">Identified weakness patterns</p>
             {errorPatterns.length > 0 ? (
               <ul className="space-y-2">
@@ -387,7 +387,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         {/* Exam Session History */}
         {sessions.length > 0 && (
           <div>
-            <h2 className="text-sm font-semibold text-white mb-1">Exam History</h2>
+            <h2 className="text-sm font-semibold text-zinc-50 mb-1">Exam History</h2>
             <p className="text-xs text-zinc-400 mb-4">
               Last {sessions.length} assessment{sessions.length !== 1 ? 's' : ''}
             </p>

@@ -266,7 +266,7 @@ export default function SessionResultsPage({
 
                     {/* Stem + badge */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-white">{q.stem}</p>
+                      <p className="text-sm text-zinc-50">{q.stem}</p>
                       <span className="inline-block mt-1.5 text-[10px] font-medium text-zinc-400 border border-white/[0.08] rounded px-1.5 py-0.5 uppercase tracking-wide">
                         {ITEM_TYPE_LABELS[q.item_type] || q.item_type}
                       </span>
@@ -316,7 +316,7 @@ export default function SessionResultsPage({
       <div className="flex items-center justify-center gap-4 pb-8">
         <Link
           href="/student/results"
-          className="inline-flex items-center justify-center rounded-lg border border-white/[0.08] px-4 py-2 text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/[0.04] transition-colors"
+          className="inline-flex items-center justify-center rounded-lg border border-white/[0.08] px-4 py-2 text-sm font-medium text-zinc-400 hover:text-zinc-50 hover:bg-white/[0.04] transition-colors"
         >
           &larr; Back
         </Link>

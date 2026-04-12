@@ -163,13 +163,13 @@ function MCRenderer({
             <span
               className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-semibold ${
                 selected
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-blue-500 text-zinc-50'
                   : 'surface-2 text-zinc-400'
               }`}
             >
               {opt.key}
             </span>
-            <span className={`text-sm pt-0.5 ${selected ? 'text-white font-medium' : 'text-zinc-400'}`}>
+            <span className={`text-sm pt-0.5 ${selected ? 'text-zinc-50 font-medium' : 'text-zinc-400'}`}>
               {opt.text}
             </span>
           </button>
@@ -217,13 +217,13 @@ function MRRenderer({
             <span
               className={`flex-shrink-0 w-7 h-7 rounded flex items-center justify-center text-sm font-semibold ${
                 selected
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-blue-500 text-zinc-50'
                   : 'surface-2 text-zinc-400'
               }`}
             >
               {selected ? <CheckCircle2 className="w-4 h-4" /> : opt.key}
             </span>
-            <span className={`text-sm pt-0.5 ${selected ? 'text-white font-medium' : 'text-zinc-400'}`}>
+            <span className={`text-sm pt-0.5 ${selected ? 'text-zinc-50 font-medium' : 'text-zinc-400'}`}>
               {opt.text}
             </span>
           </button>
@@ -256,7 +256,7 @@ function DDRenderer({
           <select
             value={answer[item.id] || ''}
             onChange={(e) => onChange({ ...answer, [item.id]: e.target.value })}
-            className="rounded-lg border border-zinc-700 bg-zinc-900/50 px-3 py-1.5 text-sm text-white focus:border-blue-500/40 focus:ring-1 focus:ring-blue-500/40 outline-none"
+            className="rounded-lg border border-zinc-700 bg-zinc-900/50 px-3 py-1.5 text-sm text-zinc-50 focus:border-blue-500/40 focus:ring-1 focus:ring-blue-500/40 outline-none"
           >
             <option value="">-- Select --</option>
             {data.categories.map((cat, idx) => (
@@ -304,7 +304,7 @@ function BLRenderer({
           <select
             value={pos}
             onChange={(e) => setPosition(origIdx, parseInt(e.target.value))}
-            className="rounded-lg border border-zinc-700 bg-zinc-900/50 px-2 py-1 text-sm text-white w-16 text-center font-mono font-bold focus:border-blue-500/40 focus:ring-1 focus:ring-blue-500/40 outline-none"
+            className="rounded-lg border border-zinc-700 bg-zinc-900/50 px-2 py-1 text-sm text-zinc-50 w-16 text-center font-mono font-bold focus:border-blue-500/40 focus:ring-1 focus:ring-blue-500/40 outline-none"
           >
             {data.items.map((_, i) => (
               <option key={i} value={i}>
@@ -404,7 +404,7 @@ function CJSRenderer({
             <span className="inline-flex items-center rounded-md bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-400">
               Phase {phaseIdx + 1}
             </span>
-            <h4 className="text-sm font-semibold text-white">{phase.label}</h4>
+            <h4 className="text-sm font-semibold text-zinc-50">{phase.label}</h4>
           </div>
 
           <div className="p-4 space-y-4">
@@ -487,7 +487,7 @@ function CJSRenderer({
               return (
                 <div key={qIdx} className="border-t border-white/[0.06] pt-4">
                   {pq.ecgStripId && <ECGStripPreview stripId={pq.ecgStripId} />}
-                  <p className="text-sm font-medium text-white mb-3">{pq.stem}</p>
+                  <p className="text-sm font-medium text-zinc-50 mb-3">{pq.stem}</p>
                   {renderSubQuestion(pq, subAnswer, (val: any) => updateSubAnswer(phaseIdx, qIdx, val))}
                 </div>
               );
@@ -641,7 +641,7 @@ function QuestionNav({
             onClick={() => onJump(idx)}
             className={`w-9 h-9 rounded-lg text-xs font-semibold transition-colors relative ${
               isCurrent
-                ? 'ring-2 ring-blue-400 surface-1 text-white'
+                ? 'ring-2 ring-blue-400 surface-1 text-zinc-50'
                 : answered
                 ? 'surface-2 text-zinc-300 hover:bg-zinc-700'
                 : 'surface-1 text-zinc-400 border border-white/[0.06] hover:bg-white/[0.04]'
@@ -929,7 +929,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
         <div className="max-w-5xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <h1 className="text-sm font-semibold text-white truncate">{assessment.name}</h1>
+              <h1 className="text-sm font-semibold text-zinc-50 truncate">{assessment.name}</h1>
             </div>
 
             <div className="inline-flex items-center rounded-md surface-2 px-2.5 py-1 text-sm text-zinc-400">
@@ -971,7 +971,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                     {currentQuestion.item_type === 'OB' && 'Matrix / Options Box'}
                     {currentQuestion.item_type === 'CJS' && 'Clinical Judgment Scenario'}
                   </span>
-                  <h2 className="text-lg font-medium text-white leading-relaxed">
+                  <h2 className="text-lg font-medium text-zinc-50 leading-relaxed">
                     {currentQuestion.stem}
                   </h2>
                 </div>
@@ -1045,7 +1045,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
               <button
                 onClick={goPrev}
                 disabled={currentIndex === 0}
-                className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-white disabled:text-zinc-600 disabled:cursor-not-allowed transition-colors"
+                className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-50 disabled:text-zinc-600 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Previous
@@ -1073,7 +1073,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                 ) : (
                   <button
                     onClick={goNext}
-                    className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-white transition-colors"
+                    className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-50 transition-colors"
                   >
                     Next
                     <ChevronRight className="w-4 h-4" />
@@ -1122,12 +1122,12 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
         <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="max-w-md w-full glass-card shadow-2xl">
             <div className="p-6 space-y-4">
-              <h3 className="text-lg font-semibold text-white">Submit Exam?</h3>
+              <h3 className="text-lg font-semibold text-zinc-50">Submit Exam?</h3>
 
               <div className="space-y-2 text-sm text-zinc-400">
                 <p>
-                  You have answered <strong className="text-white">{answeredCount}</strong> of{' '}
-                  <strong className="text-white">{questions.length}</strong> questions.
+                  You have answered <strong className="text-zinc-50">{answeredCount}</strong> of{' '}
+                  <strong className="text-zinc-50">{questions.length}</strong> questions.
                 </p>
                 {answeredCount < questions.length && (
                   <p className="text-red-400">
@@ -1147,7 +1147,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
               <div className="flex gap-3 pt-2 border-t border-white/[0.06]">
                 <button
-                  className="flex-1 rounded-lg border border-white/[0.08] px-4 py-2 text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/[0.04] transition-colors"
+                  className="flex-1 rounded-lg border border-white/[0.08] px-4 py-2 text-sm font-medium text-zinc-400 hover:text-zinc-50 hover:bg-white/[0.04] transition-colors"
                   onClick={() => setShowConfirm(false)}
                 >
                   Keep Working

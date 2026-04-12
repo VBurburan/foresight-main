@@ -107,7 +107,7 @@ function ExamplesContent() {
       <div className="mx-auto max-w-4xl space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-semibold text-white">TEI Reference</h1>
+          <h1 className="text-2xl font-semibold text-zinc-50">TEI Reference</h1>
           <p className="text-sm text-zinc-400 mt-1">Reference guide for creating NREMT-style assessment items</p>
         </div>
 
@@ -125,7 +125,7 @@ function ExamplesContent() {
                 <span className="surface-2 text-zinc-300 font-mono text-xs font-semibold rounded px-2 py-0.5">
                   {tei.type}
                 </span>
-                <span className="text-base font-semibold text-white">{tei.label}</span>
+                <span className="text-base font-semibold text-zinc-50">{tei.label}</span>
               </div>
               <p className="text-sm text-zinc-400 mb-4">{tei.description}</p>
 
@@ -143,7 +143,7 @@ function ExamplesContent() {
                         <div
                           key={opt}
                           className={`flex items-center gap-2 rounded px-3 py-2 text-sm ${
-                            isCorrect ? 'surface-1 ring-1 ring-white/[0.06] font-medium text-white' : 'text-zinc-400'
+                            isCorrect ? 'surface-1 ring-1 ring-white/[0.06] font-medium text-zinc-50' : 'text-zinc-400'
                           }`}
                         >
                           {isCorrect && <span className="text-emerald-400 text-xs font-bold">&#10003;</span>}

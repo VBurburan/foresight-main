@@ -52,7 +52,7 @@ export function ForesightSidebar() {
             />
           </div>
           <div>
-            <p className="text-sm font-semibold text-white leading-none">
+            <p className="text-sm font-semibold text-zinc-50 leading-none">
               Foresight
             </p>
             <p className="text-[10px] text-zinc-400 uppercase tracking-widest mt-0.5">
@@ -76,7 +76,7 @@ export function ForesightSidebar() {
               className={cn(
                 "flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors",
                 isActive
-                  ? "bg-white/[0.06] text-white border-l-2 border-blue-400 font-medium"
+                  ? "bg-white/[0.06] text-zinc-50 border-l-2 border-blue-400 font-medium"
                   : "text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
               )}
             >
@@ -136,7 +136,7 @@ export function ForesightSidebar() {
               height={16}
             />
           </div>
-          <span className="text-sm font-semibold text-white">Foresight</span>
+          <span className="text-sm font-semibold text-zinc-50">Foresight</span>
         </div>
         <div className="w-5" />
       </div>

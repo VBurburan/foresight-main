@@ -115,7 +115,7 @@ export default function StudentExamsPage() {
 
   return (
     <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-10">
-      <h1 className="text-2xl font-semibold text-white">Exams</h1>
+      <h1 className="text-2xl font-semibold text-zinc-50">Exams</h1>
 
       {/* Available Assessments */}
       <section className="space-y-4">
@@ -138,7 +138,7 @@ export default function StudentExamsPage() {
                 className="flex items-center justify-between px-5 py-4 hover:bg-white/[0.02] transition-colors"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-white truncate">
+                  <p className="text-sm font-medium text-zinc-50 truncate">
                     {assessment.name}
                   </p>
                   <p className="text-xs text-zinc-400 mt-0.5">
@@ -195,7 +195,7 @@ export default function StudentExamsPage() {
 
                   return (
                     <tr key={session.id} className="hover:bg-white/[0.02] transition-colors">
-                      <td className="px-5 py-3 font-medium text-white">
+                      <td className="px-5 py-3 font-medium text-zinc-50">
                         {a?.name || 'Unknown Assessment'}
                       </td>
                       <td className="px-5 py-3">

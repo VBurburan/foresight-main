@@ -131,19 +131,19 @@ export default function StudentResultsPage() {
 
   return (
     <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-10">
-      <h1 className="text-2xl font-semibold text-white">Results</h1>
+      <h1 className="text-2xl font-semibold text-zinc-50">Results</h1>
 
       {/* Summary Stats */}
       {completedSessions.length > 0 && (
         <div className="glass-card flex items-center gap-8 px-6 py-4">
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">Total Exams</p>
-            <p className="text-lg font-semibold text-white">{completedSessions.length}</p>
+            <p className="text-lg font-semibold text-zinc-50">{completedSessions.length}</p>
           </div>
           <div className="w-px h-8 bg-white/[0.06]" />
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">Average Score</p>
-            <p className="text-lg font-semibold text-white">{avgScore ?? '--'}%</p>
+            <p className="text-lg font-semibold text-zinc-50">{avgScore ?? '--'}%</p>
           </div>
           <div className="w-px h-8 bg-white/[0.06]" />
           <div>
@@ -187,7 +187,7 @@ export default function StudentResultsPage() {
 
                 return (
                   <tr key={session.id} className="hover:bg-white/[0.02] transition-colors">
-                    <td className="px-5 py-3 font-medium text-white">
+                    <td className="px-5 py-3 font-medium text-zinc-50">
                       {session.assessment_name}
                     </td>
                     <td className="px-5 py-3">
