@@ -244,13 +244,13 @@ function AnalyticsContent() {
     return (
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl space-y-6">
-          <div className="h-8 w-48 rounded-md bg-zinc-800 animate-pulse" />
+          <div className="h-8 w-48 rounded-md bg-zinc-100 animate-pulse" />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-28 rounded-xl bg-zinc-800/50 animate-pulse" />
+              <div key={i} className="h-28 rounded-xl bg-zinc-100 animate-pulse" />
             ))}
           </div>
-          <div className="h-96 rounded-xl bg-zinc-800/50 animate-pulse" />
+          <div className="h-96 rounded-xl bg-zinc-100 animate-pulse" />
         </div>
       </div>
     );
@@ -272,7 +272,7 @@ function AnalyticsContent() {
         {/* Header with class selector */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-zinc-50 font-heading">Analytics Dashboard</h1>
+            <h1 className="text-2xl font-bold text-zinc-900 font-heading">Analytics Dashboard</h1>
             <p className="mt-1 text-sm text-zinc-400">
               {useDemoData ? 'Showing sample data — real data appears after students complete exams' : 'Cohort performance analysis'}
             </p>
@@ -281,7 +281,7 @@ function AnalyticsContent() {
             <select
               value={selectedClass}
               onChange={(e) => setSelectedClass(e.target.value)}
-              className="px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+              className="px-3 py-2 rounded-lg bg-zinc-100 border border-zinc-300 text-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40"
             >
               <option value="all">All Classes</option>
               {classes.map((c) => (
@@ -294,7 +294,7 @@ function AnalyticsContent() {
         {/* Demo data banner */}
         {useDemoData && (
           <div className="glass-subtle border-l-2 border-blue-400/60 px-4 py-3">
-            <p className="text-xs text-zinc-300">
+            <p className="text-xs text-zinc-600">
               <span className="font-semibold text-blue-400">Demo Mode</span> — Showing sample analytics from a paramedic pre/post analysis report. Your real student data will replace this automatically.
             </p>
           </div>
@@ -303,20 +303,20 @@ function AnalyticsContent() {
         {/* Stat cards */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { label: 'Students', value: useDemoData ? '1' : String(studentCount), icon: Users, sub: 'enrolled', color: 'text-blue-400' },
-            { label: 'Assessments', value: useDemoData ? '2' : String(sessionCount), icon: BarChart3, sub: 'completed', color: 'text-indigo-400' },
-            { label: 'Avg Score', value: data.overallPost ? `${data.overallPost}%` : '--', icon: Target, sub: 'cohort average', color: (data.overallPost ?? 0) >= 70 ? 'text-emerald-400' : 'text-amber-400' },
-            { label: 'At Risk', value: useDemoData ? '0' : String(atRiskCount), icon: AlertTriangle, sub: 'below 70%', color: atRiskCount > 0 ? 'text-red-400' : 'text-emerald-400' },
+            { label: 'Students', value: useDemoData ? '1' : String(studentCount), icon: Users, sub: 'enrolled', color: 'text-blue-400', gradient: 'gradient-blue', iconBg: 'bg-blue-500/10 border-blue-500/20' },
+            { label: 'Assessments', value: useDemoData ? '2' : String(sessionCount), icon: BarChart3, sub: 'completed', color: 'text-indigo-400', gradient: 'gradient-indigo', iconBg: 'bg-indigo-500/10 border-indigo-500/20' },
+            { label: 'Avg Score', value: data.overallPost ? `${data.overallPost}%` : '--', icon: Target, sub: 'cohort average', color: (data.overallPost ?? 0) >= 70 ? 'text-emerald-400' : 'text-amber-400', gradient: 'gradient-emerald', iconBg: 'bg-emerald-500/10 border-emerald-500/20' },
+            { label: 'At Risk', value: useDemoData ? '0' : String(atRiskCount), icon: AlertTriangle, sub: 'below 70%', color: atRiskCount > 0 ? 'text-red-400' : 'text-emerald-400', gradient: atRiskCount > 0 ? 'gradient-red' : 'gradient-emerald', iconBg: atRiskCount > 0 ? 'bg-red-500/10 border-red-500/20' : 'bg-emerald-500/10 border-emerald-500/20' },
           ].map((stat) => (
-            <div key={stat.label} className="glass-card p-5 group hover:bg-white/[0.12] transition-all duration-200">
+            <div key={stat.label} className={`stat-card ${stat.gradient}`}>
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">{stat.label}</p>
                   <p className={`mt-2 text-3xl font-bold tabular-nums ${stat.color}`}>{stat.value}</p>
-                  <p className="mt-1 text-xs text-zinc-400">{stat.sub}</p>
+                  <p className="mt-1 text-xs text-zinc-9000">{stat.sub}</p>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg surface-2 group-hover:bg-white/[0.08] transition-colors">
-                  <stat.icon className="h-5 w-5 text-zinc-400" />
+                <div className={`flex h-10 w-10 items-center justify-center rounded-lg border ${stat.iconBg}`}>
+                  <stat.icon className={`h-5 w-5 ${stat.color}`} />
                 </div>
               </div>
             </div>
@@ -334,11 +334,11 @@ function AnalyticsContent() {
 
         {/* Section 1: Clinical Judgment Radar */}
         <section>
-          <div className="glass-card overflow-hidden">
+          <div className="section-card overflow-hidden">
             <div className="px-6 pt-6 pb-2">
               <div className="flex items-center gap-2">
                 <Activity className="h-5 w-5 text-teal-400" />
-                <h2 className="text-lg font-semibold text-zinc-50">Clinical Judgment Cognitive Functions</h2>
+                <h2 className="text-lg font-semibold text-zinc-900">Clinical Judgment Cognitive Functions</h2>
               </div>
               <p className="mt-1 text-sm text-zinc-400">
                 Performance across the 6 NCSBN Clinical Judgment functions
@@ -352,11 +352,11 @@ function AnalyticsContent() {
 
         {/* Section 2: Domain Performance */}
         <section>
-          <div className="glass-card overflow-hidden">
+          <div className="section-card overflow-hidden">
             <div className="px-6 pt-6 pb-2">
               <div className="flex items-center gap-2">
                 <BarChart3 className="h-5 w-5 text-blue-400" />
-                <h2 className="text-lg font-semibold text-zinc-50">Domain Performance Analysis</h2>
+                <h2 className="text-lg font-semibold text-zinc-900">Domain Performance Analysis</h2>
               </div>
               <p className="mt-1 text-sm text-zinc-400">
                 Score comparison by NREMT content domain
@@ -370,11 +370,11 @@ function AnalyticsContent() {
 
         {/* Section 3: TEI Performance */}
         <section>
-          <div className="glass-card overflow-hidden">
+          <div className="section-card overflow-hidden">
             <div className="px-6 pt-6 pb-2">
               <div className="flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-indigo-400" />
-                <h2 className="text-lg font-semibold text-zinc-50">Technology-Enhanced Item (TEI) Performance</h2>
+                <h2 className="text-lg font-semibold text-zinc-900">Technology-Enhanced Item (TEI) Performance</h2>
               </div>
               <p className="mt-1 text-sm text-zinc-400">
                 Accuracy by question format
@@ -389,9 +389,9 @@ function AnalyticsContent() {
         {/* Section 4: Domain × TEI Heatmap */}
         {data.heatmap.length > 0 && (
           <section>
-            <div className="glass-card overflow-hidden">
+            <div className="section-card overflow-hidden">
               <div className="px-6 pt-6 pb-2">
-                <h2 className="text-lg font-semibold text-zinc-50">Domain × TEI Format Heatmap</h2>
+                <h2 className="text-lg font-semibold text-zinc-900">Domain × TEI Format Heatmap</h2>
                 <p className="mt-1 text-sm text-zinc-400">
                   Cross-tabulation showing exactly where gaps exist
                 </p>
@@ -406,9 +406,9 @@ function AnalyticsContent() {
         {/* Section 5: Error Distribution */}
         {(data.errorsByDomain.length > 0 || data.errorsByTEI.length > 0) && (
           <section>
-            <div className="glass-card overflow-hidden">
+            <div className="section-card overflow-hidden">
               <div className="px-6 pt-6 pb-2">
-                <h2 className="text-lg font-semibold text-zinc-50">Error Distribution</h2>
+                <h2 className="text-lg font-semibold text-zinc-900">Error Distribution</h2>
                 <p className="mt-1 text-sm text-zinc-400">
                   Where errors concentrate by domain and question format
                 </p>
@@ -423,9 +423,9 @@ function AnalyticsContent() {
         {/* Section 6: Specific Error Table */}
         {data.specificErrors.length > 0 && (
           <section>
-            <div className="glass-card overflow-hidden">
+            <div className="section-card overflow-hidden">
               <div className="px-6 pt-6 pb-2">
-                <h2 className="text-lg font-semibold text-zinc-50">Specific Error Breakdown</h2>
+                <h2 className="text-lg font-semibold text-zinc-900">Specific Error Breakdown</h2>
                 <p className="mt-1 text-sm text-zinc-400">
                   Granular analysis — question number, type, domain, CJ function, and error pattern
                 </p>
@@ -440,9 +440,9 @@ function AnalyticsContent() {
         {/* Section 7: Readiness Projection */}
         {data.readinessScore !== null && (
           <section>
-            <div className="glass-card overflow-hidden">
+            <div className="section-card overflow-hidden">
               <div className="px-6 pt-6 pb-2">
-                <h2 className="text-lg font-semibold text-zinc-50">NREMT Readiness Projection</h2>
+                <h2 className="text-lg font-semibold text-zinc-900">NREMT Readiness Projection</h2>
                 <p className="mt-1 text-sm text-zinc-400">
                   Estimated scaled score based on practice exam performance
                 </p>

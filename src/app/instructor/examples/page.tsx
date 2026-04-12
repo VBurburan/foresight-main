@@ -107,7 +107,7 @@ function ExamplesContent() {
       <div className="mx-auto max-w-4xl space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-semibold text-zinc-50">TEI Reference</h1>
+          <h1 className="text-2xl font-semibold text-zinc-900">TEI Reference</h1>
           <p className="text-sm text-zinc-400 mt-1">Reference guide for creating NREMT-style assessment items</p>
         </div>
 
@@ -119,20 +119,20 @@ function ExamplesContent() {
         {/* TEI Examples */}
         <div className="space-y-8">
           {TEI_EXAMPLES.map((tei) => (
-            <div key={tei.type} className="border-l-2 border-zinc-700 pl-6">
+            <div key={tei.type} className="border-l-2 border-zinc-300 pl-6">
               {/* Type header */}
               <div className="flex items-center gap-3 mb-2">
-                <span className="surface-2 text-zinc-300 font-mono text-xs font-semibold rounded px-2 py-0.5">
+                <span className="surface-2 text-zinc-600 font-mono text-xs font-semibold rounded px-2 py-0.5">
                   {tei.type}
                 </span>
-                <span className="text-base font-semibold text-zinc-50">{tei.label}</span>
+                <span className="text-base font-semibold text-zinc-900">{tei.label}</span>
               </div>
               <p className="text-sm text-zinc-400 mb-4">{tei.description}</p>
 
               {/* MC/MR Example */}
               {(tei.type === 'MC' || tei.type === 'MR') && tei.example && 'options' in tei.example && (
                 <div className="space-y-3">
-                  <p className="text-sm text-zinc-300">{tei.example.stem}</p>
+                  <p className="text-sm text-zinc-600">{tei.example.stem}</p>
                   <div className="space-y-1.5">
                     {(tei.example.options || []).map((opt: string) => {
                       const key = opt.charAt(0);
@@ -143,7 +143,7 @@ function ExamplesContent() {
                         <div
                           key={opt}
                           className={`flex items-center gap-2 rounded px-3 py-2 text-sm ${
-                            isCorrect ? 'surface-1 ring-1 ring-white/[0.06] font-medium text-zinc-50' : 'text-zinc-400'
+                            isCorrect ? 'surface-1 ring-1 ring-white/[0.06] font-medium text-zinc-900' : 'text-zinc-400'
                           }`}
                         >
                           {isCorrect && <span className="text-emerald-400 text-xs font-bold">&#10003;</span>}
@@ -153,7 +153,7 @@ function ExamplesContent() {
                     })}
                   </div>
                   {tei.example.rationale && (
-                    <div className="border-l-2 border-zinc-700 pl-4 mt-3">
+                    <div className="border-l-2 border-zinc-300 pl-4 mt-3">
                       <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1">Rationale</p>
                       <p className="text-sm text-zinc-400">{tei.example.rationale}</p>
                     </div>
@@ -164,17 +164,17 @@ function ExamplesContent() {
               {/* DD Example */}
               {tei.type === 'DD' && tei.example && 'categories' in tei.example && (
                 <div className="space-y-3">
-                  <p className="text-sm text-zinc-300">{tei.example.stem}</p>
+                  <p className="text-sm text-zinc-600">{tei.example.stem}</p>
                   <div className="flex gap-2 flex-wrap">
                     {((tei.example as any).items || []).map((item: string) => (
-                      <span key={item} className="px-3 py-1.5 rounded surface-1 ring-1 ring-white/[0.06] text-xs font-medium text-zinc-300">
+                      <span key={item} className="px-3 py-1.5 rounded surface-1 ring-1 ring-white/[0.06] text-xs font-medium text-zinc-600">
                         {item}
                       </span>
                     ))}
                   </div>
                   <div className="grid grid-cols-3 gap-2 mt-2">
                     {((tei.example as any).categories || []).map((cat: string) => (
-                      <div key={cat} className="rounded border-2 border-dashed border-zinc-700 p-3 text-center">
+                      <div key={cat} className="rounded border-2 border-dashed border-zinc-300 p-3 text-center">
                         <p className="text-xs font-semibold text-zinc-400">{cat}</p>
                       </div>
                     ))}
@@ -185,12 +185,12 @@ function ExamplesContent() {
               {/* BL Example */}
               {tei.type === 'BL' && tei.example && 'items' in tei.example && !('categories' in tei.example) && (
                 <div className="space-y-3">
-                  <p className="text-sm text-zinc-300">{tei.example.stem}</p>
+                  <p className="text-sm text-zinc-600">{tei.example.stem}</p>
                   <div className="space-y-1.5">
                     {((tei.example as any).items || []).map((item: string, i: number) => (
                       <div key={i} className="flex items-center gap-2 rounded surface-1 ring-1 ring-white/[0.06] px-3 py-2">
                         <span className="text-xs font-mono font-semibold text-zinc-400 w-5 text-center">{i + 1}</span>
-                        <span className="text-sm text-zinc-300">{item.replace(/^\d+\.\s*/, '')}</span>
+                        <span className="text-sm text-zinc-600">{item.replace(/^\d+\.\s*/, '')}</span>
                       </div>
                     ))}
                   </div>
@@ -200,11 +200,11 @@ function ExamplesContent() {
               {/* OB Example */}
               {tei.type === 'OB' && tei.example && 'columns' in tei.example && 'rows' in tei.example && (
                 <div className="space-y-3">
-                  <p className="text-sm text-zinc-300">{tei.example.stem}</p>
+                  <p className="text-sm text-zinc-600">{tei.example.stem}</p>
                   <div className="rounded-lg surface-1 ring-1 ring-white/[0.06] overflow-hidden">
                     <table className="w-full text-xs">
                       <thead>
-                        <tr className="border-b border-white/[0.06]">
+                        <tr className="border-b border-zinc-200">
                           <th className="text-left py-2 px-3 font-medium text-zinc-400">Intervention</th>
                           {((tei.example as any).columns || []).map((col: string) => (
                             <th key={col} className="text-center py-2 px-3 font-medium text-zinc-400">{col}</th>
@@ -213,8 +213,8 @@ function ExamplesContent() {
                       </thead>
                       <tbody>
                         {((tei.example as any).rows || []).map((row: any, ri: number) => (
-                          <tr key={ri} className="border-b border-white/[0.04]">
-                            <td className="py-2 px-3 text-zinc-300">{row.statement}</td>
+                          <tr key={ri} className="border-b border-zinc-200">
+                            <td className="py-2 px-3 text-zinc-600">{row.statement}</td>
                             {((tei.example as any).columns || []).map((col: string) => (
                               <td key={col} className="text-center py-2 px-3">
                                 <div className={`w-4 h-4 rounded-full border-2 mx-auto ${
@@ -234,10 +234,10 @@ function ExamplesContent() {
               {tei.type === 'CJS' && tei.example && 'phases' in tei.example && (
                 <div className="space-y-4">
                   {(tei.example.phases as any[]).map((phase: any, pi: number) => (
-                    <div key={pi} className="border-l-2 border-zinc-700 pl-4">
+                    <div key={pi} className="border-l-2 border-zinc-300 pl-4">
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-xs font-mono text-zinc-400">Phase {pi + 1}</span>
-                        <span className="text-sm font-semibold text-zinc-300">{phase.label}</span>
+                        <span className="text-sm font-semibold text-zinc-600">{phase.label}</span>
                       </div>
                       <p className="text-xs text-zinc-400 mb-2 leading-relaxed">{phase.context}</p>
                       <div className="space-y-1">

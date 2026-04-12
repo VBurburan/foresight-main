@@ -107,7 +107,7 @@ export function getAssessmentColor(label: string): string {
     case 'MASTERED': return 'text-emerald-400';
     case 'STRONG GAIN': return 'text-emerald-400';
     case 'IMPROVED': return 'text-blue-400';
-    case 'PROGRESSING': return 'text-zinc-300';
+    case 'PROGRESSING': return 'text-zinc-600';
     case 'NEXT PRIORITY': return 'text-amber-400';
     default: return 'text-zinc-400';
   }
@@ -118,19 +118,19 @@ export function getAssessmentBg(label: string): string {
     case 'MASTERED': return 'bg-emerald-400/10 text-emerald-400 border-emerald-400/20';
     case 'STRONG GAIN': return 'bg-emerald-400/10 text-emerald-400 border-emerald-400/20';
     case 'IMPROVED': return 'bg-blue-400/10 text-blue-400 border-blue-400/20';
-    case 'PROGRESSING': return 'bg-zinc-400/10 text-zinc-300 border-zinc-400/20';
+    case 'PROGRESSING': return 'bg-zinc-100 text-zinc-600 border-zinc-300';
     case 'NEXT PRIORITY': return 'bg-amber-400/10 text-amber-400 border-amber-400/20';
-    default: return 'bg-zinc-800 text-zinc-400 border-zinc-700';
+    default: return 'bg-zinc-100 text-zinc-500 border-zinc-300';
   }
 }
 
 // Heatmap cell color based on percentage
 export function heatmapColor(pct: number): string {
-  if (pct >= 80) return 'bg-emerald-500/80 text-white';
-  if (pct >= 60) return 'bg-emerald-600/50 text-emerald-100';
-  if (pct >= 40) return 'bg-amber-500/50 text-amber-100';
-  if (pct >= 20) return 'bg-red-500/40 text-red-100';
-  return 'bg-red-600/60 text-red-100';
+  if (pct >= 80) return 'bg-emerald-100 text-emerald-800';
+  if (pct >= 60) return 'bg-emerald-50 text-emerald-700';
+  if (pct >= 40) return 'bg-amber-50 text-amber-700';
+  if (pct >= 20) return 'bg-red-50 text-red-700';
+  return 'bg-red-100 text-red-800';
 }
 
 export function heatmapBorder(pct: number): string {

@@ -12,7 +12,7 @@ export default function LoginPageWrapper() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="min-h-screen flex items-center justify-center bg-[#FAFAFA]">
           <p className="text-zinc-400 text-sm">Loading...</p>
         </div>
       }
@@ -74,13 +74,10 @@ function LoginPage() {
   };
 
   return (
-    <main className="relative min-h-screen flex flex-col items-center justify-center bg-background px-4">
-      {/* Subtle radial gradient overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.06),transparent_60%)]" />
-
+    <main className="relative min-h-screen flex flex-col items-center justify-center bg-[#FAFAFA] px-4">
       {/* Logo + Wordmark */}
       <div className="relative z-10 flex flex-col items-center gap-3 mb-8">
-        <div className="w-14 h-14 rounded-xl bg-white p-3 shadow-glow-blue flex items-center justify-center">
+        <div className="w-14 h-14 rounded-xl bg-white border border-zinc-200 p-3 shadow-elevation-2 flex items-center justify-center">
           <Image
             src="/images/foresight-logo.png"
             alt="Foresight"
@@ -89,23 +86,28 @@ function LoginPage() {
             className="w-full h-full object-contain"
           />
         </div>
-        <span className="text-xl font-semibold text-white tracking-tight">
-          Foresight
-        </span>
+        <div className="text-center">
+          <h2 className="text-xl font-bold text-zinc-900 tracking-tight font-heading">
+            Foresight
+          </h2>
+          <p className="text-[10px] text-zinc-400 mt-0.5 uppercase tracking-widest font-medium">
+            Assessment Platform
+          </p>
+        </div>
       </div>
 
       {/* Card */}
-      <div className="relative z-10 w-full max-w-sm glass-card ring-1 ring-white/[0.08] p-8">
+      <div className="relative z-10 w-full max-w-sm bg-white border border-zinc-200 rounded-2xl shadow-elevation-2 p-8">
         <div className="mb-6">
-          <h1 className="text-xl font-semibold text-white">Sign in</h1>
-          <p className="text-sm text-zinc-400 mt-1">
-            Enter your credentials to continue
+          <h1 className="text-xl font-bold text-zinc-900">Welcome back</h1>
+          <p className="text-sm text-zinc-500 mt-1">
+            Sign in to your account
           </p>
         </div>
 
         <form onSubmit={handleSignIn} className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-sm text-zinc-300">
+            <Label htmlFor="email" className="text-sm text-zinc-700 font-medium">
               Email
             </Label>
             <Input
@@ -116,12 +118,12 @@ function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-400 focus:ring-blue-500/40 focus:border-blue-500/40"
+              className="bg-white border-zinc-300 text-zinc-900 placeholder:text-zinc-400 focus:ring-blue-500/40 focus:border-blue-500 h-11"
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="password" className="text-sm text-zinc-300">
+            <Label htmlFor="password" className="text-sm text-zinc-700 font-medium">
               Password
             </Label>
             <Input
@@ -132,35 +134,37 @@ function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
-              className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-400 focus:ring-blue-500/40 focus:border-blue-500/40"
+              className="bg-white border-zinc-300 text-zinc-900 placeholder:text-zinc-400 focus:ring-blue-500/40 focus:border-blue-500 h-11"
             />
           </div>
 
           {error && (
-            <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2.5 text-sm text-red-400">
+            <div className="rounded-lg bg-red-50 border border-red-200 px-3 py-2.5 text-sm text-red-600">
               {error}
             </div>
           )}
 
           <Button
             type="submit"
-            className="w-full bg-white hover:bg-zinc-100 text-zinc-900 font-medium h-10"
+            className="w-full bg-zinc-900 hover:bg-zinc-800 text-white font-medium h-11 transition-colors"
             disabled={loading}
           >
             {loading ? "Signing in..." : "Sign In"}
           </Button>
         </form>
 
-        <p className="text-xs text-zinc-400 text-center mt-5">
-          Students: use credentials from your instructor
-        </p>
+        <div className="mt-5 pt-4 border-t border-zinc-100">
+          <p className="text-xs text-zinc-400 text-center">
+            Students: use credentials provided by your instructor
+          </p>
+        </div>
       </div>
 
       {/* Below card */}
       <div className="relative z-10 mt-6">
         <a
           href="mailto:vincent@foresight.edu"
-          className="text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+          className="text-xs text-zinc-400 hover:text-zinc-600 transition-colors"
         >
           Need access? Contact us
         </a>

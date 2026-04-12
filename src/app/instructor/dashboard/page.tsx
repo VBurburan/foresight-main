@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Plus } from 'lucide-react';
+import { Plus, Users, Layers, Target, AlertTriangle, ArrowRight, BookOpen } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { InstructorGuard } from '@/components/auth/instructor-guard';
 import { useUser } from '@/components/auth/auth-provider';
@@ -212,17 +212,17 @@ function DashboardContent() {
     return (
       <div className="px-6 py-8 lg:px-10">
         <div className="mx-auto max-w-6xl">
-          <div className="h-7 w-32 rounded-md bg-zinc-800 animate-pulse" />
-          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="h-7 w-32 rounded-md bg-zinc-100 animate-pulse" />
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="glass-card p-5 space-y-3">
-                <div className="h-3 w-16 rounded-md bg-zinc-800 animate-pulse" />
-                <div className="h-7 w-20 rounded-md bg-zinc-800 animate-pulse" />
-                <div className="h-3 w-24 rounded-md bg-zinc-800 animate-pulse" />
+              <div key={i} className="bg-white border border-zinc-200 rounded-xl p-5 space-y-3">
+                <div className="h-3 w-16 rounded bg-zinc-100 animate-pulse" />
+                <div className="h-7 w-20 rounded bg-zinc-100 animate-pulse" />
+                <div className="h-3 w-24 rounded bg-zinc-100 animate-pulse" />
               </div>
             ))}
           </div>
-          <div className="mt-8 h-72 rounded-xl bg-zinc-800/50 animate-pulse" />
+          <div className="mt-6 h-72 rounded-xl bg-white border border-zinc-200 animate-pulse" />
         </div>
       </div>
     );
@@ -234,11 +234,11 @@ function DashboardContent() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-zinc-50 font-heading">Dashboard</h1>
-            <p className="text-sm text-zinc-400 mt-0.5">Overview of your classes and student performance</p>
+            <h1 className="text-2xl font-semibold text-zinc-900 tracking-tight">Dashboard</h1>
+            <p className="text-sm text-zinc-500 mt-0.5">Overview of your classes and student performance</p>
           </div>
           <Link href="/instructor/classes">
-            <button className="inline-flex items-center gap-1.5 rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-zinc-900 transition-all hover:bg-zinc-100 shadow-elevation-1 hover:shadow-elevation-2">
+            <button className="inline-flex items-center gap-1.5 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800">
               <Plus className="h-4 w-4" />
               New Class
             </button>
@@ -247,39 +247,41 @@ function DashboardContent() {
 
         {/* Empty state for no classes */}
         {!hasClasses && (
-          <div className="mt-10 text-center py-16">
-            <div className="mx-auto surface-2 rounded-full p-4 w-fit mb-4">
-              <Plus className="h-6 w-6 text-zinc-400" />
+          <div className="mt-10 section-card">
+            <div className="text-center py-16 px-6">
+              <div className="mx-auto w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-5">
+                <BookOpen className="h-7 w-7 text-blue-400" />
+              </div>
+              <h2 className="text-lg font-semibold text-zinc-800">Welcome to Foresight</h2>
+              <p className="mt-2 text-sm text-zinc-500 max-w-md mx-auto">
+                Create your first class to start building assessments, tracking student progress, and generating analytics.
+              </p>
+              <Link href="/instructor/classes">
+                <button className="mt-6 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-blue-500 shadow-elevation-1 hover:shadow-elevation-2">
+                  <Plus className="h-4 w-4" />
+                  Create Your First Class
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </Link>
             </div>
-            <p className="text-sm font-medium text-zinc-300">No classes yet</p>
-            <p className="mt-1 text-sm text-zinc-400">
-              Create your first class to start tracking student progress and building assessments.
-            </p>
-            <Link href="/instructor/classes">
-              <button className="mt-5 inline-flex items-center gap-1.5 rounded-md bg-white px-3.5 py-2 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-100">
-                <Plus className="h-4 w-4" />
-                Create Class
-              </button>
-            </Link>
           </div>
         )}
 
         {/* Stats row */}
-        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {stats.map((stat, idx) => {
-            const colors = ['text-blue-400', 'text-indigo-400', 'text-emerald-400', 'text-red-400'];
             const isAtRisk = stat.label === 'At Risk' && typeof stat.value === 'number' && stat.value > 0;
             return (
-              <div key={idx} className="glass-card p-5 group hover:bg-white/[0.12] transition-all duration-200">
-                <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">
+              <div key={idx} className="stat-card">
+                <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-400">
                   {stat.label}
                 </p>
-                <div className="mt-2 flex items-baseline gap-2">
-                  <p className={`text-3xl font-bold tabular-nums ${isAtRisk ? 'text-red-400' : colors[idx] || 'text-zinc-50'}`}>{stat.value}</p>
+                <p className={`mt-2 text-2xl font-semibold tabular-nums ${isAtRisk ? 'text-red-500' : 'text-zinc-900'}`}>
+                  {stat.value}
                   {isAtRisk && (
-                    <span className="inline-block h-2 w-2 rounded-full bg-red-400 animate-pulse-slow" />
+                    <span className="inline-block ml-2 h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse-dot align-middle" />
                   )}
-                </div>
+                </p>
                 <p className="mt-1 text-xs text-zinc-400">{stat.subtext}</p>
               </div>
             );
@@ -287,27 +289,27 @@ function DashboardContent() {
         </div>
 
         {/* Divider */}
-        <div className="mt-6 h-px bg-white/[0.06]" />
+        <div className="mt-6 h-px bg-zinc-200" />
 
         {/* Main content */}
         {hasClasses && (
           <div className="mt-8 grid gap-6 lg:grid-cols-5">
             {/* Class Performance chart */}
             <div className="lg:col-span-3">
-              <div className="glass-card">
+              <div className="section-card">
                 <div className="px-5 py-4">
-                  <h2 className="text-sm font-medium text-zinc-50">Class Performance</h2>
+                  <h2 className="text-sm font-medium text-zinc-900">Class Performance</h2>
                   <p className="mt-0.5 text-xs text-zinc-400">Average score by class</p>
                 </div>
                 <div className="px-5 pb-5">
                   {classPerformance.length > 0 ? (
                     <ResponsiveContainer width="100%" height={280}>
                       <BarChart data={classPerformance} barCategoryGap="20%">
-                        <CartesianGrid strokeDasharray="3 3" stroke="#27272A" vertical={false} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
                         <XAxis
                           dataKey="name"
                           tick={{ fill: '#71717a', fontSize: 12 }}
-                          axisLine={{ stroke: '#27272A' }}
+                          axisLine={{ stroke: '#e4e4e7' }}
                           tickLine={false}
                         />
                         <YAxis
@@ -320,13 +322,13 @@ function DashboardContent() {
                         <Tooltip
                           contentStyle={{
                             borderRadius: '8px',
-                            border: '1px solid rgba(255,255,255,0.06)',
-                            backgroundColor: '#18181b',
-                            color: '#e4e4e7',
+                            border: '1px solid rgba(0,0,0,0.08)',
+                            backgroundColor: '#ffffff',
+                            color: '#18181b',
                             fontSize: '13px',
                           }}
                           formatter={(value: number) => [`${value}%`, 'Avg Score']}
-                          cursor={{ fill: 'rgba(255,255,255,0.02)' }}
+                          cursor={{ fill: 'rgba(0,0,0,0.02)' }}
                         />
                         <Bar dataKey="avgScore" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                       </BarChart>
@@ -347,9 +349,9 @@ function DashboardContent() {
 
             {/* Recent Activity */}
             <div className="lg:col-span-2">
-              <div className="glass-card">
+              <div className="section-card">
                 <div className="px-5 py-4">
-                  <h2 className="text-sm font-medium text-zinc-50">Recent Activity</h2>
+                  <h2 className="text-sm font-medium text-zinc-900">Recent Activity</h2>
                   <p className="mt-0.5 text-xs text-zinc-400">Latest student submissions</p>
                 </div>
                 <div className="px-2 pb-3">
@@ -358,15 +360,15 @@ function DashboardContent() {
                       {recentActivity.map((activity) => (
                         <div
                           key={activity.id}
-                          className="flex items-center gap-3 rounded-md px-3 py-2.5 hover:bg-white/[0.02]"
+                          className="flex items-center gap-3 rounded-md px-3 py-2.5 hover:bg-zinc-50"
                         >
                           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full surface-2">
-                            <span className="text-xs font-medium text-zinc-300">
+                            <span className="text-xs font-medium text-zinc-600">
                               {activity.studentName.charAt(0).toUpperCase()}
                             </span>
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium text-zinc-50">
+                            <p className="truncate text-sm font-medium text-zinc-900">
                               {activity.studentName}
                             </p>
                             <p className="truncate text-xs text-zinc-400">

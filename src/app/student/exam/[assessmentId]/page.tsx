@@ -125,7 +125,7 @@ function ECGStripPreview({ stripId }: { stripId: string }) {
   }, [stripId]);
   if (!strip) return null;
   return (
-    <div className="rounded-lg border border-white/[0.06] surface-1 overflow-hidden mb-4">
+    <div className="rounded-lg border border-zinc-800 surface-1 overflow-hidden mb-4">
       <img src={strip.image_url} alt="ECG Strip" className="w-full h-auto object-contain" />
       <p className="text-[9px] text-zinc-600 px-2 py-1">PhysioNet - CC BY 4.0</p>
     </div>
@@ -157,7 +157,7 @@ function MCRenderer({
             className={`w-full text-left rounded-lg border px-4 py-3 transition-colors flex items-start gap-3 ${
               selected
                 ? 'border-blue-500/50 bg-blue-500/10'
-                : 'border-white/[0.06] surface-1 hover:border-white/[0.12]'
+                : 'border-zinc-800 surface-1 hover:border-zinc-700'
             }`}
           >
             <span
@@ -211,7 +211,7 @@ function MRRenderer({
             className={`w-full text-left rounded-lg border px-4 py-3 transition-colors flex items-start gap-3 ${
               selected
                 ? 'border-blue-500/50 bg-blue-500/10'
-                : 'border-white/[0.06] surface-1 hover:border-white/[0.12]'
+                : 'border-zinc-800 surface-1 hover:border-zinc-700'
             }`}
           >
             <span
@@ -250,7 +250,7 @@ function DDRenderer({
       {data.items.map((item) => (
         <div
           key={item.id}
-          className="flex items-center gap-3 rounded-lg border border-white/[0.06] px-4 py-3 surface-1"
+          className="flex items-center gap-3 rounded-lg border border-zinc-800 px-4 py-3 surface-1"
         >
           <span className="flex-1 text-sm text-zinc-300 font-medium">{item.text}</span>
           <select
@@ -299,7 +299,7 @@ function BLRenderer({
       {currentOrder.map((origIdx, pos) => (
         <div
           key={origIdx}
-          className="flex items-center gap-3 rounded-lg border border-white/[0.06] px-4 py-3 surface-1"
+          className="flex items-center gap-3 rounded-lg border border-zinc-800 px-4 py-3 surface-1"
         >
           <select
             value={pos}
@@ -336,13 +336,13 @@ function OBRenderer({
       <table className="w-full border-collapse">
         <thead>
           <tr>
-            <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 py-2 px-3 border-b border-white/[0.06]">
+            <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 py-2 px-3 border-b border-zinc-800">
               Statement
             </th>
             {data.columns.map((col, idx) => (
               <th
                 key={idx}
-                className="text-center text-xs font-medium uppercase tracking-wider text-zinc-400 py-2 px-3 border-b border-white/[0.06] min-w-[100px]"
+                className="text-center text-xs font-medium uppercase tracking-wider text-zinc-400 py-2 px-3 border-b border-zinc-800 min-w-[100px]"
               >
                 {col}
               </th>
@@ -351,7 +351,7 @@ function OBRenderer({
         </thead>
         <tbody>
           {data.rows.map((row, rowIdx) => (
-            <tr key={rowIdx} className="border-b border-white/[0.06] hover:bg-white/[0.02]">
+            <tr key={rowIdx} className="border-b border-zinc-800 hover:bg-zinc-800/30">
               <td className="text-sm text-zinc-300 py-3 px-3">{row}</td>
               {data.columns.map((col, colIdx) => (
                 <td key={colIdx} className="text-center py-3 px-3">
@@ -398,9 +398,9 @@ function CJSRenderer({
   return (
     <div className="space-y-6">
       {data.phases.map((phase, phaseIdx) => (
-        <div key={phaseIdx} className="rounded-lg border border-white/[0.06] surface-1 overflow-hidden">
+        <div key={phaseIdx} className="rounded-lg border border-zinc-800 surface-1 overflow-hidden">
           {/* Phase header */}
-          <div className="bg-blue-500/10 border-b border-white/[0.06] px-4 py-2.5 flex items-center gap-2">
+          <div className="bg-blue-500/10 border-b border-zinc-800 px-4 py-2.5 flex items-center gap-2">
             <span className="inline-flex items-center rounded-md bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-400">
               Phase {phaseIdx + 1}
             </span>
@@ -411,7 +411,7 @@ function CJSRenderer({
             <p className="text-sm text-zinc-400 leading-relaxed">{phase.content}</p>
 
             {phase.vitals && (
-              <div className="rounded-lg surface-2 border border-white/[0.06] p-3">
+              <div className="rounded-lg surface-2 border border-zinc-800 p-3">
                 <p className="text-xs font-semibold text-zinc-400 uppercase mb-2">Vitals</p>
                 <div className="grid grid-cols-4 gap-2 text-xs">
                   {phase.vitals.hr && (
@@ -467,14 +467,14 @@ function CJSRenderer({
             )}
 
             {phase.history && (
-              <div className="rounded-lg surface-2 border border-white/[0.06] p-3">
+              <div className="rounded-lg surface-2 border border-zinc-800 p-3">
                 <p className="text-xs font-semibold text-zinc-400 uppercase mb-1">History</p>
                 <p className="text-sm text-zinc-300">{phase.history}</p>
               </div>
             )}
 
             {phase.ecgFindings && (
-              <div className="rounded-lg surface-2 border border-white/[0.06] p-3">
+              <div className="rounded-lg surface-2 border border-zinc-800 p-3">
                 <p className="text-xs font-semibold text-zinc-400 uppercase mb-1">ECG Findings</p>
                 <p className="text-sm text-zinc-300">{phase.ecgFindings}</p>
               </div>
@@ -485,7 +485,7 @@ function CJSRenderer({
               const subAnswer = answer[subKey];
 
               return (
-                <div key={qIdx} className="border-t border-white/[0.06] pt-4">
+                <div key={qIdx} className="border-t border-zinc-800 pt-4">
                   {pq.ecgStripId && <ECGStripPreview stripId={pq.ecgStripId} />}
                   <p className="text-sm font-medium text-zinc-50 mb-3">{pq.stem}</p>
                   {renderSubQuestion(pq, subAnswer, (val: any) => updateSubAnswer(phaseIdx, qIdx, val))}
@@ -644,7 +644,7 @@ function QuestionNav({
                 ? 'ring-2 ring-blue-400 surface-1 text-zinc-50'
                 : answered
                 ? 'surface-2 text-zinc-300 hover:bg-zinc-700'
-                : 'surface-1 text-zinc-400 border border-white/[0.06] hover:bg-white/[0.04]'
+                : 'surface-1 text-zinc-400 border border-zinc-800 hover:bg-zinc-800/50'
             }`}
           >
             {idx + 1}
@@ -925,7 +925,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Top bar */}
-      <div className="sticky top-0 z-50 surface-1 border-b border-white/[0.06]">
+      <div className="sticky top-0 z-50 surface-1 border-b border-zinc-800">
         <div className="max-w-5xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
@@ -963,7 +963,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
               {/* Question header */}
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
-                  <span className="inline-block mb-3 text-[10px] font-medium text-zinc-400 border border-white/[0.08] rounded px-1.5 py-0.5 uppercase tracking-wider">
+                  <span className="inline-block mb-3 text-[10px] font-medium text-zinc-400 border border-zinc-800 rounded px-1.5 py-0.5 uppercase tracking-wider">
                     {currentQuestion.item_type === 'MC' && 'Multiple Choice'}
                     {currentQuestion.item_type === 'MR' && 'Select All That Apply'}
                     {currentQuestion.item_type === 'DD' && 'Drag & Drop'}
@@ -993,7 +993,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                 <ECGStripPreview stripId={currentQuestion.ecg_strip_id} />
               )}
 
-              <div className="border-t border-white/[0.06] pt-6">
+              <div className="border-t border-zinc-800 pt-6">
                 {/* Question content by type */}
                 {currentQuestion.item_type === 'MC' && (
                   <MCRenderer
@@ -1041,7 +1041,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
             </div>
 
             {/* Navigation buttons */}
-            <div className="flex items-center justify-between pt-4 border-t border-white/[0.06]">
+            <div className="flex items-center justify-between pt-4 border-t border-zinc-800">
               <button
                 onClick={goPrev}
                 disabled={currentIndex === 0}
@@ -1097,13 +1097,13 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                   current={currentIndex}
                   onJump={goToQuestion}
                 />
-                <div className="border-t border-white/[0.06] pt-3 text-[10px] text-zinc-400 space-y-1">
+                <div className="border-t border-zinc-800 pt-3 text-[10px] text-zinc-400 space-y-1">
                   <div className="flex items-center gap-1.5">
                     <span className="w-3 h-3 rounded surface-2" />
                     Answered
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="w-3 h-3 rounded surface-1 border border-white/[0.06]" />
+                    <span className="w-3 h-3 rounded surface-1 border border-zinc-800" />
                     Unanswered
                   </div>
                   <div className="flex items-center gap-1.5">
@@ -1145,9 +1145,9 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                 </p>
               </div>
 
-              <div className="flex gap-3 pt-2 border-t border-white/[0.06]">
+              <div className="flex gap-3 pt-2 border-t border-zinc-800">
                 <button
-                  className="flex-1 rounded-lg border border-white/[0.08] px-4 py-2 text-sm font-medium text-zinc-400 hover:text-zinc-50 hover:bg-white/[0.04] transition-colors"
+                  className="flex-1 rounded-lg border border-zinc-800 px-4 py-2 text-sm font-medium text-zinc-400 hover:text-zinc-50 hover:bg-zinc-800/50 transition-colors"
                   onClick={() => setShowConfirm(false)}
                 >
                   Keep Working

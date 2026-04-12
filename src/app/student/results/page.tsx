@@ -122,30 +122,30 @@ export default function StudentResultsPage() {
   if (authLoading || loading) {
     return (
       <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-6">
-        <div className="h-8 w-32 bg-zinc-800 rounded-md animate-pulse" />
-        <div className="h-16 bg-zinc-800 rounded-md animate-pulse" />
-        <div className="h-64 bg-zinc-800 rounded-md animate-pulse" />
+        <div className="h-8 w-32 bg-zinc-100 rounded-md animate-pulse" />
+        <div className="h-16 bg-zinc-100 rounded-md animate-pulse" />
+        <div className="h-64 bg-zinc-100 rounded-md animate-pulse" />
       </div>
     );
   }
 
   return (
     <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-10">
-      <h1 className="text-2xl font-semibold text-zinc-50">Results</h1>
+      <h1 className="text-2xl font-semibold text-zinc-900">Results</h1>
 
       {/* Summary Stats */}
       {completedSessions.length > 0 && (
         <div className="glass-card flex items-center gap-8 px-6 py-4">
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">Total Exams</p>
-            <p className="text-lg font-semibold text-zinc-50">{completedSessions.length}</p>
+            <p className="text-lg font-semibold text-zinc-900">{completedSessions.length}</p>
           </div>
-          <div className="w-px h-8 bg-white/[0.06]" />
+          <div className="w-px h-8 bg-zinc-800" />
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">Average Score</p>
-            <p className="text-lg font-semibold text-zinc-50">{avgScore ?? '--'}%</p>
+            <p className="text-lg font-semibold text-zinc-900">{avgScore ?? '--'}%</p>
           </div>
-          <div className="w-px h-8 bg-white/[0.06]" />
+          <div className="w-px h-8 bg-zinc-800" />
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">Best Score</p>
             <p className={`text-lg font-semibold ${getScoreColor(bestScore)}`}>
@@ -173,7 +173,7 @@ export default function StudentResultsPage() {
         <div className="glass-card overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/[0.06]">
+              <tr className="border-b border-zinc-200">
                 <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3">Assessment</th>
                 <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3">Score</th>
                 <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3 hidden md:table-cell">Date</th>
@@ -186,8 +186,8 @@ export default function StudentResultsPage() {
                 const dateStr = session.completed_at || session.started_at;
 
                 return (
-                  <tr key={session.id} className="hover:bg-white/[0.02] transition-colors">
-                    <td className="px-5 py-3 font-medium text-zinc-50">
+                  <tr key={session.id} className="hover:bg-zinc-50 transition-colors">
+                    <td className="px-5 py-3 font-medium text-zinc-900">
                       {session.assessment_name}
                     </td>
                     <td className="px-5 py-3">

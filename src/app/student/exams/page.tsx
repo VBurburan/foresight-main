@@ -106,16 +106,16 @@ export default function StudentExamsPage() {
   if (authLoading || loading) {
     return (
       <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-6">
-        <div className="h-8 w-32 bg-zinc-800 rounded-md animate-pulse" />
-        <div className="h-64 bg-zinc-800 rounded-md animate-pulse" />
-        <div className="h-64 bg-zinc-800 rounded-md animate-pulse" />
+        <div className="h-8 w-32 bg-zinc-100 rounded-md animate-pulse" />
+        <div className="h-64 bg-zinc-100 rounded-md animate-pulse" />
+        <div className="h-64 bg-zinc-100 rounded-md animate-pulse" />
       </div>
     );
   }
 
   return (
     <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-10">
-      <h1 className="text-2xl font-semibold text-zinc-50">Exams</h1>
+      <h1 className="text-2xl font-semibold text-zinc-900">Exams</h1>
 
       {/* Available Assessments */}
       <section className="space-y-4">
@@ -135,10 +135,10 @@ export default function StudentExamsPage() {
             {assessments.map((assessment) => (
               <div
                 key={assessment.id}
-                className="flex items-center justify-between px-5 py-4 hover:bg-white/[0.02] transition-colors"
+                className="flex items-center justify-between px-5 py-4 hover:bg-zinc-50 transition-colors"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-zinc-50 truncate">
+                  <p className="text-sm font-medium text-zinc-900 truncate">
                     {assessment.name}
                   </p>
                   <p className="text-xs text-zinc-400 mt-0.5">
@@ -179,7 +179,7 @@ export default function StudentExamsPage() {
           <div className="glass-card overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/[0.06]">
+                <tr className="border-b border-zinc-200">
                   <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3">Assessment</th>
                   <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3">Score</th>
                   <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3 hidden md:table-cell">Date</th>
@@ -194,8 +194,8 @@ export default function StudentExamsPage() {
                   const dateStr = session.completed_at || session.started_at;
 
                   return (
-                    <tr key={session.id} className="hover:bg-white/[0.02] transition-colors">
-                      <td className="px-5 py-3 font-medium text-zinc-50">
+                    <tr key={session.id} className="hover:bg-zinc-50 transition-colors">
+                      <td className="px-5 py-3 font-medium text-zinc-900">
                         {a?.name || 'Unknown Assessment'}
                       </td>
                       <td className="px-5 py-3">

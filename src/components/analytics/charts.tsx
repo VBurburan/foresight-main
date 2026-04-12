@@ -25,11 +25,11 @@ const CHART_POST = '#14b8a6';  // teal
 
 const tooltipStyle = {
   borderRadius: '10px',
-  border: '1px solid rgba(255,255,255,0.08)',
-  backgroundColor: '#18181b',
-  color: '#e4e4e7',
+  border: '1px solid rgba(0,0,0,0.08)',
+  backgroundColor: '#ffffff',
+  color: '#18181b',
   fontSize: 12,
-  boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
+  boxShadow: '0 8px 30px rgba(0,0,0,0.1)',
 };
 
 // ─── 1. Clinical Judgment Radar Chart ─────────────────────────────
@@ -48,7 +48,7 @@ export function CJRadarChart({ data }: { data: CJFunctionScore[] }) {
     <div>
       <ResponsiveContainer width="100%" height={340}>
         <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="75%">
-          <PolarGrid stroke="#27272a" strokeWidth={0.5} />
+          <PolarGrid stroke="#e4e4e7" strokeWidth={0.5} />
           <PolarAngleAxis
             dataKey="subject"
             tick={{ fill: '#a1a1aa', fontSize: 12, fontWeight: 500 }}
@@ -68,7 +68,7 @@ export function CJRadarChart({ data }: { data: CJFunctionScore[] }) {
               fillOpacity={0.1}
               strokeWidth={2}
               strokeDasharray="5 5"
-              dot={{ r: 4, fill: CHART_PRE, stroke: '#09090b', strokeWidth: 2 }}
+              dot={{ r: 4, fill: CHART_PRE, stroke: '#ffffff', strokeWidth: 2 }}
             />
           )}
           {hasPost && (
@@ -79,7 +79,7 @@ export function CJRadarChart({ data }: { data: CJFunctionScore[] }) {
               fill={CHART_POST}
               fillOpacity={0.15}
               strokeWidth={2.5}
-              dot={{ r: 4, fill: CHART_POST, stroke: '#09090b', strokeWidth: 2 }}
+              dot={{ r: 4, fill: CHART_POST, stroke: '#ffffff', strokeWidth: 2 }}
             />
           )}
           <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}%`]} />
@@ -94,7 +94,7 @@ export function CJRadarChart({ data }: { data: CJFunctionScore[] }) {
       <div className="mt-4 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/[0.08]">
+            <tr className="border-b border-zinc-200">
               <th className="text-left py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Cognitive Function</th>
               {hasPre && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Pre-Test</th>}
               {hasPost && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Post-Test</th>}
@@ -103,15 +103,15 @@ export function CJRadarChart({ data }: { data: CJFunctionScore[] }) {
           </thead>
           <tbody>
             {data.map((row) => (
-              <tr key={row.function} className="border-b border-white/[0.04] hover:bg-white/[0.02]">
-                <td className="py-2 px-3 text-zinc-200 font-medium">{row.function}</td>
+              <tr key={row.function} className="border-b border-zinc-100 hover:bg-zinc-50">
+                <td className="py-2 px-3 text-zinc-700 font-medium">{row.function}</td>
                 {hasPre && (
-                  <td className="py-2 px-3 text-center text-zinc-300 tabular-nums">
+                  <td className="py-2 px-3 text-center text-zinc-600 tabular-nums">
                     {row.pre !== null ? `${row.pre.toFixed(1)}%` : '--'}
                   </td>
                 )}
                 {hasPost && (
-                  <td className="py-2 px-3 text-center text-zinc-300 tabular-nums">
+                  <td className="py-2 px-3 text-center text-zinc-600 tabular-nums">
                     {row.post !== null ? `${row.post.toFixed(1)}%` : '--'}
                   </td>
                 )}
@@ -145,7 +145,7 @@ export function DomainBars({ data }: { data: DomainPerformance[] }) {
     <div>
       <ResponsiveContainer width="100%" height={320}>
         <BarChart data={chartData} barGap={2} barCategoryGap="15%">
-          <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
           <XAxis
             dataKey="domain"
             tick={{ fill: '#a1a1aa', fontSize: 11 }}
@@ -179,7 +179,7 @@ export function DomainBars({ data }: { data: DomainPerformance[] }) {
       <div className="mt-4 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/[0.08]">
+            <tr className="border-b border-zinc-200">
               <th className="text-left py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Domain</th>
               {hasPre && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Pre-Test</th>}
               {hasPost && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Post-Test</th>}
@@ -191,13 +191,13 @@ export function DomainBars({ data }: { data: DomainPerformance[] }) {
             {data.map((row) => {
               const label = getAssessmentLabel(row.pre, row.post);
               return (
-                <tr key={row.domain} className="border-b border-white/[0.04] hover:bg-white/[0.02]">
-                  <td className="py-2 px-3 text-zinc-200">{row.domain}</td>
+                <tr key={row.domain} className="border-b border-zinc-100 hover:bg-zinc-50">
+                  <td className="py-2 px-3 text-zinc-700">{row.domain}</td>
                   {hasPre && (
-                    <td className="py-2 px-3 text-center text-zinc-300 tabular-nums">{row.pre !== null ? `${row.pre}%` : '--'}</td>
+                    <td className="py-2 px-3 text-center text-zinc-600 tabular-nums">{row.pre !== null ? `${row.pre}%` : '--'}</td>
                   )}
                   {hasPost && (
-                    <td className="py-2 px-3 text-center text-zinc-300 tabular-nums">{row.post !== null ? `${row.post}%` : '--'}</td>
+                    <td className="py-2 px-3 text-center text-zinc-600 tabular-nums">{row.post !== null ? `${row.post}%` : '--'}</td>
                   )}
                   {hasPre && hasPost && (
                     <td className={`py-2 px-3 text-center font-semibold tabular-nums ${deltaColor(row.change)}`}>
@@ -238,10 +238,10 @@ export function TEIBars({ data }: { data: TEIPerformance[] }) {
     <div className="space-y-8">
       {/* Accuracy bars */}
       <div>
-        <h4 className="text-sm font-medium text-zinc-200 mb-3">TEI Format Performance: Pre-Test vs Post-Test</h4>
+        <h4 className="text-sm font-medium text-zinc-700 mb-3">TEI Format Performance: Pre-Test vs Post-Test</h4>
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={chartData} barGap={2} barCategoryGap="20%">
-            <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
             <XAxis dataKey="type" tick={{ fill: '#a1a1aa', fontSize: 12 }} axisLine={{ stroke: '#27272a' }} tickLine={false} />
             <YAxis domain={[0, 100]} tick={{ fill: '#71717a', fontSize: 11 }} axisLine={false} tickLine={false} width={36} tickFormatter={(v) => `${v}%`} />
             <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}%`]} />
@@ -255,24 +255,24 @@ export function TEIBars({ data }: { data: TEIPerformance[] }) {
       {/* Volume & accuracy breakdown */}
       {hasVolume && (
         <div>
-          <h4 className="text-sm font-medium text-zinc-200 mb-3">TEI Volume & Accuracy Breakdown</h4>
+          <h4 className="text-sm font-medium text-zinc-700 mb-3">TEI Volume & Accuracy Breakdown</h4>
           <div className="grid grid-cols-2 gap-4">
             {data.filter((d) => d.preTotal || d.postTotal).map((d) => {
               const preAcc = d.preTotal ? Math.round(((d.preCorrect ?? 0) / d.preTotal) * 100) : null;
               const postAcc = d.postTotal ? Math.round(((d.postCorrect ?? 0) / d.postTotal) * 100) : null;
               return (
-                <div key={d.type} className="glass-subtle p-3">
+                <div key={d.type} className="bg-zinc-100 border border-zinc-200 rounded-lg p-3">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-zinc-200">{d.type}</span>
+                    <span className="text-sm font-medium text-zinc-700">{d.type}</span>
                     <span className="text-xs text-zinc-400">{d.label}</span>
                   </div>
                   {d.preTotal != null && (
                     <div className="mb-1.5">
                       <div className="flex justify-between text-xs mb-0.5">
                         <span className="text-zinc-400">Pre</span>
-                        <span className="text-zinc-300">{d.preCorrect}/{d.preTotal} ({preAcc}%)</span>
+                        <span className="text-zinc-600">{d.preCorrect}/{d.preTotal} ({preAcc}%)</span>
                       </div>
-                      <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                      <div className="h-2 bg-zinc-100 rounded-full overflow-hidden">
                         <div className="h-full rounded-full bg-orange-500/70" style={{ width: `${preAcc}%` }} />
                       </div>
                     </div>
@@ -281,9 +281,9 @@ export function TEIBars({ data }: { data: TEIPerformance[] }) {
                     <div>
                       <div className="flex justify-between text-xs mb-0.5">
                         <span className="text-zinc-400">Post</span>
-                        <span className="text-zinc-300">{d.postCorrect}/{d.postTotal} ({postAcc}%)</span>
+                        <span className="text-zinc-600">{d.postCorrect}/{d.postTotal} ({postAcc}%)</span>
                       </div>
-                      <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                      <div className="h-2 bg-zinc-100 rounded-full overflow-hidden">
                         <div className="h-full rounded-full bg-teal-500/70" style={{ width: `${postAcc}%` }} />
                       </div>
                     </div>
@@ -320,13 +320,13 @@ export function DomainTEIHeatmap({ data }: { data: HeatmapCell[] }) {
         <tbody>
           {domains.map((domain) => (
             <tr key={domain}>
-              <td className="py-1 px-3 text-zinc-200 text-xs font-medium">{domain}</td>
+              <td className="py-1 px-3 text-zinc-700 text-xs font-medium">{domain}</td>
               {teiTypes.map((tei) => {
                 const cell = getCell(domain, tei);
                 if (!cell || cell.total === 0) {
                   return (
                     <td key={tei} className="py-1 px-1">
-                      <div className="flex items-center justify-center h-12 rounded-md bg-zinc-800/50 text-zinc-500 text-xs">--</div>
+                      <div className="flex items-center justify-center h-12 rounded-md bg-zinc-100 text-zinc-500 text-xs">--</div>
                     </td>
                   );
                 }
@@ -360,7 +360,7 @@ export function ErrorDistribution({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
       <div>
-        <h4 className="text-sm font-medium text-zinc-200 mb-2 text-center">Errors by Domain</h4>
+        <h4 className="text-sm font-medium text-zinc-700 mb-2 text-center">Errors by Domain</h4>
         <ResponsiveContainer width="100%" height={260}>
           <PieChart>
             <Pie
@@ -383,7 +383,7 @@ export function ErrorDistribution({
         </ResponsiveContainer>
       </div>
       <div>
-        <h4 className="text-sm font-medium text-zinc-200 mb-2 text-center">Errors by TEI Format</h4>
+        <h4 className="text-sm font-medium text-zinc-700 mb-2 text-center">Errors by TEI Format</h4>
         <ResponsiveContainer width="100%" height={260}>
           <PieChart>
             <Pie
@@ -415,7 +415,7 @@ export function SpecificErrorTable({ data }: { data: SpecificError[] }) {
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-white/[0.08]">
+          <tr className="border-b border-zinc-200">
             <th className="text-left py-2.5 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Q#</th>
             <th className="text-left py-2.5 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Type</th>
             <th className="text-left py-2.5 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Domain</th>
@@ -425,16 +425,16 @@ export function SpecificErrorTable({ data }: { data: SpecificError[] }) {
         </thead>
         <tbody>
           {data.map((row, i) => (
-            <tr key={i} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
-              <td className="py-2 px-3 text-zinc-300 font-mono tabular-nums">{row.questionNumber}</td>
+            <tr key={i} className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors">
+              <td className="py-2 px-3 text-zinc-600 font-mono tabular-nums">{row.questionNumber}</td>
               <td className="py-2 px-3">
-                <span className="inline-block px-1.5 py-0.5 rounded text-xs font-medium bg-zinc-800 text-zinc-300 border border-zinc-700">
+                <span className="inline-block px-1.5 py-0.5 rounded text-xs font-medium bg-zinc-100 text-zinc-600 border border-zinc-300">
                   {row.type}
                 </span>
               </td>
-              <td className="py-2 px-3 text-zinc-300">{row.domain}</td>
+              <td className="py-2 px-3 text-zinc-600">{row.domain}</td>
               <td className="py-2 px-3 text-zinc-400">{row.cjFunction}</td>
-              <td className="py-2 px-3 text-zinc-300 text-xs">{row.errorPattern}</td>
+              <td className="py-2 px-3 text-zinc-600 text-xs">{row.errorPattern}</td>
             </tr>
           ))}
         </tbody>
@@ -477,7 +477,7 @@ export function ReadinessProjection({
 
   return (
     <div className="space-y-6">
-      <h4 className="text-sm font-medium text-zinc-200">NREMT Scaled Score Projection (100 – 1,500 Scale)</h4>
+      <h4 className="text-sm font-medium text-zinc-700">NREMT Scaled Score Projection (100 – 1,500 Scale)</h4>
 
       {/* Scale bar */}
       <div className="relative h-14 mt-8 mb-12">
@@ -518,26 +518,26 @@ export function ReadinessProjection({
       {/* Readiness stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8">
         {preScore !== null && (
-          <div className="glass-subtle p-3 text-center">
+          <div className="bg-zinc-100 border border-zinc-200 rounded-lg p-3 text-center">
             <p className="text-xs text-zinc-400">Pre-Test</p>
-            <p className="text-lg font-bold text-zinc-200 tabular-nums">{preScore}%</p>
+            <p className="text-lg font-bold text-zinc-700 tabular-nums">{preScore}%</p>
           </div>
         )}
         {postScore !== null && (
-          <div className="glass-subtle p-3 text-center">
+          <div className="bg-zinc-100 border border-zinc-200 rounded-lg p-3 text-center">
             <p className="text-xs text-zinc-400">Post-Test</p>
-            <p className="text-lg font-bold text-zinc-200 tabular-nums">{postScore}%</p>
+            <p className="text-lg font-bold text-zinc-700 tabular-nums">{postScore}%</p>
           </div>
         )}
         {preScore !== null && postScore !== null && (
-          <div className="glass-subtle p-3 text-center">
+          <div className="bg-zinc-100 border border-zinc-200 rounded-lg p-3 text-center">
             <p className="text-xs text-zinc-400">Improvement</p>
             <p className={`text-lg font-bold tabular-nums ${postScore > preScore ? 'text-emerald-400' : 'text-red-400'}`}>
               {postScore > preScore ? '+' : ''}{(postScore - preScore).toFixed(1)}%
             </p>
           </div>
         )}
-        <div className="glass-subtle p-3 text-center">
+        <div className="bg-zinc-100 border border-zinc-200 rounded-lg p-3 text-center">
           <p className="text-xs text-zinc-400">Projected Range</p>
           <p className={`text-lg font-bold tabular-nums ${isPassing ? 'text-emerald-400' : 'text-amber-400'}`}>
             {projLow} – {projHigh}
@@ -546,9 +546,9 @@ export function ReadinessProjection({
       </div>
 
       {/* Disclaimer */}
-      <div className="glass-subtle p-3 border-l-2 border-blue-400/40">
+      <div className="bg-zinc-100 border border-zinc-200 rounded-lg p-3 border-l-2 border-blue-400/40">
         <p className="text-xs text-zinc-400 leading-relaxed">
-          <span className="font-medium text-zinc-300">Important:</span> These projections are estimates, not guarantees.
+          <span className="font-medium text-zinc-600">Important:</span> These projections are estimates, not guarantees.
           Practice exams and the NREMT use different item pools, and the adaptive algorithm introduces variability.
         </p>
       </div>
@@ -573,7 +573,7 @@ export function ScoreSummaryCard({
   return (
     <div className="grid grid-cols-3 gap-4">
       {preScore !== null && (
-        <div className="glass-card p-5 text-center">
+        <div className="section-card p-5 text-center">
           <p className="text-xs font-medium uppercase tracking-wider text-zinc-400 mb-1">
             {preLabel ?? 'Pre-Test'}
           </p>
@@ -581,7 +581,7 @@ export function ScoreSummaryCard({
         </div>
       )}
       {postScore !== null && (
-        <div className="glass-card p-5 text-center">
+        <div className="section-card p-5 text-center">
           <p className="text-xs font-medium uppercase tracking-wider text-zinc-400 mb-1">
             {postLabel ?? 'Post-Test'}
           </p>
@@ -589,9 +589,9 @@ export function ScoreSummaryCard({
         </div>
       )}
       {change !== null && (
-        <div className="glass-card p-5 text-center">
+        <div className="section-card p-5 text-center">
           <p className="text-xs font-medium uppercase tracking-wider text-zinc-400 mb-1">Change</p>
-          <p className={`text-3xl font-bold tabular-nums ${change > 0 ? 'text-emerald-400' : change < 0 ? 'text-red-400' : 'text-zinc-300'}`}>
+          <p className={`text-3xl font-bold tabular-nums ${change > 0 ? 'text-emerald-400' : change < 0 ? 'text-red-400' : 'text-zinc-600'}`}>
             {change > 0 ? '+' : ''}{change.toFixed(1)}%
           </p>
         </div>

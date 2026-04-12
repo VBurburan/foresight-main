@@ -244,9 +244,9 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
     return (
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl space-y-6">
-          <div className="h-6 w-32 rounded-md bg-zinc-800 animate-pulse" />
-          <div className="h-32 rounded-xl bg-zinc-800/50 animate-pulse" />
-          <div className="h-96 rounded-xl bg-zinc-800/50 animate-pulse" />
+          <div className="h-6 w-32 rounded-md bg-zinc-100 animate-pulse" />
+          <div className="h-32 rounded-xl bg-zinc-100 animate-pulse" />
+          <div className="h-96 rounded-xl bg-zinc-100 animate-pulse" />
         </div>
       </div>
     );
@@ -257,7 +257,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl text-center py-20">
           <p className="text-zinc-400">Student not found.</p>
-          <Link href="/instructor/classes" className="mt-4 inline-block text-sm text-zinc-400 hover:text-zinc-50 transition-colors">
+          <Link href="/instructor/classes" className="mt-4 inline-block text-sm text-zinc-400 hover:text-zinc-900 transition-colors">
             &larr; Back to Classes
           </Link>
         </div>
@@ -271,21 +271,21 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         {/* Back link */}
         <Link
           href="/instructor/classes"
-          className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-200 transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-700 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Classes
         </Link>
 
         {/* Student profile header */}
-        <div className="glass-card p-6">
+        <div className="section-card p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full surface-2 border border-white/[0.08]">
-                <User className="h-6 w-6 text-zinc-300" />
+              <div className="flex h-14 w-14 items-center justify-center rounded-full surface-2 border border-zinc-200">
+                <User className="h-6 w-6 text-zinc-600" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-zinc-50 font-heading">{profile.fullName}</h1>
+                <h1 className="text-2xl font-bold text-zinc-900 font-heading">{profile.fullName}</h1>
                 <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-zinc-400">
                   <span>{profile.email}</span>
                   {profile.certLevel && (
@@ -315,7 +315,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         {/* Demo data banner */}
         {useDemoData && (
           <div className="glass-subtle border-l-2 border-blue-400/60 px-4 py-3">
-            <p className="text-xs text-zinc-300">
+            <p className="text-xs text-zinc-600">
               <span className="font-semibold text-blue-400">Demo Mode</span> — No exam data yet for this student. Showing sample analytics for preview.
             </p>
           </div>
@@ -332,9 +332,9 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
 
         {/* CJ Radar */}
         {data && data.cjFunctions.some((f) => f.pre !== null || f.post !== null) && (
-          <section className="glass-card overflow-hidden">
+          <section className="section-card overflow-hidden">
             <div className="px-6 pt-6 pb-2">
-              <h2 className="text-lg font-semibold text-zinc-50">Clinical Judgment Cognitive Functions</h2>
+              <h2 className="text-lg font-semibold text-zinc-900">Clinical Judgment Cognitive Functions</h2>
               <p className="mt-1 text-sm text-zinc-400">Individual performance across the 6 NCSBN CJ functions</p>
             </div>
             <div className="px-6 pb-6">
@@ -345,9 +345,9 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
 
         {/* Domain Performance */}
         {data && data.domainPerformance.length > 0 && (
-          <section className="glass-card overflow-hidden">
+          <section className="section-card overflow-hidden">
             <div className="px-6 pt-6 pb-2">
-              <h2 className="text-lg font-semibold text-zinc-50">Domain Performance</h2>
+              <h2 className="text-lg font-semibold text-zinc-900">Domain Performance</h2>
               <p className="mt-1 text-sm text-zinc-400">Score by NREMT content domain</p>
             </div>
             <div className="px-6 pb-6">
@@ -358,9 +358,9 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
 
         {/* TEI Performance */}
         {data && data.teiPerformance.length > 0 && (
-          <section className="glass-card overflow-hidden">
+          <section className="section-card overflow-hidden">
             <div className="px-6 pt-6 pb-2">
-              <h2 className="text-lg font-semibold text-zinc-50">TEI Format Performance</h2>
+              <h2 className="text-lg font-semibold text-zinc-900">TEI Format Performance</h2>
               <p className="mt-1 text-sm text-zinc-400">Accuracy by question type</p>
             </div>
             <div className="px-6 pb-6">
@@ -371,9 +371,9 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
 
         {/* Heatmap */}
         {data && data.heatmap.length > 0 && (
-          <section className="glass-card overflow-hidden">
+          <section className="section-card overflow-hidden">
             <div className="px-6 pt-6 pb-2">
-              <h2 className="text-lg font-semibold text-zinc-50">Domain × TEI Heatmap</h2>
+              <h2 className="text-lg font-semibold text-zinc-900">Domain × TEI Heatmap</h2>
               <p className="mt-1 text-sm text-zinc-400">Pinpoint exactly where this student struggles</p>
             </div>
             <div className="px-6 pb-6">
@@ -384,9 +384,9 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
 
         {/* Error Distribution */}
         {data && (data.errorsByDomain.length > 0 || data.errorsByTEI.length > 0) && (
-          <section className="glass-card overflow-hidden">
+          <section className="section-card overflow-hidden">
             <div className="px-6 pt-6 pb-2">
-              <h2 className="text-lg font-semibold text-zinc-50">Error Distribution</h2>
+              <h2 className="text-lg font-semibold text-zinc-900">Error Distribution</h2>
               <p className="mt-1 text-sm text-zinc-400">Where this student&apos;s errors concentrate</p>
             </div>
             <div className="px-6 pb-6">
@@ -397,9 +397,9 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
 
         {/* Specific Errors */}
         {data && data.specificErrors.length > 0 && (
-          <section className="glass-card overflow-hidden">
+          <section className="section-card overflow-hidden">
             <div className="px-6 pt-6 pb-2">
-              <h2 className="text-lg font-semibold text-zinc-50">Specific Error Breakdown</h2>
+              <h2 className="text-lg font-semibold text-zinc-900">Specific Error Breakdown</h2>
               <p className="mt-1 text-sm text-zinc-400">Question-level error analysis</p>
             </div>
             <div className="px-6 pb-6">
@@ -410,9 +410,9 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
 
         {/* Readiness */}
         {data && data.readinessScore !== null && (
-          <section className="glass-card overflow-hidden">
+          <section className="section-card overflow-hidden">
             <div className="px-6 pt-6 pb-2">
-              <h2 className="text-lg font-semibold text-zinc-50">NREMT Readiness Projection</h2>
+              <h2 className="text-lg font-semibold text-zinc-900">NREMT Readiness Projection</h2>
               <p className="mt-1 text-sm text-zinc-400">Estimated scaled score</p>
             </div>
             <div className="px-6 pb-6">
@@ -427,9 +427,9 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
 
         {/* Exam History Table */}
         {sessions.length > 0 && (
-          <section className="glass-card overflow-hidden">
+          <section className="section-card overflow-hidden">
             <div className="px-6 pt-6 pb-2">
-              <h2 className="text-lg font-semibold text-zinc-50">Exam History</h2>
+              <h2 className="text-lg font-semibold text-zinc-900">Exam History</h2>
               <p className="mt-1 text-sm text-zinc-400">
                 {sessions.length} assessment{sessions.length !== 1 ? 's' : ''} completed
               </p>
@@ -438,7 +438,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-white/[0.08]">
+                    <tr className="border-b border-zinc-200">
                       <th className="text-left py-2.5 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Date</th>
                       <th className="text-center py-2.5 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Score</th>
                       <th className="text-center py-2.5 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Questions</th>
@@ -447,15 +447,15 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
                   </thead>
                   <tbody>
                     {sessions.map((session) => (
-                      <tr key={session.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
-                        <td className="py-2.5 px-3 text-zinc-300">{session.date}</td>
+                      <tr key={session.id} className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors">
+                        <td className="py-2.5 px-3 text-zinc-600">{session.date}</td>
                         <td className="py-2.5 px-3 text-center">
                           {session.score != null ? (
                             <span className={`font-semibold tabular-nums ${scoreColor(session.score)}`}>
                               {session.score}%
                             </span>
                           ) : (
-                            <span className="text-zinc-500">--</span>
+                            <span className="text-zinc-9000">--</span>
                           )}
                         </td>
                         <td className="py-2.5 px-3 text-center text-zinc-400 tabular-nums">

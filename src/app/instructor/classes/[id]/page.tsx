@@ -190,9 +190,9 @@ function ClassDetailContent({ classId }: { classId: string }) {
     return (
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl space-y-6">
-          <div className="h-8 w-80 rounded-md bg-zinc-800 animate-pulse" />
-          <div className="h-4 w-48 rounded-md bg-zinc-800 animate-pulse" />
-          <div className="h-64 rounded-xl bg-zinc-800/50 animate-pulse" />
+          <div className="h-8 w-80 rounded-md bg-zinc-100 animate-pulse" />
+          <div className="h-4 w-48 rounded-md bg-zinc-100 animate-pulse" />
+          <div className="h-64 rounded-xl bg-zinc-100 animate-pulse" />
         </div>
       </div>
     );
@@ -204,7 +204,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
         <div className="mx-auto max-w-6xl py-20 text-center">
           <p className="text-sm text-zinc-400">Class not found.</p>
           <Link href="/instructor/classes">
-            <Button variant="outline" className="mt-4 glass-card text-zinc-300 hover:text-zinc-50">
+            <Button variant="outline" className="mt-4 glass-card text-zinc-600 hover:text-zinc-900">
               Back to Classes
             </Button>
           </Link>
@@ -219,7 +219,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
         {/* Back link */}
         <Link
           href="/instructor/classes"
-          className="inline-flex items-center gap-1 text-sm text-zinc-400 hover:text-zinc-50 transition-colors"
+          className="inline-flex items-center gap-1 text-sm text-zinc-400 hover:text-zinc-900 transition-colors"
         >
           &larr; Classes
         </Link>
@@ -228,7 +228,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
         <div className="glass-card p-6">
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-2xl font-semibold text-zinc-50">{classInfo.name}</h1>
+              <h1 className="text-2xl font-semibold text-zinc-900">{classInfo.name}</h1>
               <p className="mt-1 text-sm text-zinc-400">
                 {classInfo.certification_level || 'All levels'} &middot;{' '}
                 {students.length} student{students.length !== 1 ? 's' : ''}
@@ -249,16 +249,16 @@ function ClassDetailContent({ classId }: { classId: string }) {
           </div>
 
           {classInfo.enrollment_code && (
-            <div className="mt-4 flex items-center gap-3 border-t border-white/[0.06] pt-4">
+            <div className="mt-4 flex items-center gap-3 border-t border-zinc-200 pt-4">
               <span className="text-xs font-medium uppercase tracking-wider text-zinc-400">
                 Enrollment Code
               </span>
-              <code className="rounded surface-2 px-2.5 py-1 text-sm font-mono font-medium text-zinc-200">
+              <code className="rounded surface-2 px-2.5 py-1 text-sm font-mono font-medium text-zinc-700">
                 {classInfo.enrollment_code}
               </code>
               <button
                 onClick={handleCopyCode}
-                className="inline-flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-50 transition-colors"
+                className="inline-flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-900 transition-colors"
               >
                 {copied ? (
                   <>
@@ -278,7 +278,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
 
         {/* Tabs */}
         <Tabs defaultValue="students" className="w-full">
-          <TabsList className="surface-1 border border-white/[0.06]">
+          <TabsList className="surface-1 border border-zinc-200">
             <TabsTrigger value="students">
               Students ({students.length})
             </TabsTrigger>
@@ -292,17 +292,17 @@ function ClassDetailContent({ classId }: { classId: string }) {
             <div className="glass-card overflow-hidden">
               {students.length === 0 ? (
                 <div className="py-16 text-center">
-                  <p className="text-sm font-medium text-zinc-300">No students enrolled yet</p>
+                  <p className="text-sm font-medium text-zinc-600">No students enrolled yet</p>
                   <p className="mt-1 text-sm text-zinc-400">
                     Share the enrollment code{' '}
-                    <code className="font-mono font-medium text-zinc-200">{classInfo.enrollment_code}</code>
+                    <code className="font-mono font-medium text-zinc-700">{classInfo.enrollment_code}</code>
                     {' '}with your students.
                   </p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
-                    <TableRow className="hover:bg-transparent border-white/[0.06]">
+                    <TableRow className="hover:bg-transparent border-zinc-200">
                       <TableHead className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Name</TableHead>
                       <TableHead className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Email</TableHead>
                       <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-400 font-medium">Avg Score</TableHead>
@@ -316,11 +316,11 @@ function ClassDetailContent({ classId }: { classId: string }) {
                     {students.map((student) => {
                       const status = statusDot(student.avgScore);
                       return (
-                        <TableRow key={student.userId} className="border-white/[0.04] hover:bg-white/[0.02]">
+                        <TableRow key={student.userId} className="border-zinc-200 hover:bg-zinc-800/30">
                           <TableCell>
                             <Link
                               href={`/instructor/students/${student.userId}`}
-                              className="font-medium text-zinc-50 hover:underline"
+                              className="font-medium text-zinc-900 hover:underline"
                             >
                               {student.fullName}
                             </Link>
@@ -334,7 +334,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
                                 {student.avgScore}%
                               </span>
                             ) : (
-                              <span className="text-zinc-500">--</span>
+                              <span className="text-zinc-9000">--</span>
                             )}
                           </TableCell>
                           <TableCell className="text-center text-sm text-zinc-400">
@@ -355,7 +355,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
                           </TableCell>
                           <TableCell className="text-right">
                             <Link href={`/instructor/students/${student.userId}`}>
-                              <Button size="sm" variant="ghost" className="text-zinc-400 hover:text-zinc-50">
+                              <Button size="sm" variant="ghost" className="text-zinc-400 hover:text-zinc-900">
                                 View
                               </Button>
                             </Link>
@@ -372,22 +372,22 @@ function ClassDetailContent({ classId }: { classId: string }) {
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="mt-4">
             <div className="glass-card p-6">
-              <h3 className="text-sm font-medium text-zinc-50">Domain Performance</h3>
+              <h3 className="text-sm font-medium text-zinc-900">Domain Performance</h3>
               <p className="mt-0.5 text-xs text-zinc-400">Aggregated average scores across all students</p>
 
               {domainPerf.length > 0 ? (
                 <div className="mt-6">
                   <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={domainPerf}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#27272A" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
                       <XAxis dataKey="domain" tick={{ fill: '#71717a', fontSize: 12 }} />
                       <YAxis domain={[0, 100]} tick={{ fill: '#71717a', fontSize: 11 }} />
                       <Tooltip
                         contentStyle={{
                           borderRadius: '8px',
-                          border: '1px solid rgba(255,255,255,0.06)',
-                          backgroundColor: '#18181b',
-                          color: '#e4e4e7',
+                          border: '1px solid rgba(0,0,0,0.08)',
+                          backgroundColor: '#ffffff',
+                          color: '#18181b',
                           fontSize: 12,
                         }}
                         formatter={(value: number) => [`${value}%`, 'Avg Score']}

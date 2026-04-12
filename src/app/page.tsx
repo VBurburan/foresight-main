@@ -25,10 +25,10 @@ export const metadata: Metadata = {
 /* ───────────────────────────── Data ───────────────────────────── */
 
 const stats = [
+  { value: "1,350+", label: "Assessment Items" },
   { value: "6", label: "TEI Types" },
-  { value: "540+", label: "Items" },
-  { value: "164", label: "ECGs" },
-  { value: "32", label: "Rhythms" },
+  { value: "185", label: "ECG Strips" },
+  { value: "291", label: "RAG Chunks" },
 ];
 
 const steps = [
@@ -115,7 +115,7 @@ export default function HomePage() {
   return (
     <div className="w-full overflow-x-hidden bg-background text-foreground">
       {/* ── Sticky Header ── */}
-      <header className="sticky top-0 z-50 h-14 bg-zinc-950/80 backdrop-blur-lg border-b border-white/[0.06]">
+      <header className="sticky top-0 z-50 h-14 bg-zinc-950/80 backdrop-blur-lg border-b border-zinc-800">
         <div className="max-w-6xl mx-auto h-full flex items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2.5">
             <span className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
@@ -180,15 +180,15 @@ export default function HomePage() {
           </div>
 
           <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.08] mb-6">
-            Assessment infrastructure
+            The exam changed.
             <br className="hidden sm:block" />
-            {" "}for EMS programs
+            {" "}The preparation didn&apos;t.
           </h1>
 
           <p className="text-lg sm:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed mb-10">
-            The first platform that gives EMS instructors real NREMT question
-            formats, AI-powered test building, cohort analytics, and
-            accreditation tracking in one place.
+            Foresight is the first institutional assessment platform that renders
+            Technology Enhanced Items for EMS certification &mdash; so students
+            practice the real exam format from day one.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-20">
@@ -220,7 +220,7 @@ export default function HomePage() {
                   </p>
                 </div>
                 {i < stats.length - 1 && (
-                  <div className="h-8 w-px bg-white/[0.06] hidden sm:block" />
+                  <div className="h-8 w-px bg-zinc-800 hidden sm:block" />
                 )}
               </div>
             ))}
@@ -229,7 +229,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Problem Statement ── */}
-      <section className="relative surface-1 px-6 py-24 sm:py-28 border-y border-white/[0.06]">
+      <section className="relative surface-1 px-6 py-24 sm:py-28 border-y border-zinc-800">
         <div className="relative max-w-4xl mx-auto text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400 mb-4">
             The problem
@@ -285,11 +285,11 @@ export default function HomePage() {
                 <div key={s.num} className="relative text-center px-8 py-6">
                   {/* Vertical divider between columns (desktop) */}
                   {i < steps.length - 1 && (
-                    <div className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 h-24 w-px bg-white/[0.06]" />
+                    <div className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 h-24 w-px bg-zinc-800" />
                   )}
                   {/* Horizontal divider between rows (mobile) */}
                   {i < steps.length - 1 && (
-                    <div className="md:hidden absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-px bg-white/[0.06]" />
+                    <div className="md:hidden absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-px bg-zinc-800" />
                   )}
 
                   <p className="text-xs font-bold text-blue-400/80 tracking-[0.25em] uppercase mb-4">
@@ -335,7 +335,7 @@ export default function HomePage() {
               return (
                 <div
                   key={f.title}
-                  className="glass-card p-6 hover:border-white/[0.12] transition-all"
+                  className="glass-card p-6 hover:border-zinc-700 transition-all"
                 >
                   <div className="w-10 h-10 rounded-lg surface-2 flex items-center justify-center mb-4">
                     <Icon className="h-5 w-5 text-blue-400" />
@@ -354,7 +354,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Comparison ── */}
-      <section className="surface-1 px-6 py-24 sm:py-28 border-y border-white/[0.06]">
+      <section className="surface-1 px-6 py-24 sm:py-28 border-y border-zinc-800">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400 mb-4">
@@ -372,7 +372,7 @@ export default function HomePage() {
           <div className="overflow-x-auto -mx-6 px-6">
             <table className="w-full text-sm min-w-[640px]">
               <thead>
-                <tr className="border-b border-white/[0.06]">
+                <tr className="border-b border-zinc-800">
                   <th className="text-left py-3 pr-4 font-medium text-zinc-400 text-xs uppercase tracking-wider">
                     Platform
                   </th>
@@ -390,7 +390,7 @@ export default function HomePage() {
                 {competitors.map((comp, idx) => (
                   <tr
                     key={comp.name}
-                    className={`border-b border-white/[0.06] ${
+                    className={`border-b border-zinc-800 ${
                       idx === 0 ? "bg-blue-500/5" : ""
                     }`}
                   >
@@ -488,7 +488,7 @@ export default function HomePage() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-white/[0.06] px-6 py-6">
+      <footer className="border-t border-zinc-800 px-6 py-6">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-6 h-6 rounded bg-white flex items-center justify-center">

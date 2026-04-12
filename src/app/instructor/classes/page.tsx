@@ -65,7 +65,7 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={(e) => { e.stopPropagation(); e.preventDefault(); handleCopy(); }}
-      className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs hover:bg-white/[0.04]"
+      className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs hover:bg-zinc-100"
       title="Copy enrollment code"
     >
       {copied ? (
@@ -216,8 +216,8 @@ function ClassesContent() {
     return (
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl space-y-6">
-          <div className="h-8 w-48 rounded-md bg-zinc-800 animate-pulse" />
-          <div className="h-64 rounded-xl bg-zinc-800/50 animate-pulse" />
+          <div className="h-8 w-48 rounded-md bg-zinc-100 animate-pulse" />
+          <div className="h-64 rounded-xl bg-zinc-100 animate-pulse" />
         </div>
       </div>
     );
@@ -228,7 +228,7 @@ function ClassesContent() {
       <div className="mx-auto max-w-6xl space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-zinc-50">Classes</h1>
+          <h1 className="text-2xl font-semibold text-zinc-900">Classes</h1>
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
@@ -299,7 +299,7 @@ function ClassesContent() {
                 <Button
                   variant="outline"
                   onClick={() => setIsDialogOpen(false)}
-                  className="glass-card text-zinc-300 hover:text-zinc-50"
+                  className="glass-card text-zinc-600 hover:text-zinc-900"
                 >
                   Cancel
                 </Button>
@@ -321,7 +321,7 @@ function ClassesContent() {
             <div className="surface-2 rounded-full p-4 mb-4">
               <Plus className="h-6 w-6 text-zinc-400" />
             </div>
-            <p className="text-sm font-medium text-zinc-300">No classes yet</p>
+            <p className="text-sm font-medium text-zinc-600">No classes yet</p>
             <p className="mt-1 text-sm text-zinc-400">
               Create your first class to start tracking student progress.
             </p>
@@ -337,7 +337,7 @@ function ClassesContent() {
           <div className="glass-card overflow-hidden">
             <Table>
               <TableHeader>
-                <TableRow className="hover:bg-transparent border-white/[0.06]">
+                <TableRow className="hover:bg-transparent border-zinc-200">
                   <TableHead className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Class Name</TableHead>
                   <TableHead className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Cert Level</TableHead>
                   <TableHead className="text-center text-xs uppercase tracking-wider text-zinc-400 font-medium">Students</TableHead>
@@ -349,8 +349,8 @@ function ClassesContent() {
               </TableHeader>
               <TableBody>
                 {classes.map((cls) => (
-                  <TableRow key={cls.id} className="border-white/[0.04] hover:bg-white/[0.02]">
-                    <TableCell className="font-medium text-zinc-50">
+                  <TableRow key={cls.id} className="border-zinc-200 hover:bg-zinc-800/30">
+                    <TableCell className="font-medium text-zinc-900">
                       {cls.name}
                     </TableCell>
                     <TableCell className="text-sm text-zinc-400">
@@ -365,13 +365,13 @@ function ClassesContent() {
                           {cls.avgScore}%
                         </span>
                       ) : (
-                        <span className="text-zinc-500">--</span>
+                        <span className="text-zinc-9000">--</span>
                       )}
                     </TableCell>
                     <TableCell>
                       {cls.enrollment_code && (
                         <div className="flex items-center gap-1">
-                          <code className="rounded surface-2 px-2 py-0.5 text-xs font-mono text-zinc-300">
+                          <code className="rounded surface-2 px-2 py-0.5 text-xs font-mono text-zinc-600">
                             {cls.enrollment_code}
                           </code>
                           <CopyButton text={cls.enrollment_code} />
@@ -390,7 +390,7 @@ function ClassesContent() {
                     </TableCell>
                     <TableCell className="text-right">
                       <Link href={`/instructor/classes/${cls.id}`}>
-                        <Button size="sm" variant="ghost" className="text-zinc-400 hover:text-zinc-50">
+                        <Button size="sm" variant="ghost" className="text-zinc-400 hover:text-zinc-900">
                           View
                         </Button>
                       </Link>
