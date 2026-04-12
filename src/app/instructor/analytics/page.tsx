@@ -305,15 +305,15 @@ function AnalyticsContent() {
           {[
             { label: 'Students', value: useDemoData ? '1' : String(studentCount), icon: Users, sub: 'enrolled', color: 'text-blue-400', gradient: 'gradient-blue', iconBg: 'bg-blue-500/10 border-blue-500/20' },
             { label: 'Assessments', value: useDemoData ? '2' : String(sessionCount), icon: BarChart3, sub: 'completed', color: 'text-indigo-400', gradient: 'gradient-indigo', iconBg: 'bg-indigo-500/10 border-indigo-500/20' },
-            { label: 'Avg Score', value: data.overallPost ? `${data.overallPost}%` : '--', icon: Target, sub: 'cohort average', color: (data.overallPost ?? 0) >= 70 ? 'text-emerald-400' : 'text-amber-400', gradient: 'gradient-emerald', iconBg: 'bg-emerald-500/10 border-emerald-500/20' },
-            { label: 'At Risk', value: useDemoData ? '0' : String(atRiskCount), icon: AlertTriangle, sub: 'below 70%', color: atRiskCount > 0 ? 'text-red-400' : 'text-emerald-400', gradient: atRiskCount > 0 ? 'gradient-red' : 'gradient-emerald', iconBg: atRiskCount > 0 ? 'bg-red-500/10 border-red-500/20' : 'bg-emerald-500/10 border-emerald-500/20' },
+            { label: 'Avg Score', value: data.overallPost ? `${data.overallPost}%` : '--', icon: Target, sub: 'cohort average', color: (data.overallPost ?? 0) >= 70 ? 'text-emerald-600' : 'text-amber-600', gradient: 'gradient-emerald', iconBg: 'bg-emerald-500/10 border-emerald-500/20' },
+            { label: 'At Risk', value: useDemoData ? '0' : String(atRiskCount), icon: AlertTriangle, sub: 'below 70%', color: atRiskCount > 0 ? 'text-red-600' : 'text-emerald-600', gradient: atRiskCount > 0 ? 'gradient-red' : 'gradient-emerald', iconBg: atRiskCount > 0 ? 'bg-red-500/10 border-red-500/20' : 'bg-emerald-500/10 border-emerald-500/20' },
           ].map((stat) => (
             <div key={stat.label} className={`stat-card ${stat.gradient}`}>
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">{stat.label}</p>
                   <p className={`mt-2 text-3xl font-bold tabular-nums ${stat.color}`}>{stat.value}</p>
-                  <p className="mt-1 text-xs text-zinc-9000">{stat.sub}</p>
+                  <p className="mt-1 text-xs text-zinc-500">{stat.sub}</p>
                 </div>
                 <div className={`flex h-10 w-10 items-center justify-center rounded-lg border ${stat.iconBg}`}>
                   <stat.icon className={`h-5 w-5 ${stat.color}`} />
@@ -337,7 +337,7 @@ function AnalyticsContent() {
           <div className="section-card overflow-hidden">
             <div className="px-6 pt-6 pb-2">
               <div className="flex items-center gap-2">
-                <Activity className="h-5 w-5 text-teal-400" />
+                <Activity className="h-5 w-5 text-teal-600" />
                 <h2 className="text-lg font-semibold text-zinc-900">Clinical Judgment Cognitive Functions</h2>
               </div>
               <p className="mt-1 text-sm text-zinc-400">

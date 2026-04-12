@@ -32,8 +32,8 @@ interface ExamSessionRow {
 
 function getScoreColor(score: number | null): string {
   if (score == null) return 'text-zinc-400';
-  if (score >= 70) return 'text-emerald-400';
-  return 'text-red-400';
+  if (score >= 70) return 'text-emerald-600';
+  return 'text-red-600';
 }
 
 export default function StudentExamsPage() {
@@ -131,7 +131,7 @@ export default function StudentExamsPage() {
             <p className="text-sm text-zinc-400">No assessments available right now.</p>
           </div>
         ) : (
-          <div className="glass-card overflow-hidden divide-y divide-white/[0.06]">
+          <div className="glass-card overflow-hidden divide-y divide-zinc-200">
             {assessments.map((assessment) => (
               <div
                 key={assessment.id}
@@ -186,7 +186,7 @@ export default function StudentExamsPage() {
                   <th className="text-right text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/[0.06]">
+              <tbody className="divide-y divide-zinc-200">
                 {sessions.map((session) => {
                   const a = session.assessment_id
                     ? assessmentMap.get(session.assessment_id)

@@ -378,15 +378,15 @@ function DashboardContent() {
                                   {' '}
                                   <span className={
                                     activity.score >= 75
-                                      ? 'text-emerald-400'
+                                      ? 'text-emerald-600'
                                       : activity.score >= 60
-                                      ? 'text-amber-400'
-                                      : 'text-red-400'
+                                      ? 'text-amber-600'
+                                      : 'text-red-600'
                                   }>
                                     {activity.score}%
                                   </span>
                                   {activity.score < 60 && (
-                                    <span className="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-red-400 align-middle" />
+                                    <span className="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-red-600 align-middle" />
                                   )}
                                 </>
                               )}

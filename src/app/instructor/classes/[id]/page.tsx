@@ -44,16 +44,16 @@ interface ClassInfo {
 }
 
 function scoreColor(score: number): string {
-  if (score >= 75) return 'text-emerald-400';
-  if (score >= 60) return 'text-amber-400';
-  return 'text-red-400';
+  if (score >= 75) return 'text-emerald-600';
+  if (score >= 60) return 'text-amber-600';
+  return 'text-red-600';
 }
 
 function statusDot(score: number | null): { color: string; label: string } {
   if (score === null) return { color: 'bg-zinc-600', label: '' };
-  if (score < 60) return { color: 'bg-red-400', label: 'At Risk' };
+  if (score < 60) return { color: 'bg-red-600', label: 'At Risk' };
   if (score < 75) return { color: 'bg-amber-400', label: 'Monitor' };
-  return { color: 'bg-emerald-400', label: 'On Track' };
+  return { color: 'bg-emerald-600', label: 'On Track' };
 }
 
 function ClassDetailContent({ classId }: { classId: string }) {
@@ -241,7 +241,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
             <span className="inline-flex items-center gap-1.5 text-xs text-zinc-400">
               <span
                 className={`inline-block h-1.5 w-1.5 rounded-full ${
-                  classInfo.is_active !== false ? 'bg-emerald-400' : 'bg-zinc-600'
+                  classInfo.is_active !== false ? 'bg-emerald-600' : 'bg-zinc-600'
                 }`}
               />
               {classInfo.is_active !== false ? 'Active' : 'Inactive'}
@@ -262,8 +262,8 @@ function ClassDetailContent({ classId }: { classId: string }) {
               >
                 {copied ? (
                   <>
-                    <Check className="h-3.5 w-3.5 text-emerald-400" />
-                    <span className="text-emerald-400">Copied</span>
+                    <Check className="h-3.5 w-3.5 text-emerald-600" />
+                    <span className="text-emerald-600">Copied</span>
                   </>
                 ) : (
                   <>
@@ -316,7 +316,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
                     {students.map((student) => {
                       const status = statusDot(student.avgScore);
                       return (
-                        <TableRow key={student.userId} className="border-zinc-200 hover:bg-zinc-800/30">
+                        <TableRow key={student.userId} className="border-zinc-200 hover:bg-zinc-50">
                           <TableCell>
                             <Link
                               href={`/instructor/students/${student.userId}`}
@@ -334,7 +334,7 @@ function ClassDetailContent({ classId }: { classId: string }) {
                                 {student.avgScore}%
                               </span>
                             ) : (
-                              <span className="text-zinc-9000">--</span>
+                              <span className="text-zinc-500">--</span>
                             )}
                           </TableCell>
                           <TableCell className="text-center text-sm text-zinc-400">

@@ -132,9 +132,9 @@ function ECGPreviewInline({ stripId }: { stripId: string }) {
   }, [stripId]);
   if (!strip) return null;
   return (
-    <div className="rounded-lg surface-1 ring-1 ring-white/[0.06] overflow-hidden mb-4">
+    <div className="rounded-lg surface-1 ring-1 ring-zinc-200 overflow-hidden mb-4">
       <img src={strip.image_url} alt="ECG Strip" className="w-full h-auto object-contain" />
-      <p className="text-[9px] text-zinc-9000 px-2 py-1">PhysioNet - CC BY 4.0</p>
+      <p className="text-[9px] text-zinc-500 px-2 py-1">PhysioNet - CC BY 4.0</p>
     </div>
   );
 }
@@ -542,10 +542,10 @@ function TestBuilderContent() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             {saveMessage && (
-              <span className="text-xs text-emerald-400 font-medium animate-fade-in">{saveMessage}</span>
+              <span className="text-xs text-emerald-600 font-medium animate-fade-in">{saveMessage}</span>
             )}
             {questions.length > 0 && (
-              <Button variant="ghost" size="sm" onClick={handleClearDraft} className="text-zinc-400 hover:text-red-400 text-xs">
+              <Button variant="ghost" size="sm" onClick={handleClearDraft} className="text-zinc-400 hover:text-red-600 text-xs">
                 Clear
               </Button>
             )}
@@ -561,7 +561,7 @@ function TestBuilderContent() {
             </Button>
             <Button
               size="sm"
-              className="bg-white hover:bg-zinc-100 text-zinc-900"
+              className="bg-white hover:bg-zinc-50 text-zinc-900"
               disabled={questions.length === 0 || saving}
               onClick={handleSaveDraft}
             >
@@ -576,7 +576,7 @@ function TestBuilderContent() {
                     Publish
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="section-card border-zinc-700 sm:max-w-md">
+                <DialogContent className="section-card border-zinc-300 sm:max-w-md">
                   <DialogHeader>
                     <DialogTitle className="text-zinc-900">Publish Assessment</DialogTitle>
                     <DialogDescription className="text-zinc-400">
@@ -704,9 +704,9 @@ function TestBuilderContent() {
           <div className="flex items-center justify-between py-2 text-sm">
             <div className="flex items-center gap-3 text-zinc-400">
               <span className="font-semibold text-zinc-900">{questions.length} question{questions.length !== 1 ? 's' : ''}</span>
-              <span className="text-zinc-9000">|</span>
+              <span className="text-zinc-500">|</span>
               <span>{filledCount} completed</span>
-              <span className="text-zinc-9000">|</span>
+              <span className="text-zinc-500">|</span>
               <span>{questions.length - filledCount} blank</span>
             </div>
             <span className="text-xs text-zinc-400 font-mono tabular-nums">
@@ -727,11 +727,11 @@ function TestBuilderContent() {
             <div key={q.id} className="section-card">
               {/* Collapsed row */}
               <div
-                className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-zinc-100/30 transition-colors rounded-xl"
+                className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-zinc-50/30 transition-colors rounded-xl"
                 onClick={() => toggleExpand(q.id)}
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <GripVertical className="h-4 w-4 text-zinc-9000 flex-shrink-0" />
+                  <GripVertical className="h-4 w-4 text-zinc-500 flex-shrink-0" />
                   <span className="text-sm font-medium text-zinc-400 tabular-nums flex-shrink-0">Q{idx + 1}</span>
                   <span className="surface-2 text-zinc-600 font-mono text-xs rounded px-1.5 py-0.5 flex-shrink-0">
                     {q.type}
@@ -739,16 +739,16 @@ function TestBuilderContent() {
                   {q.stem ? (
                     <span className="text-sm text-zinc-600 truncate">{q.stem}</span>
                   ) : (
-                    <span className="text-sm text-zinc-9000 italic">Blank — click to edit</span>
+                    <span className="text-sm text-zinc-500 italic">Blank — click to edit</span>
                   )}
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0 ml-2">
                   {q.stem && (
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                   )}
                   <button
                     onClick={(e) => { e.stopPropagation(); removeQuestion(q.id); }}
-                    className="p-1 rounded hover:bg-zinc-100/50 text-zinc-400 hover:text-red-400 transition-colors"
+                    className="p-1 rounded hover:bg-zinc-50/50 text-zinc-400 hover:text-red-600 transition-colors"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
@@ -762,7 +762,7 @@ function TestBuilderContent() {
 
               {/* Expanded Form */}
               {q.expanded && (
-                <div className="px-4 pb-4 pt-0 border-t border-zinc-800">
+                <div className="px-4 pb-4 pt-0 border-t border-zinc-200">
                   <div className="space-y-4 mt-4">
                     {/* AI generate for this question */}
                     {!q.stem && (
@@ -803,7 +803,7 @@ function TestBuilderContent() {
                                   d.correctKey === opt.key ? 'border-emerald-400 ring-2 ring-emerald-400/20 bg-transparent' : 'border-zinc-600 hover:border-zinc-400'
                                 }`}
                               >
-                                {d.correctKey === opt.key && <div className="w-3 h-3 rounded-full bg-emerald-400" />}
+                                {d.correctKey === opt.key && <div className="w-3 h-3 rounded-full bg-emerald-600" />}
                               </button>
                               <span className="text-xs font-mono text-zinc-400 w-4">{opt.key}.</span>
                               <Input
@@ -841,7 +841,7 @@ function TestBuilderContent() {
                                   d.correctKeys.includes(opt.key) ? 'border-emerald-400 ring-2 ring-emerald-400/20 bg-transparent' : 'border-zinc-600 hover:border-zinc-400'
                                 }`}
                               >
-                                {d.correctKeys.includes(opt.key) && <CheckCircle2 className="w-3 h-3 text-emerald-400" />}
+                                {d.correctKeys.includes(opt.key) && <CheckCircle2 className="w-3 h-3 text-emerald-600" />}
                               </button>
                               <span className="text-xs font-mono text-zinc-400 w-4">{opt.key}.</span>
                               <Input
@@ -856,7 +856,7 @@ function TestBuilderContent() {
                             </div>
                           ))}
                           {d.correctKeys.length > 0 && (
-                            <p className="text-[10px] text-emerald-400">{d.correctKeys.length} correct answer{d.correctKeys.length !== 1 ? 's' : ''} selected</p>
+                            <p className="text-[10px] text-emerald-600">{d.correctKeys.length} correct answer{d.correctKeys.length !== 1 ? 's' : ''} selected</p>
                           )}
                         </div>
                       );
@@ -885,7 +885,7 @@ function TestBuilderContent() {
                                 {d.categories.length > 2 && (
                                   <button onClick={() => updateData(q.id, (prev: DDData) => ({
                                     ...prev, categories: prev.categories.filter((_, i) => i !== ci),
-                                  }))} className="text-zinc-400 hover:text-red-400"><Trash2 className="h-3.5 w-3.5" /></button>
+                                  }))} className="text-zinc-400 hover:text-red-600"><Trash2 className="h-3.5 w-3.5" /></button>
                                 )}
                               </div>
                             ))}
@@ -914,7 +914,7 @@ function TestBuilderContent() {
                                     ...prev,
                                     correctMapping: { ...prev.correctMapping, [item.id]: e.target.value },
                                   }))}
-                                  className="text-xs border border-zinc-800 rounded px-2 py-1.5 surface-1 text-zinc-600 min-w-[160px]"
+                                  className="text-xs border border-zinc-200 rounded px-2 py-1.5 surface-1 text-zinc-600 min-w-[160px]"
                                 >
                                   <option value="">Select category...</option>
                                   {d.categories.filter(c => c.trim()).map((cat) => (
@@ -924,7 +924,7 @@ function TestBuilderContent() {
                                 {d.items.length > 2 && (
                                   <button onClick={() => updateData(q.id, (prev: DDData) => ({
                                     ...prev, items: prev.items.filter((_, i) => i !== ii),
-                                  }))} className="text-zinc-400 hover:text-red-400"><Trash2 className="h-3.5 w-3.5" /></button>
+                                  }))} className="text-zinc-400 hover:text-red-600"><Trash2 className="h-3.5 w-3.5" /></button>
                                 )}
                               </div>
                             ))}
@@ -959,7 +959,7 @@ function TestBuilderContent() {
                               {d.items.length > 2 && (
                                 <button onClick={() => updateData(q.id, (prev: BLData) => ({
                                   ...prev, items: prev.items.filter((_, i) => i !== ii),
-                                }))} className="text-zinc-400 hover:text-red-400"><Trash2 className="h-3.5 w-3.5" /></button>
+                                }))} className="text-zinc-400 hover:text-red-600"><Trash2 className="h-3.5 w-3.5" /></button>
                               )}
                             </div>
                           ))}
@@ -993,7 +993,7 @@ function TestBuilderContent() {
                                   {d.columns.length > 2 && (
                                     <button onClick={() => updateData(q.id, (prev: OBData) => ({
                                       ...prev, columns: prev.columns.filter((_, i) => i !== ci),
-                                    }))} className="text-zinc-400 hover:text-red-400"><Trash2 className="h-3 w-3" /></button>
+                                    }))} className="text-zinc-400 hover:text-red-600"><Trash2 className="h-3 w-3" /></button>
                                   )}
                                 </div>
                               ))}
@@ -1023,7 +1023,7 @@ function TestBuilderContent() {
                                     ...prev,
                                     correctAnswers: { ...prev.correctAnswers, [row]: e.target.value },
                                   }))}
-                                  className="text-xs border border-zinc-800 rounded px-2 py-1.5 surface-1 text-zinc-600 min-w-[160px]"
+                                  className="text-xs border border-zinc-200 rounded px-2 py-1.5 surface-1 text-zinc-600 min-w-[160px]"
                                 >
                                   <option value="">Select column...</option>
                                   {d.columns.filter(c => c.trim()).map((col) => (
@@ -1033,7 +1033,7 @@ function TestBuilderContent() {
                                 {d.rows.length > 2 && (
                                   <button onClick={() => updateData(q.id, (prev: OBData) => ({
                                     ...prev, rows: prev.rows.filter((_, i) => i !== ri),
-                                  }))} className="text-zinc-400 hover:text-red-400"><Trash2 className="h-3.5 w-3.5" /></button>
+                                  }))} className="text-zinc-400 hover:text-red-600"><Trash2 className="h-3.5 w-3.5" /></button>
                                 )}
                               </div>
                             ))}
@@ -1044,11 +1044,11 @@ function TestBuilderContent() {
 
                           {/* Live preview */}
                           {d.columns.some(c => c.trim()) && d.rows.some(r => r.trim()) && (
-                            <div className="rounded-lg surface-1 ring-1 ring-white/[0.06] overflow-hidden">
+                            <div className="rounded-lg surface-1 ring-1 ring-zinc-200 overflow-hidden">
                               <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-wide px-3 pt-2">Preview</p>
                               <table className="w-full text-xs mt-1">
                                 <thead>
-                                  <tr className="border-b border-zinc-800">
+                                  <tr className="border-b border-zinc-200">
                                     <th className="text-left px-3 py-1.5 text-zinc-400 font-medium">Statement</th>
                                     {d.columns.filter(c => c.trim()).map((col) => (
                                       <th key={col} className="text-center px-3 py-1.5 text-zinc-400 font-medium">{col}</th>
@@ -1057,7 +1057,7 @@ function TestBuilderContent() {
                                 </thead>
                                 <tbody>
                                   {d.rows.filter(r => r.trim()).map((row, ri) => (
-                                    <tr key={ri} className="border-b border-zinc-800/50">
+                                    <tr key={ri} className="border-b border-zinc-200/50">
                                       <td className="px-3 py-1.5 text-zinc-600">{row}</td>
                                       {d.columns.filter(c => c.trim()).map((col) => (
                                         <td key={col} className="text-center px-3 py-1.5">
@@ -1085,7 +1085,7 @@ function TestBuilderContent() {
                             Clinical Judgment Scenario — each phase reveals new patient info and has associated questions
                           </label>
                           {d.phases.map((phase, pi) => (
-                            <div key={pi} className="rounded-lg surface-1 ring-1 ring-white/[0.06] p-4 space-y-3">
+                            <div key={pi} className="rounded-lg surface-1 ring-1 ring-zinc-200 p-4 space-y-3">
                               {/* Phase header */}
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
@@ -1103,7 +1103,7 @@ function TestBuilderContent() {
                                 {d.phases.length > 2 && (
                                   <button onClick={() => updateData(q.id, (prev: CJSData) => ({
                                     ...prev, phases: prev.phases.filter((_, i) => i !== pi),
-                                  }))} className="text-zinc-400 hover:text-red-400"><Trash2 className="h-3.5 w-3.5" /></button>
+                                  }))} className="text-zinc-400 hover:text-red-600"><Trash2 className="h-3.5 w-3.5" /></button>
                                 )}
                               </div>
 
@@ -1197,7 +1197,7 @@ function TestBuilderContent() {
                                   Questions for this phase ({phase.questions.length})
                                 </label>
                                 {phase.questions.map((pq, qi) => (
-                                  <div key={qi} className="rounded surface-2 ring-1 ring-white/[0.06] p-3 space-y-2">
+                                  <div key={qi} className="rounded surface-2 ring-1 ring-zinc-200 p-3 space-y-2">
                                     <div className="flex items-center justify-between">
                                       <div className="flex items-center gap-2">
                                         <span className="text-[10px] text-zinc-400">Q{qi + 1}</span>
@@ -1215,7 +1215,7 @@ function TestBuilderContent() {
                                               } : p),
                                             }));
                                           }}
-                                          className="text-[10px] border border-zinc-800 rounded px-1.5 py-0.5 surface-1 text-zinc-600"
+                                          className="text-[10px] border border-zinc-200 rounded px-1.5 py-0.5 surface-1 text-zinc-600"
                                         >
                                           <option value="MC">MC</option>
                                           <option value="MR">MR (SATA)</option>
@@ -1230,7 +1230,7 @@ function TestBuilderContent() {
                                           phases: prev.phases.map((p, i) => i === pi ? {
                                             ...p, questions: p.questions.filter((_, j) => j !== qi),
                                           } : p),
-                                        }))} className="text-zinc-400 hover:text-red-400"><Trash2 className="h-3 w-3" /></button>
+                                        }))} className="text-zinc-400 hover:text-red-600"><Trash2 className="h-3 w-3" /></button>
                                       )}
                                     </div>
                                     <Input
@@ -1302,7 +1302,7 @@ function TestBuilderContent() {
                                                 }))} placeholder={`Item ${ii + 1}`} className="bg-surface-1 text-xs h-8 flex-1" />
                                                 <select value={d.correctMapping[item.id] || ''} onChange={(e) => updatePQ((prev: DDData) => ({
                                                   ...prev, correctMapping: { ...prev.correctMapping, [item.id]: e.target.value },
-                                                }))} className="text-[10px] border border-zinc-800 rounded px-1 py-1 surface-1 text-zinc-600 min-w-[100px]">
+                                                }))} className="text-[10px] border border-zinc-200 rounded px-1 py-1 surface-1 text-zinc-600 min-w-[100px]">
                                                   <option value="">Category...</option>
                                                   {d.categories.filter(c => c.trim()).map(c => <option key={c} value={c}>{c}</option>)}
                                                 </select>
@@ -1358,7 +1358,7 @@ function TestBuilderContent() {
                                                 }))} placeholder={`Row ${ri + 1}`} className="bg-surface-1 text-xs h-8 flex-1" />
                                                 <select value={d.correctAnswers[row] || ''} onChange={(e) => updatePQ((prev: OBData) => ({
                                                   ...prev, correctAnswers: { ...prev.correctAnswers, [row]: e.target.value },
-                                                }))} className="text-[10px] border border-zinc-800 rounded px-1 py-1 surface-1 text-zinc-600 min-w-[100px]">
+                                                }))} className="text-[10px] border border-zinc-200 rounded px-1 py-1 surface-1 text-zinc-600 min-w-[100px]">
                                                   <option value="">Column...</option>
                                                   {d.columns.filter(c => c.trim()).map(c => <option key={c} value={c}>{c}</option>)}
                                                 </select>
@@ -1446,7 +1446,7 @@ function TestBuilderContent() {
             </p>
             <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
               <DialogTrigger asChild>
-                <Button className="mt-6 gap-2 bg-white hover:bg-zinc-100 text-zinc-900">
+                <Button className="mt-6 gap-2 bg-white hover:bg-zinc-50 text-zinc-900">
                   <Plus className="h-4 w-4" />
                   Add First Question
                 </Button>
@@ -1463,7 +1463,7 @@ function TestBuilderContent() {
                     <button
                       key={type}
                       onClick={() => addQuestion(type)}
-                      className="flex items-start gap-3 rounded-lg surface-1 ring-1 ring-white/[0.06] p-4 text-left hover:ring-white/[0.12] hover:bg-zinc-100/30 transition-colors"
+                      className="flex items-start gap-3 rounded-lg surface-1 ring-1 ring-zinc-200 p-4 text-left hover:ring-zinc-300 hover:bg-zinc-50/30 transition-colors"
                     >
                       <span className="surface-2 text-zinc-600 font-mono text-sm font-bold rounded px-2 py-1 leading-none">{type}</span>
                       <div>
@@ -1479,7 +1479,7 @@ function TestBuilderContent() {
         ) : (
           <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
             <DialogTrigger asChild>
-              <button className="w-full rounded-lg border-2 border-dashed border-zinc-800 py-4 text-sm text-zinc-400 hover:border-zinc-700 hover:text-zinc-600 transition-colors flex items-center justify-center gap-2">
+              <button className="w-full rounded-lg border-2 border-dashed border-zinc-200 py-4 text-sm text-zinc-400 hover:border-zinc-300 hover:text-zinc-600 transition-colors flex items-center justify-center gap-2">
                 <Plus className="h-4 w-4" />
                 Add Question
               </button>
@@ -1496,7 +1496,7 @@ function TestBuilderContent() {
                   <button
                     key={type}
                     onClick={() => addQuestion(type)}
-                    className="flex flex-col items-start rounded-lg surface-1 ring-1 ring-white/[0.06] p-3 text-left hover:ring-white/[0.12] hover:bg-zinc-100/30 transition-colors"
+                    className="flex flex-col items-start rounded-lg surface-1 ring-1 ring-zinc-200 p-3 text-left hover:ring-zinc-300 hover:bg-zinc-50/30 transition-colors"
                   >
                     <span className="surface-2 text-zinc-600 font-mono text-xs font-semibold rounded px-1.5 py-0.5">{type}</span>
                     <span className="text-xs text-zinc-400 mt-0.5">{TEI_DESCRIPTIONS[type]}</span>
@@ -1510,7 +1510,7 @@ function TestBuilderContent() {
         {/* Preview Modal */}
         {previewIndex !== null && questions.length > 0 && (
           <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setPreviewIndex(null)}>
-            <div className="surface-1 ring-1 ring-white/[0.06] rounded-xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
+            <div className="surface-1 ring-1 ring-zinc-200 rounded-xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <span className="surface-2 text-zinc-600 font-mono text-xs rounded px-2 py-0.5">{questions[previewIndex].type}</span>
@@ -1540,7 +1540,7 @@ function TestBuilderContent() {
                   </Button>
                 </div>
               </div>
-              <div className="border-t border-zinc-800" />
+              <div className="border-t border-zinc-200" />
               {/* Render the question stem + ECG if attached */}
               <div>
                 <h2 className="text-lg font-semibold text-zinc-900 mb-4 leading-relaxed">
@@ -1561,11 +1561,11 @@ function TestBuilderContent() {
                       <div className="space-y-2">
                         {mc.options.map((opt) => (
                           <div key={opt.key} className={`flex items-center gap-3 rounded-lg border px-4 py-3 ${
-                            mc.correctKey === opt.key ? 'border-emerald-400/30 bg-emerald-400/5' : 'border-zinc-800'
+                            mc.correctKey === opt.key ? 'border-emerald-400/30 bg-emerald-600/5' : 'border-zinc-200'
                           }`}>
                             <span className="text-sm font-mono font-bold text-zinc-400">{opt.key}.</span>
                             <span className="text-sm text-zinc-700">{opt.text || '(empty)'}</span>
-                            {mc.correctKey === opt.key && <CheckCircle2 className="h-4 w-4 text-emerald-400 ml-auto" />}
+                            {mc.correctKey === opt.key && <CheckCircle2 className="h-4 w-4 text-emerald-600 ml-auto" />}
                           </div>
                         ))}
                       </div>
@@ -1579,11 +1579,11 @@ function TestBuilderContent() {
                         <p className="text-xs text-zinc-400 font-medium mb-2">Select all that apply</p>
                         {mr.options.map((opt) => (
                           <div key={opt.key} className={`flex items-center gap-3 rounded-lg border px-4 py-3 ${
-                            mr.correctKeys.includes(opt.key) ? 'border-emerald-400/30 bg-emerald-400/5' : 'border-zinc-800'
+                            mr.correctKeys.includes(opt.key) ? 'border-emerald-400/30 bg-emerald-600/5' : 'border-zinc-200'
                           }`}>
                             <span className="text-sm font-mono font-bold text-zinc-400">{opt.key}.</span>
                             <span className="text-sm text-zinc-700">{opt.text || '(empty)'}</span>
-                            {mr.correctKeys.includes(opt.key) && <CheckCircle2 className="h-4 w-4 text-emerald-400 ml-auto" />}
+                            {mr.correctKeys.includes(opt.key) && <CheckCircle2 className="h-4 w-4 text-emerald-600 ml-auto" />}
                           </div>
                         ))}
                       </div>
@@ -1596,7 +1596,7 @@ function TestBuilderContent() {
                       <div className="space-y-2">
                         <p className="text-xs text-zinc-400 font-medium mb-2">Arrange in correct order</p>
                         {bl.items.map((item, i) => (
-                          <div key={i} className="flex items-center gap-3 rounded-lg border border-zinc-800 px-4 py-3">
+                          <div key={i} className="flex items-center gap-3 rounded-lg border border-zinc-200 px-4 py-3">
                             <span className="text-xs font-mono font-semibold text-zinc-400 w-5 text-center">{i + 1}</span>
                             <span className="text-sm text-zinc-700">{item || '(empty)'}</span>
                           </div>
@@ -1611,14 +1611,14 @@ function TestBuilderContent() {
                       <div className="space-y-3">
                         <div className="flex flex-wrap gap-2">
                           {dd.items.map((item) => (
-                            <span key={item.id} className="px-3 py-1.5 rounded surface-2 ring-1 ring-white/[0.06] text-xs font-medium text-zinc-600">
+                            <span key={item.id} className="px-3 py-1.5 rounded surface-2 ring-1 ring-zinc-200 text-xs font-medium text-zinc-600">
                               {item.text || '(empty)'}
                             </span>
                           ))}
                         </div>
                         <div className="grid grid-cols-2 gap-2">
                           {dd.categories.filter(c => c.trim()).map((cat) => (
-                            <div key={cat} className="rounded border-2 border-dashed border-zinc-700 p-4 text-center min-h-[60px]">
+                            <div key={cat} className="rounded border-2 border-dashed border-zinc-300 p-4 text-center min-h-[60px]">
                               <p className="text-xs font-semibold text-zinc-400">{cat}</p>
                             </div>
                           ))}
@@ -1630,10 +1630,10 @@ function TestBuilderContent() {
                   if (q.type === 'OB') {
                     const ob = d as OBData;
                     return (
-                      <div className="rounded-lg surface-2 ring-1 ring-white/[0.06] overflow-hidden">
+                      <div className="rounded-lg surface-2 ring-1 ring-zinc-200 overflow-hidden">
                         <table className="w-full text-sm">
                           <thead>
-                            <tr className="border-b border-zinc-800">
+                            <tr className="border-b border-zinc-200">
                               <th className="text-left py-2 px-3 font-medium text-zinc-400">Statement</th>
                               {ob.columns.filter(c => c.trim()).map((col) => (
                                 <th key={col} className="text-center py-2 px-3 font-medium text-zinc-400">{col}</th>
@@ -1642,7 +1642,7 @@ function TestBuilderContent() {
                           </thead>
                           <tbody>
                             {ob.rows.filter(r => r.trim()).map((row, ri) => (
-                              <tr key={ri} className="border-t border-zinc-800/50">
+                              <tr key={ri} className="border-t border-zinc-200/50">
                                 <td className="py-2 px-3 text-zinc-600">{row}</td>
                                 {ob.columns.filter(c => c.trim()).map((col) => (
                                   <td key={col} className="text-center py-2 px-3">
@@ -1665,8 +1665,8 @@ function TestBuilderContent() {
               {/* Rationale */}
               {questions[previewIndex].rationale && (
                 <>
-                  <div className="border-t border-zinc-800" />
-                  <div className="border-l-2 border-zinc-700 pl-4">
+                  <div className="border-t border-zinc-200" />
+                  <div className="border-l-2 border-zinc-300 pl-4">
                     <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1">Rationale</p>
                     <p className="text-sm text-zinc-400">{questions[previewIndex].rationale}</p>
                   </div>

@@ -143,10 +143,10 @@ function ExamplesContent() {
                         <div
                           key={opt}
                           className={`flex items-center gap-2 rounded px-3 py-2 text-sm ${
-                            isCorrect ? 'surface-1 ring-1 ring-white/[0.06] font-medium text-zinc-900' : 'text-zinc-400'
+                            isCorrect ? 'surface-1 ring-1 ring-zinc-200 font-medium text-zinc-900' : 'text-zinc-400'
                           }`}
                         >
-                          {isCorrect && <span className="text-emerald-400 text-xs font-bold">&#10003;</span>}
+                          {isCorrect && <span className="text-emerald-600 text-xs font-bold">&#10003;</span>}
                           {opt}
                         </div>
                       );
@@ -167,7 +167,7 @@ function ExamplesContent() {
                   <p className="text-sm text-zinc-600">{tei.example.stem}</p>
                   <div className="flex gap-2 flex-wrap">
                     {((tei.example as any).items || []).map((item: string) => (
-                      <span key={item} className="px-3 py-1.5 rounded surface-1 ring-1 ring-white/[0.06] text-xs font-medium text-zinc-600">
+                      <span key={item} className="px-3 py-1.5 rounded surface-1 ring-1 ring-zinc-200 text-xs font-medium text-zinc-600">
                         {item}
                       </span>
                     ))}
@@ -188,7 +188,7 @@ function ExamplesContent() {
                   <p className="text-sm text-zinc-600">{tei.example.stem}</p>
                   <div className="space-y-1.5">
                     {((tei.example as any).items || []).map((item: string, i: number) => (
-                      <div key={i} className="flex items-center gap-2 rounded surface-1 ring-1 ring-white/[0.06] px-3 py-2">
+                      <div key={i} className="flex items-center gap-2 rounded surface-1 ring-1 ring-zinc-200 px-3 py-2">
                         <span className="text-xs font-mono font-semibold text-zinc-400 w-5 text-center">{i + 1}</span>
                         <span className="text-sm text-zinc-600">{item.replace(/^\d+\.\s*/, '')}</span>
                       </div>
@@ -201,7 +201,7 @@ function ExamplesContent() {
               {tei.type === 'OB' && tei.example && 'columns' in tei.example && 'rows' in tei.example && (
                 <div className="space-y-3">
                   <p className="text-sm text-zinc-600">{tei.example.stem}</p>
-                  <div className="rounded-lg surface-1 ring-1 ring-white/[0.06] overflow-hidden">
+                  <div className="rounded-lg surface-1 ring-1 ring-zinc-200 overflow-hidden">
                     <table className="w-full text-xs">
                       <thead>
                         <tr className="border-b border-zinc-200">

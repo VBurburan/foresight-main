@@ -30,8 +30,8 @@ function formatDuration(seconds: number | null): string {
 
 function getScoreColor(score: number | null): string {
   if (score == null) return 'text-zinc-400';
-  if (score >= 70) return 'text-emerald-400';
-  return 'text-red-400';
+  if (score >= 70) return 'text-emerald-600';
+  return 'text-red-600';
 }
 
 export default function StudentResultsPage() {
@@ -140,12 +140,12 @@ export default function StudentResultsPage() {
             <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">Total Exams</p>
             <p className="text-lg font-semibold text-zinc-900">{completedSessions.length}</p>
           </div>
-          <div className="w-px h-8 bg-zinc-800" />
+          <div className="w-px h-8 bg-zinc-200" />
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">Average Score</p>
             <p className="text-lg font-semibold text-zinc-900">{avgScore ?? '--'}%</p>
           </div>
-          <div className="w-px h-8 bg-zinc-800" />
+          <div className="w-px h-8 bg-zinc-200" />
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">Best Score</p>
             <p className={`text-lg font-semibold ${getScoreColor(bestScore)}`}>
@@ -181,7 +181,7 @@ export default function StudentResultsPage() {
                 <th className="text-right text-xs font-medium uppercase tracking-wider text-zinc-400 px-5 py-3" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/[0.06]">
+            <tbody className="divide-y divide-zinc-200">
               {sessions.map((session) => {
                 const dateStr = session.completed_at || session.started_at;
 

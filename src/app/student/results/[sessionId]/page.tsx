@@ -170,7 +170,7 @@ export default function SessionResultsPage({
     return (
       <div className="p-6 md:p-10 max-w-3xl mx-auto">
         <div className="text-center py-16">
-          <p className="text-sm text-red-400 mb-4">{error || 'Session not found'}</p>
+          <p className="text-sm text-red-600 mb-4">{error || 'Session not found'}</p>
           <Link
             href="/student/results"
             className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
@@ -218,10 +218,10 @@ export default function SessionResultsPage({
           }`}
         />
         <div className="relative">
-          <p className={`text-5xl font-bold ${passed ? 'text-emerald-400' : 'text-red-400'}`}>
+          <p className={`text-5xl font-bold ${passed ? 'text-emerald-600' : 'text-red-600'}`}>
             {scorePercent}%
           </p>
-          <p className={`text-sm font-medium mt-2 ${passed ? 'text-emerald-400' : 'text-red-400'}`}>
+          <p className={`text-sm font-medium mt-2 ${passed ? 'text-emerald-600' : 'text-red-600'}`}>
             {passed ? 'Pass' : 'Needs Improvement'}
           </p>
           <p className="text-sm text-zinc-400 mt-3">
@@ -249,7 +249,7 @@ export default function SessionResultsPage({
             </p>
           </div>
         ) : (
-          <div className="glass-card overflow-hidden divide-y divide-white/[0.06]">
+          <div className="glass-card overflow-hidden divide-y divide-zinc-200">
             {questions.map((q, idx) => {
               const response = responseMap.get(q.id);
               const isCorrect = response?.is_correct === true;
@@ -299,9 +299,9 @@ export default function SessionResultsPage({
                       {!wasAnswered ? (
                         <span className="text-xs text-zinc-400">--</span>
                       ) : isCorrect ? (
-                        <span className="text-emerald-400 text-sm font-medium">&check;</span>
+                        <span className="text-emerald-600 text-sm font-medium">&check;</span>
                       ) : (
-                        <span className="text-red-400 text-sm font-medium">&times;</span>
+                        <span className="text-red-600 text-sm font-medium">&times;</span>
                       )}
                     </span>
                   </div>

@@ -488,7 +488,7 @@ export function ReadinessProjection({
 
         {/* Projected range highlight */}
         <div
-          className="absolute top-3 h-8 rounded-md border-2 border-emerald-400/40 bg-emerald-400/10"
+          className="absolute top-3 h-8 rounded-md border-2 border-emerald-400/40 bg-emerald-600/10"
           style={{ left: `${projLowPos}%`, width: `${projWidth}%` }}
         />
 
@@ -497,9 +497,9 @@ export function ReadinessProjection({
           className="absolute top-0 bottom-0 w-px"
           style={{ left: `${passingPos}%` }}
         >
-          <div className="w-px h-full bg-red-400" />
+          <div className="w-px h-full bg-red-600" />
           <div className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap">
-            <span className="text-xs font-bold text-red-400">{passingThreshold} PASSING</span>
+            <span className="text-xs font-bold text-red-600">{passingThreshold} PASSING</span>
           </div>
         </div>
 
@@ -508,9 +508,9 @@ export function ReadinessProjection({
           className="absolute top-2"
           style={{ left: `${scorePos}%`, transform: 'translateX(-50%)' }}
         >
-          <div className={`w-5 h-5 rounded-full border-2 ${isPassing ? 'bg-emerald-400 border-emerald-300' : 'bg-amber-400 border-amber-300'} shadow-lg`} />
+          <div className={`w-5 h-5 rounded-full border-2 ${isPassing ? 'bg-emerald-600 border-emerald-300' : 'bg-amber-400 border-amber-300'} shadow-lg`} />
           <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap">
-            <span className={`text-sm font-bold ${isPassing ? 'text-emerald-400' : 'text-amber-400'}`}>~{score}</span>
+            <span className={`text-sm font-bold ${isPassing ? 'text-emerald-600' : 'text-amber-600'}`}>~{score}</span>
           </div>
         </div>
       </div>
@@ -532,14 +532,14 @@ export function ReadinessProjection({
         {preScore !== null && postScore !== null && (
           <div className="bg-zinc-100 border border-zinc-200 rounded-lg p-3 text-center">
             <p className="text-xs text-zinc-400">Improvement</p>
-            <p className={`text-lg font-bold tabular-nums ${postScore > preScore ? 'text-emerald-400' : 'text-red-400'}`}>
+            <p className={`text-lg font-bold tabular-nums ${postScore > preScore ? 'text-emerald-600' : 'text-red-600'}`}>
               {postScore > preScore ? '+' : ''}{(postScore - preScore).toFixed(1)}%
             </p>
           </div>
         )}
         <div className="bg-zinc-100 border border-zinc-200 rounded-lg p-3 text-center">
           <p className="text-xs text-zinc-400">Projected Range</p>
-          <p className={`text-lg font-bold tabular-nums ${isPassing ? 'text-emerald-400' : 'text-amber-400'}`}>
+          <p className={`text-lg font-bold tabular-nums ${isPassing ? 'text-emerald-600' : 'text-amber-600'}`}>
             {projLow} – {projHigh}
           </p>
         </div>
@@ -585,13 +585,13 @@ export function ScoreSummaryCard({
           <p className="text-xs font-medium uppercase tracking-wider text-zinc-400 mb-1">
             {postLabel ?? 'Post-Test'}
           </p>
-          <p className="text-3xl font-bold text-teal-400 tabular-nums">{postScore}%</p>
+          <p className="text-3xl font-bold text-teal-600 tabular-nums">{postScore}%</p>
         </div>
       )}
       {change !== null && (
         <div className="section-card p-5 text-center">
           <p className="text-xs font-medium uppercase tracking-wider text-zinc-400 mb-1">Change</p>
-          <p className={`text-3xl font-bold tabular-nums ${change > 0 ? 'text-emerald-400' : change < 0 ? 'text-red-400' : 'text-zinc-600'}`}>
+          <p className={`text-3xl font-bold tabular-nums ${change > 0 ? 'text-emerald-600' : change < 0 ? 'text-red-600' : 'text-zinc-600'}`}>
             {change > 0 ? '+' : ''}{change.toFixed(1)}%
           </p>
         </div>

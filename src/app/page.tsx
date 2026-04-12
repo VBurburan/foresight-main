@@ -115,7 +115,7 @@ export default function HomePage() {
   return (
     <div className="w-full overflow-x-hidden bg-background text-foreground">
       {/* ── Sticky Header ── */}
-      <header className="sticky top-0 z-50 h-14 bg-zinc-950/80 backdrop-blur-lg border-b border-zinc-800">
+      <header className="sticky top-0 z-50 h-14 bg-white/80 backdrop-blur-lg border-b border-zinc-200">
         <div className="max-w-6xl mx-auto h-full flex items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2.5">
             <span className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
@@ -126,7 +126,7 @@ export default function HomePage() {
                 height={22}
               />
             </span>
-            <span className="font-heading text-[17px] font-bold tracking-tight text-white">
+            <span className="font-heading text-[17px] font-bold tracking-tight text-zinc-900">
               Foresight
             </span>
           </Link>
@@ -134,13 +134,13 @@ export default function HomePage() {
           <div className="flex items-center gap-5">
             <Link
               href="/login"
-              className="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+              className="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors"
             >
               Login
             </Link>
             <a
               href="mailto:vincent@foresight.edu"
-              className="hidden sm:inline-flex items-center gap-1.5 bg-white hover:bg-zinc-100 text-zinc-900 text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+              className="hidden sm:inline-flex items-center gap-1.5 bg-zinc-900 hover:bg-zinc-800 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
             >
               Get Started
             </a>
@@ -171,21 +171,20 @@ export default function HomePage() {
           {/* Pill badge */}
           <div className="inline-flex items-center gap-2 glass-card px-4 py-1.5 mb-8">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-zinc-400" />
             </span>
-            <span className="text-xs font-medium text-zinc-300 tracking-wide">
+            <span className="text-xs font-medium text-zinc-600 tracking-wide">
               Built for EMS Educators
             </span>
           </div>
 
-          <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.08] mb-6">
+          <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-zinc-900 leading-[1.08] mb-6">
             The exam changed.
             <br className="hidden sm:block" />
             {" "}The preparation didn&apos;t.
           </h1>
 
-          <p className="text-lg sm:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed mb-10">
+          <p className="text-lg sm:text-xl text-zinc-500 max-w-2xl mx-auto leading-relaxed mb-10">
             Foresight is the first institutional assessment platform that renders
             Technology Enhanced Items for EMS certification &mdash; so students
             practice the real exam format from day one.
@@ -194,14 +193,14 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-20">
             <a
               href="mailto:vincent@foresight.edu"
-              className="group inline-flex items-center gap-2 bg-white hover:bg-zinc-100 text-zinc-900 px-6 py-3 rounded-lg font-medium text-[15px] transition-colors"
+              className="group inline-flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-white px-6 py-3 rounded-lg font-medium text-[15px] transition-colors"
             >
               Request Access
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </a>
             <a
               href="#how-it-works"
-              className="inline-flex items-center gap-2 glass-card px-6 py-3 text-zinc-300 hover:text-white font-medium text-[15px] transition-colors"
+              className="inline-flex items-center gap-2 glass-card px-6 py-3 text-zinc-600 hover:text-zinc-900 border border-zinc-300 font-medium text-[15px] transition-colors"
             >
               See How It Works
             </a>
@@ -212,15 +211,15 @@ export default function HomePage() {
             {stats.map((s, i) => (
               <div key={s.label} className="flex items-center gap-8 sm:gap-16">
                 <div className="text-center">
-                  <p className="font-heading text-2xl font-bold text-white tabular-nums">
+                  <p className="font-heading text-2xl font-bold text-zinc-900 tabular-nums">
                     {s.value}
                   </p>
-                  <p className="text-xs text-zinc-400 font-medium uppercase tracking-wider mt-1">
+                  <p className="text-xs text-zinc-500 font-medium uppercase tracking-wider mt-1">
                     {s.label}
                   </p>
                 </div>
                 {i < stats.length - 1 && (
-                  <div className="h-8 w-px bg-zinc-800 hidden sm:block" />
+                  <div className="h-8 w-px bg-zinc-300 hidden sm:block" />
                 )}
               </div>
             ))}
@@ -229,17 +228,17 @@ export default function HomePage() {
       </section>
 
       {/* ── Problem Statement ── */}
-      <section className="relative surface-1 px-6 py-24 sm:py-28 border-y border-zinc-800">
+      <section className="relative px-6 py-24 sm:py-28 border-y border-zinc-200">
         <div className="relative max-w-4xl mx-auto text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400 mb-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600 mb-4">
             The problem
           </p>
-          <h2 className="font-heading text-3xl sm:text-4xl lg:text-[44px] font-bold tracking-tight text-white leading-tight mb-6">
+          <h2 className="font-heading text-3xl sm:text-4xl lg:text-[44px] font-bold tracking-tight text-zinc-900 leading-tight mb-6">
             The exam changed.
             <br />
             Assessment tools didn&apos;t.
           </h2>
-          <p className="text-base sm:text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed mb-16">
+          <p className="text-base sm:text-lg text-zinc-500 max-w-2xl mx-auto leading-relaxed mb-16">
             Since July 2024, Technology Enhanced Items are scored on the NREMT.
             Clinical Judgment accounts for 34&ndash;38% of the exam. Programs
             that can&apos;t maintain a 70% first-attempt pass rate risk losing
@@ -254,10 +253,10 @@ export default function HomePage() {
               { value: "70%", label: "first-attempt pass rate for accreditation" },
             ].map((item) => (
               <div key={item.value} className="glass-card p-6">
-                <p className="font-heading text-4xl sm:text-5xl font-bold text-white">
+                <p className="font-heading text-4xl sm:text-5xl font-bold text-zinc-900">
                   {item.value}
                 </p>
-                <p className="text-sm text-zinc-400 mt-2 leading-relaxed">
+                <p className="text-sm text-zinc-500 mt-2 leading-relaxed">
                   {item.label}
                 </p>
               </div>
@@ -270,10 +269,10 @@ export default function HomePage() {
       <section id="how-it-works" className="px-6 py-24 sm:py-28">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400 mb-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600 mb-4">
               How it works
             </p>
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-white">
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900">
               Create. Deliver. Analyze.
             </h2>
           </div>
@@ -285,23 +284,23 @@ export default function HomePage() {
                 <div key={s.num} className="relative text-center px-8 py-6">
                   {/* Vertical divider between columns (desktop) */}
                   {i < steps.length - 1 && (
-                    <div className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 h-24 w-px bg-zinc-800" />
+                    <div className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 h-24 w-px bg-zinc-200" />
                   )}
                   {/* Horizontal divider between rows (mobile) */}
                   {i < steps.length - 1 && (
-                    <div className="md:hidden absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-px bg-zinc-800" />
+                    <div className="md:hidden absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-px bg-zinc-200" />
                   )}
 
-                  <p className="text-xs font-bold text-blue-400/80 tracking-[0.25em] uppercase mb-4">
+                  <p className="text-xs font-bold text-blue-600/80 tracking-[0.25em] uppercase mb-4">
                     {s.num}
                   </p>
-                  <div className="w-12 h-12 rounded-xl surface-2 flex items-center justify-center mx-auto mb-5">
-                    <Icon className="h-5 w-5 text-blue-400" />
+                  <div className="w-12 h-12 rounded-xl bg-zinc-100 flex items-center justify-center mx-auto mb-5">
+                    <Icon className="h-5 w-5 text-blue-600" />
                   </div>
-                  <h3 className="font-heading text-xl font-bold text-white mb-2">
+                  <h3 className="font-heading text-xl font-bold text-zinc-900 mb-2">
                     {s.title}
                   </h3>
-                  <p className="text-sm text-zinc-400 leading-relaxed max-w-[280px] mx-auto">
+                  <p className="text-sm text-zinc-500 leading-relaxed max-w-[280px] mx-auto">
                     {s.desc}
                   </p>
                 </div>
@@ -315,15 +314,15 @@ export default function HomePage() {
       <section className="px-6 py-24 sm:py-28">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400 mb-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600 mb-4">
               Platform
             </p>
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 mb-4">
               Everything you need to assess,
               <br className="hidden sm:block" />
               {" "}track, and intervene
             </h2>
-            <p className="text-base text-zinc-400 max-w-xl mx-auto">
+            <p className="text-base text-zinc-500 max-w-xl mx-auto">
               Six capabilities that don&apos;t exist together anywhere else in
               EMS education.
             </p>
@@ -335,15 +334,15 @@ export default function HomePage() {
               return (
                 <div
                   key={f.title}
-                  className="glass-card p-6 hover:border-zinc-700 transition-all"
+                  className="glass-card p-6 hover:border-zinc-300 transition-all"
                 >
-                  <div className="w-10 h-10 rounded-lg surface-2 flex items-center justify-center mb-4">
-                    <Icon className="h-5 w-5 text-blue-400" />
+                  <div className="w-10 h-10 rounded-lg bg-zinc-100 flex items-center justify-center mb-4">
+                    <Icon className="h-5 w-5 text-blue-600" />
                   </div>
-                  <h3 className="font-heading text-[15px] font-bold text-white mb-2">
+                  <h3 className="font-heading text-[15px] font-bold text-zinc-900 mb-2">
                     {f.title}
                   </h3>
-                  <p className="text-sm text-zinc-400 leading-relaxed">
+                  <p className="text-sm text-zinc-500 leading-relaxed">
                     {f.desc}
                   </p>
                 </div>
@@ -354,16 +353,16 @@ export default function HomePage() {
       </section>
 
       {/* ── Comparison ── */}
-      <section className="surface-1 px-6 py-24 sm:py-28 border-y border-zinc-800">
+      <section className="px-6 py-24 sm:py-28 border-y border-zinc-200">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400 mb-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600 mb-4">
               Landscape
             </p>
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 mb-4">
               How Foresight compares
             </h2>
-            <p className="text-base text-zinc-400 max-w-lg mx-auto">
+            <p className="text-base text-zinc-500 max-w-lg mx-auto">
               The only platform combining institutional analytics with real TEI
               rendering and AI generation.
             </p>
@@ -372,14 +371,14 @@ export default function HomePage() {
           <div className="overflow-x-auto -mx-6 px-6">
             <table className="w-full text-sm min-w-[640px]">
               <thead>
-                <tr className="border-b border-zinc-800">
-                  <th className="text-left py-3 pr-4 font-medium text-zinc-400 text-xs uppercase tracking-wider">
+                <tr className="border-b border-zinc-200">
+                  <th className="text-left py-3 pr-4 font-medium text-zinc-500 text-xs uppercase tracking-wider">
                     Platform
                   </th>
                   {compCols.map((c) => (
                     <th
                       key={c.key}
-                      className="text-center py-3 px-2 font-medium text-zinc-400 text-xs uppercase tracking-wider"
+                      className="text-center py-3 px-2 font-medium text-zinc-500 text-xs uppercase tracking-wider"
                     >
                       {c.label}
                     </th>
@@ -390,15 +389,15 @@ export default function HomePage() {
                 {competitors.map((comp, idx) => (
                   <tr
                     key={comp.name}
-                    className={`border-b border-zinc-800 ${
-                      idx === 0 ? "bg-blue-500/5" : ""
+                    className={`border-b border-zinc-200 ${
+                      idx === 0 ? "bg-blue-50" : ""
                     }`}
                   >
                     <td
                       className={`py-3.5 pr-4 ${
                         idx === 0
-                          ? "text-blue-400 font-semibold"
-                          : "text-zinc-400"
+                          ? "text-blue-600 font-semibold"
+                          : "text-zinc-500"
                       }`}
                     >
                       {comp.name}
@@ -406,7 +405,7 @@ export default function HomePage() {
                     {compCols.map((c) => (
                       <td key={c.key} className="text-center py-3.5 px-2">
                         {comp[c.key] ? (
-                          <Check className="h-4 w-4 text-blue-400 mx-auto" strokeWidth={2.5} />
+                          <Check className="h-4 w-4 text-blue-600 mx-auto" strokeWidth={2.5} />
                         ) : (
                           <Minus className="h-3.5 w-3.5 text-zinc-700 mx-auto" />
                         )}
@@ -423,15 +422,15 @@ export default function HomePage() {
       {/* ── Credibility ── */}
       <section className="px-6 py-24 sm:py-28">
         <div className="max-w-3xl mx-auto text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400 mb-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600 mb-4">
             Who built this
           </p>
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-white mb-6">
+          <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 mb-6">
             Built by a paramedic,
             <br className="hidden sm:block" />
             {" "}for paramedics
           </h2>
-          <p className="text-base text-zinc-400 max-w-2xl mx-auto leading-relaxed mb-10">
+          <p className="text-base text-zinc-500 max-w-2xl mx-auto leading-relaxed mb-10">
             Foresight is built by a National Registry Paramedic and NAEMSE Level
             1 Instructor who uses every feature with real students. Every
             analytics screen, every error pattern, every threshold exists because
@@ -442,7 +441,7 @@ export default function HomePage() {
             {credentials.map((cred) => (
               <span
                 key={cred}
-                className="glass-card inline-flex items-center px-4 py-1.5 text-xs font-medium text-zinc-300"
+                className="glass-card inline-flex items-center px-4 py-1.5 text-xs font-medium text-zinc-600"
               >
                 {cred}
               </span>
@@ -454,15 +453,15 @@ export default function HomePage() {
       {/* ── CTA ── */}
       <section className="relative px-6 py-24 sm:py-28">
         {/* Gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-600/20 via-zinc-950 to-zinc-950" />
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-50 via-white to-white" />
 
         <div className="relative max-w-3xl mx-auto text-center">
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
+          <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 mb-4">
             Ready to modernize
             <br className="hidden sm:block" />
             {" "}your assessments?
           </h2>
-          <p className="text-base text-zinc-400 max-w-xl mx-auto leading-relaxed mb-10">
+          <p className="text-base text-zinc-500 max-w-xl mx-auto leading-relaxed mb-10">
             Currently in pilot with select EMS programs. Request access for
             early onboarding and institutional pricing.
           </p>
@@ -470,14 +469,14 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
             <a
               href="mailto:vincent@foresight.edu"
-              className="group inline-flex items-center gap-2 bg-white text-zinc-900 px-7 py-3 rounded-lg font-medium text-[15px] hover:bg-zinc-100 transition-colors"
+              className="group inline-flex items-center gap-2 bg-zinc-900 text-white px-7 py-3 rounded-lg font-medium text-[15px] hover:bg-zinc-800 transition-colors"
             >
               Request Access
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </a>
             <a
               href="mailto:vincent@foresight.edu?subject=Foresight Demo Request"
-              className="inline-flex items-center gap-2 glass-card px-7 py-3 text-zinc-300 hover:text-white font-medium text-[15px] transition-colors"
+              className="inline-flex items-center gap-2 glass-card px-7 py-3 text-zinc-600 hover:text-zinc-900 border border-zinc-300 font-medium text-[15px] transition-colors"
             >
               Schedule a Demo
             </a>
@@ -488,7 +487,7 @@ export default function HomePage() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-zinc-800 px-6 py-6">
+      <footer className="border-t border-zinc-200 px-6 py-6">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-6 h-6 rounded bg-white flex items-center justify-center">
@@ -499,11 +498,11 @@ export default function HomePage() {
                 height={16}
               />
             </span>
-            <span className="text-sm font-medium text-zinc-400">
+            <span className="text-sm font-medium text-zinc-500">
               Foresight
             </span>
           </div>
-          <p className="text-xs text-zinc-400">
+          <p className="text-xs text-zinc-500">
             &copy; 2026 Foresight
           </p>
         </div>

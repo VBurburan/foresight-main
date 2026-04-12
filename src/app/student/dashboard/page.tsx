@@ -264,7 +264,7 @@ export default function StudentDashboardPage() {
               </div>
             ))}
           </div>
-          <div className="mt-8 h-px bg-zinc-800" />
+          <div className="mt-8 h-px bg-zinc-200" />
           <div className="mt-8 h-72 rounded-xl bg-zinc-100 animate-pulse" />
         </div>
       </div>
@@ -326,10 +326,10 @@ export default function StudentDashboardPage() {
                 </button>
               </div>
               {enrollError && (
-                <p className="mt-2 text-sm text-red-400">{enrollError}</p>
+                <p className="mt-2 text-sm text-red-600">{enrollError}</p>
               )}
               {enrollSuccess && (
-                <p className="mt-2 text-sm text-emerald-400">{enrollSuccess}</p>
+                <p className="mt-2 text-sm text-emerald-600">{enrollSuccess}</p>
               )}
             </div>
           </div>
@@ -362,7 +362,7 @@ export default function StudentDashboardPage() {
                 </p>
               </div>
             </div>
-            <div className="mt-6 h-px bg-zinc-800" />
+            <div className="mt-6 h-px bg-zinc-200" />
           </>
         )}
 
@@ -454,8 +454,8 @@ export default function StudentDashboardPage() {
                             <span
                               className={`text-sm font-semibold ${
                                 r.score_percentage >= 70
-                                  ? 'text-emerald-400'
-                                  : 'text-red-400'
+                                  ? 'text-emerald-600'
+                                  : 'text-red-600'
                               }`}
                             >
                               {r.score_percentage}%
@@ -512,10 +512,10 @@ export default function StudentDashboardPage() {
               </button>
             </div>
             {enrollError && (
-              <p className="mt-2 text-sm text-red-400">{enrollError}</p>
+              <p className="mt-2 text-sm text-red-600">{enrollError}</p>
             )}
             {enrollSuccess && (
-              <p className="mt-2 text-sm text-emerald-400">{enrollSuccess}</p>
+              <p className="mt-2 text-sm text-emerald-600">{enrollSuccess}</p>
             )}
           </div>
         )}

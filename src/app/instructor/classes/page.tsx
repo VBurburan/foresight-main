@@ -48,9 +48,9 @@ interface ClassRow {
 }
 
 function scoreColor(score: number): string {
-  if (score >= 75) return 'text-emerald-400';
-  if (score >= 60) return 'text-amber-400';
-  return 'text-red-400';
+  if (score >= 75) return 'text-emerald-600';
+  if (score >= 60) return 'text-amber-600';
+  return 'text-red-600';
 }
 
 function CopyButton({ text }: { text: string }) {
@@ -69,7 +69,7 @@ function CopyButton({ text }: { text: string }) {
       title="Copy enrollment code"
     >
       {copied ? (
-        <Check className="h-3 w-3 text-emerald-400" />
+        <Check className="h-3 w-3 text-emerald-600" />
       ) : (
         <Copy className="h-3 w-3 text-zinc-400" />
       )}
@@ -349,7 +349,7 @@ function ClassesContent() {
               </TableHeader>
               <TableBody>
                 {classes.map((cls) => (
-                  <TableRow key={cls.id} className="border-zinc-200 hover:bg-zinc-800/30">
+                  <TableRow key={cls.id} className="border-zinc-200 hover:bg-zinc-50">
                     <TableCell className="font-medium text-zinc-900">
                       {cls.name}
                     </TableCell>
@@ -365,7 +365,7 @@ function ClassesContent() {
                           {cls.avgScore}%
                         </span>
                       ) : (
-                        <span className="text-zinc-9000">--</span>
+                        <span className="text-zinc-500">--</span>
                       )}
                     </TableCell>
                     <TableCell>
@@ -382,7 +382,7 @@ function ClassesContent() {
                       <span className="inline-flex items-center gap-1.5 text-xs text-zinc-400">
                         <span
                           className={`inline-block h-1.5 w-1.5 rounded-full ${
-                            cls.is_active !== false ? 'bg-emerald-400' : 'bg-zinc-600'
+                            cls.is_active !== false ? 'bg-emerald-600' : 'bg-zinc-600'
                           }`}
                         />
                         {cls.is_active !== false ? 'Active' : 'Inactive'}

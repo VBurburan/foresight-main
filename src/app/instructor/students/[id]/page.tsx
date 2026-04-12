@@ -44,9 +44,9 @@ interface SessionRow {
 }
 
 function scoreColor(score: number): string {
-  if (score >= 75) return 'text-emerald-400';
-  if (score >= 60) return 'text-amber-400';
-  return 'text-red-400';
+  if (score >= 75) return 'text-emerald-600';
+  if (score >= 60) return 'text-amber-600';
+  return 'text-red-600';
 }
 
 function StudentDetailContent({ studentId }: { studentId: string }) {
@@ -455,7 +455,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
                               {session.score}%
                             </span>
                           ) : (
-                            <span className="text-zinc-9000">--</span>
+                            <span className="text-zinc-500">--</span>
                           )}
                         </td>
                         <td className="py-2.5 px-3 text-center text-zinc-400 tabular-nums">
