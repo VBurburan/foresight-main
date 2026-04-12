@@ -113,42 +113,7 @@ const credentials = [
 
 export default function HomePage() {
   return (
-    <div className="w-full overflow-x-hidden bg-background text-foreground">
-      {/* ── Sticky Header ── */}
-      <header className="sticky top-0 z-50 h-14 bg-white/80 backdrop-blur-lg border-b border-zinc-200">
-        <div className="max-w-6xl mx-auto h-full flex items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
-              <Image
-                src="/images/foresight-logo.png"
-                alt=""
-                width={22}
-                height={22}
-              />
-            </span>
-            <span className="font-heading text-[17px] font-bold tracking-tight text-zinc-900">
-              Foresight
-            </span>
-          </Link>
-
-          <div className="flex items-center gap-5">
-            <Link
-              href="/login"
-              className="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors"
-            >
-              Login
-            </Link>
-            <a
-              href="mailto:vincent@foresight.edu"
-              className="hidden sm:inline-flex items-center gap-1.5 bg-zinc-900 hover:bg-zinc-800 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-            >
-              Get Started
-            </a>
-          </div>
-        </div>
-      </header>
-
-      <main>
+    <>
       {/* ── Hero ── */}
       <section className="relative px-6 pt-24 pb-28 sm:pt-32 sm:pb-36">
         {/* Subtle radial gradient overlay */}
@@ -230,7 +195,7 @@ export default function HomePage() {
       {/* ── Problem Statement ── */}
       <section className="relative px-6 py-24 sm:py-28 border-y border-zinc-200">
         <div className="relative max-w-4xl mx-auto text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600 mb-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700 mb-4">
             The problem
           </p>
           <h2 className="font-heading text-3xl sm:text-4xl lg:text-[44px] font-bold tracking-tight text-zinc-900 leading-tight mb-6">
@@ -269,7 +234,7 @@ export default function HomePage() {
       <section id="how-it-works" className="px-6 py-24 sm:py-28">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600 mb-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700 mb-4">
               How it works
             </p>
             <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900">
@@ -291,11 +256,11 @@ export default function HomePage() {
                     <div className="md:hidden absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-px bg-zinc-200" />
                   )}
 
-                  <p className="text-xs font-bold text-blue-600/80 tracking-[0.25em] uppercase mb-4">
+                  <p className="text-xs font-bold text-blue-700/80 tracking-[0.25em] uppercase mb-4">
                     {s.num}
                   </p>
                   <div className="w-12 h-12 rounded-xl bg-zinc-100 flex items-center justify-center mx-auto mb-5">
-                    <Icon className="h-5 w-5 text-blue-600" />
+                    <Icon className="h-5 w-5 text-blue-700" />
                   </div>
                   <h3 className="font-heading text-xl font-bold text-zinc-900 mb-2">
                     {s.title}
@@ -311,10 +276,10 @@ export default function HomePage() {
       </section>
 
       {/* ── Features ── */}
-      <section className="px-6 py-24 sm:py-28">
+      <section className="px-6 py-24 sm:py-28 bg-zinc-50">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600 mb-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700 mb-4">
               Platform
             </p>
             <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 mb-4">
@@ -334,10 +299,10 @@ export default function HomePage() {
               return (
                 <div
                   key={f.title}
-                  className="glass-card p-6 hover:border-zinc-300 transition-all"
+                  className="bg-white border border-zinc-200 rounded-xl shadow-sm p-6 hover:border-zinc-300 transition-all"
                 >
                   <div className="w-10 h-10 rounded-lg bg-zinc-100 flex items-center justify-center mb-4">
-                    <Icon className="h-5 w-5 text-blue-600" />
+                    <Icon className="h-5 w-5 text-blue-700" />
                   </div>
                   <h3 className="font-heading text-[15px] font-bold text-zinc-900 mb-2">
                     {f.title}
@@ -349,6 +314,16 @@ export default function HomePage() {
               );
             })}
           </div>
+
+          <div className="text-center mt-12">
+            <Link
+              href="/features"
+              className="inline-flex items-center gap-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors"
+            >
+              View all features in detail
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -356,7 +331,7 @@ export default function HomePage() {
       <section className="px-6 py-24 sm:py-28 border-y border-zinc-200">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600 mb-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700 mb-4">
               Landscape
             </p>
             <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 mb-4">
@@ -396,7 +371,7 @@ export default function HomePage() {
                     <td
                       className={`py-3.5 pr-4 ${
                         idx === 0
-                          ? "text-blue-600 font-semibold"
+                          ? "text-blue-700 font-semibold"
                           : "text-zinc-500"
                       }`}
                     >
@@ -405,7 +380,7 @@ export default function HomePage() {
                     {compCols.map((c) => (
                       <td key={c.key} className="text-center py-3.5 px-2">
                         {comp[c.key] ? (
-                          <Check className="h-4 w-4 text-blue-600 mx-auto" strokeWidth={2.5} />
+                          <Check className="h-4 w-4 text-blue-700 mx-auto" strokeWidth={2.5} />
                         ) : (
                           <Minus className="h-3.5 w-3.5 text-zinc-700 mx-auto" />
                         )}
@@ -422,7 +397,7 @@ export default function HomePage() {
       {/* ── Credibility ── */}
       <section className="px-6 py-24 sm:py-28">
         <div className="max-w-3xl mx-auto text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600 mb-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700 mb-4">
             Who built this
           </p>
           <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 mb-6">
@@ -483,30 +458,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      </main>
-
-      {/* ── Footer ── */}
-      <footer className="border-t border-zinc-200 px-6 py-6">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="w-6 h-6 rounded bg-white flex items-center justify-center">
-              <Image
-                src="/images/foresight-logo.png"
-                alt=""
-                width={16}
-                height={16}
-              />
-            </span>
-            <span className="text-sm font-medium text-zinc-500">
-              Foresight
-            </span>
-          </div>
-          <p className="text-xs text-zinc-500">
-            &copy; 2026 Foresight
-          </p>
-        </div>
-      </footer>
-    </div>
+    </>
   );
 }

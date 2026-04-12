@@ -537,8 +537,8 @@ function TestBuilderContent() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-zinc-900 font-heading">Test Builder</h1>
-            <p className="text-sm text-zinc-400 mt-0.5">Create and manage assessments with real TEI formats</p>
+            <h1 className="text-2xl font-semibold text-zinc-900 tracking-tight">Test Builder</h1>
+            <p className="text-sm text-zinc-500 mt-0.5">Create and manage assessments with real TEI formats</p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             {saveMessage && (
@@ -611,7 +611,96 @@ function TestBuilderContent() {
           </div>
         </div>
 
-        {/* Assessment Setup */}
+        {/* New Assessment empty state — shown when no draft is loaded */}
+        {!assessmentName && questions.length === 0 && draftsLoaded && (
+          <div className="section-card">
+            <div className="text-center py-16 px-6">
+              <div className="mx-auto w-14 h-14 rounded-2xl bg-zinc-100 border border-zinc-200 flex items-center justify-center mb-5">
+                <Plus className="h-6 w-6 text-zinc-400" />
+              </div>
+              <h2 className="text-lg font-semibold text-zinc-900">Create a New Assessment</h2>
+              <p className="mt-2 text-sm text-zinc-500 max-w-md mx-auto">
+                Build exams with real NREMT TEI formats. Set up the basics, then add questions manually or generate them with AI.
+              </p>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="mt-6 inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800">
+                    <Plus className="h-4 w-4" />
+                    New Assessment
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle className="text-zinc-900">New Assessment</DialogTitle>
+                    <DialogDescription className="text-zinc-500">
+                      Set up the basics for your assessment. You can change these later.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-2">
+                    <div className="space-y-1.5">
+                      <Label className="text-sm text-zinc-700 font-medium">Assessment Name</Label>
+                      <Input
+                        value={assessmentName}
+                        onChange={(e) => setAssessmentName(e.target.value)}
+                        placeholder="e.g., Cardiology Midterm — Spring 2026"
+                        className="h-11"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <Label className="text-sm text-zinc-700 font-medium">Certification Level</Label>
+                        <Select value={certLevel} onValueChange={setCertLevel}>
+                          <SelectTrigger className="h-11"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="EMT">EMT</SelectItem>
+                            <SelectItem value="AEMT">AEMT</SelectItem>
+                            <SelectItem value="Paramedic">Paramedic</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label className="text-sm text-zinc-700 font-medium">Assessment Type</Label>
+                        <Select value={assessmentType} onValueChange={setAssessmentType}>
+                          <SelectTrigger className="h-11"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="quiz">Quiz (10–25q)</SelectItem>
+                            <SelectItem value="chapter">Chapter Test (25–50q)</SelectItem>
+                            <SelectItem value="midterm">Midterm Exam (50–100q)</SelectItem>
+                            <SelectItem value="final">Final Exam (100–150q)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-sm text-zinc-700 font-medium">Number of Questions</Label>
+                      <Input
+                        type="number"
+                        min={1}
+                        max={200}
+                        placeholder="e.g., 50"
+                        className="h-11"
+                      />
+                      <p className="text-xs text-zinc-400">You can always add or remove questions later.</p>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="text-zinc-600">Cancel</Button>
+                    </DialogTrigger>
+                    <DialogTrigger asChild>
+                      <Button className="bg-zinc-900 hover:bg-zinc-800 text-white" disabled={!assessmentName.trim()}>
+                        Create Assessment
+                      </Button>
+                    </DialogTrigger>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+        )}
+
+        {/* Assessment Setup — shown when an assessment is active */}
+        {(assessmentName || questions.length > 0) && (
         <div className="section-card p-5 space-y-5">
           <div className="flex items-center gap-2 mb-1">
             <div className="h-6 w-6 rounded-md surface-2 flex items-center justify-center text-xs font-bold text-zinc-600">1</div>
@@ -657,7 +746,7 @@ function TestBuilderContent() {
           </div>
 
           {/* TEI Mix guide */}
-          <div className="glass-subtle p-3">
+          <div className="bg-zinc-50 border border-zinc-200 rounded-lg p-3">
             <p className="text-xs font-medium text-zinc-600 mb-2">Suggested TEI Mix</p>
             <div className="flex flex-wrap gap-2">
               {[
@@ -667,7 +756,7 @@ function TestBuilderContent() {
                 { type: 'OB', pct: '8–12%', desc: 'Sequencing' },
                 { type: 'BL', pct: '5–8%', desc: 'Linking' },
               ].map((item) => (
-                <div key={item.type} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md surface-2 text-xs">
+                <div key={item.type} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white border border-zinc-200 text-xs">
                   <span className="font-mono font-semibold text-zinc-700">{item.type}</span>
                   <span className="text-zinc-400">{item.pct}</span>
                 </div>
@@ -675,6 +764,7 @@ function TestBuilderContent() {
             </div>
           </div>
         </div>
+        )}
 
         {/* AI Generation Section */}
         <div className="section-card p-5">
