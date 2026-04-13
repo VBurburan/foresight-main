@@ -259,7 +259,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 sm:gap-6 max-w-3xl mx-auto">
             {[
-              { value: "Up to 38%", label: "of the Paramedic NREMT is Clinical Judgment" },
+              { value: "31-43%", label: "of the NREMT is now Clinical Judgment or Primary Assessment" },
               { value: "2,000+", label: "EMS programs with no TEI tools" },
               { value: "70%", label: "first-attempt pass rate for accreditation" },
             ].map((item) => (

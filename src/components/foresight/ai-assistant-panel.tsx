@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Sparkles,
   Loader2,
@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { createClient } from '@/lib/supabase/client';
 import {
   Dialog,
   DialogContent,
@@ -86,6 +87,28 @@ export function AIAssistantPanel({
   const [topicHint, setTopicHint] = useState('');
   const [error, setError] = useState('');
   const [progress, setProgress] = useState('');
+
+  const [domains, setDomains] = useState<{ name: string; pctRange: string }[]>([]);
+
+  // Fetch domains for the selected cert level
+  useEffect(() => {
+    if (!open) return;
+    const supabase = createClient();
+    const level = certLevel || 'Paramedic';
+    supabase
+      .from('domains')
+      .select('name, percentage_min, percentage_max')
+      .eq('level', level)
+      .order('display_order')
+      .then(({ data }) => {
+        if (data) {
+          setDomains(data.map((d: any) => ({
+            name: d.name,
+            pctRange: `${d.percentage_min}-${d.percentage_max}%`,
+          })));
+        }
+      });
+  }, [open, certLevel]);
 
   const tier = TIERS[CURRENT_TIER];
   const totalCount = itemCounts.reduce((sum, t) => sum + t.count, 0);
@@ -287,18 +310,11 @@ export function AIAssistantPanel({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="any">Any Domain</SelectItem>
-                  <SelectItem value="Airway, Respiration & Ventilation">Airway, Resp & Ventilation</SelectItem>
-                  <SelectItem value="Cardiology & Resuscitation">Cardiology & Resuscitation</SelectItem>
-                  <SelectItem value="Medical/OB/GYN">Medical / OB/GYN</SelectItem>
-                  <SelectItem value="Trauma">Trauma</SelectItem>
-                  <SelectItem value="EMS Operations">EMS Operations</SelectItem>
-                  {certLevel === 'Paramedic' && (
-                    <>
-                      <SelectItem value="Neurology">Neurology</SelectItem>
-                      <SelectItem value="Pharmacology">Pharmacology</SelectItem>
-                      <SelectItem value="12-Lead ECG Interpretation">12-Lead ECG Interpretation</SelectItem>
-                    </>
-                  )}
+                  {domains.map((d) => (
+                    <SelectItem key={d.name} value={d.name}>
+                      {d.name} ({d.pctRange})
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
