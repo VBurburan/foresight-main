@@ -888,7 +888,11 @@ function TestBuilderContent() {
 
                     {/* MC Editor */}
                     {q.type === 'MC' && (() => {
-                      const d = q.data as MCData;
+                      const raw = q.data as any;
+                      const d: MCData = {
+                        options: Array.isArray(raw?.options) ? raw.options : (Array.isArray(raw?.options?.options) ? raw.options.options : [{ key: 'A', text: '' }, { key: 'B', text: '' }, { key: 'C', text: '' }, { key: 'D', text: '' }]),
+                        correctKey: raw?.correctKey || raw?.options?.correctKey || '',
+                      };
                       return (
                         <div className="space-y-2">
                           <label className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Options — click the radio to mark correct</label>
@@ -921,7 +925,11 @@ function TestBuilderContent() {
 
                     {/* MR Editor */}
                     {q.type === 'MR' && (() => {
-                      const d = q.data as MRData;
+                      const raw = q.data as any;
+                      const d: MRData = {
+                        options: Array.isArray(raw?.options) ? raw.options : (Array.isArray(raw?.options?.options) ? raw.options.options : [{ key: 'A', text: '' }, { key: 'B', text: '' }, { key: 'C', text: '' }, { key: 'D', text: '' }, { key: 'E', text: '' }]),
+                        correctKeys: Array.isArray(raw?.correctKeys) ? raw.correctKeys : (Array.isArray(raw?.options?.correctKeys) ? raw.options.correctKeys : []),
+                      };
                       return (
                         <div className="space-y-2">
                           <label className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Options — check all correct answers</label>
@@ -962,7 +970,12 @@ function TestBuilderContent() {
 
                     {/* DD Editor */}
                     {q.type === 'DD' && (() => {
-                      const d = q.data as DDData;
+                      const raw = q.data as any;
+                      const d: DDData = {
+                        items: Array.isArray(raw?.items) ? raw.items : [{ id: 'i1', text: '' }, { id: 'i2', text: '' }],
+                        categories: Array.isArray(raw?.categories) ? raw.categories : ['', ''],
+                        correctMapping: raw?.correctMapping || {},
+                      };
                       return (
                         <div className="space-y-4">
                           {/* Categories */}
@@ -1036,7 +1049,11 @@ function TestBuilderContent() {
 
                     {/* BL Editor */}
                     {q.type === 'BL' && (() => {
-                      const d = q.data as BLData;
+                      const raw = q.data as any;
+                      const d: BLData = {
+                        items: Array.isArray(raw?.items) ? raw.items : ['', '', ''],
+                        correctOrder: Array.isArray(raw?.correctOrder) ? raw.correctOrder : [0, 1, 2],
+                      };
                       return (
                         <div className="space-y-2">
                           <label className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
@@ -1070,7 +1087,12 @@ function TestBuilderContent() {
 
                     {/* OB Editor (Matrix / Options Box) */}
                     {q.type === 'OB' && (() => {
-                      const d = q.data as OBData;
+                      const raw = q.data as any;
+                      const d: OBData = {
+                        rows: Array.isArray(raw?.rows) ? raw.rows : ['', ''],
+                        columns: Array.isArray(raw?.columns) ? raw.columns : ['', ''],
+                        correctAnswers: raw?.correctAnswers || {},
+                      };
                       return (
                         <div className="space-y-4">
                           {/* Column headers */}
