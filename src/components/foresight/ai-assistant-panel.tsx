@@ -53,8 +53,9 @@ const ITEM_TYPES: { type: string; label: string }[] = [
   { type: 'MC', label: 'Multiple Choice' },
   { type: 'MR', label: 'Multi-Response' },
   { type: 'DD', label: 'Drag & Drop' },
-  { type: 'OB', label: 'Ordered Box' },
-  { type: 'BL', label: 'Build List' },
+  { type: 'OB', label: 'Options Box (Matrix)' },
+  { type: 'BL', label: 'Build List (Ordered)' },
+  { type: 'CJS', label: 'Clinical Judgment Scenario' },
 ];
 
 const CHUNK_SIZE = 10;
@@ -286,11 +287,18 @@ export function AIAssistantPanel({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="any">Any Domain</SelectItem>
-                  <SelectItem value="Airway, Respiration & Ventilation">Airway, Resp & Vent</SelectItem>
-                  <SelectItem value="Cardiology & Resuscitation">Cardiology & Resus</SelectItem>
-                  <SelectItem value="Medical/OB/GYN">Medical/OB/GYN</SelectItem>
+                  <SelectItem value="Airway, Respiration & Ventilation">Airway, Resp & Ventilation</SelectItem>
+                  <SelectItem value="Cardiology & Resuscitation">Cardiology & Resuscitation</SelectItem>
+                  <SelectItem value="Medical/OB/GYN">Medical / OB/GYN</SelectItem>
                   <SelectItem value="Trauma">Trauma</SelectItem>
                   <SelectItem value="EMS Operations">EMS Operations</SelectItem>
+                  {certLevel === 'Paramedic' && (
+                    <>
+                      <SelectItem value="Neurology">Neurology</SelectItem>
+                      <SelectItem value="Pharmacology">Pharmacology</SelectItem>
+                      <SelectItem value="12-Lead ECG Interpretation">12-Lead ECG Interpretation</SelectItem>
+                    </>
+                  )}
                 </SelectContent>
               </Select>
             </div>

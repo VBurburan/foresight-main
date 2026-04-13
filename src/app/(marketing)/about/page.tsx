@@ -26,8 +26,8 @@ const marketStats = [
     label: "TEI items began scoring on the NREMT",
   },
   {
-    value: "34-38%",
-    label: "of the NREMT is now Clinical Judgment",
+    value: "Up to 38%",
+    label: "of the Paramedic NREMT is Clinical Judgment",
   },
   {
     value: "70%",

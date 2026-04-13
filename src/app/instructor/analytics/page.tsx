@@ -118,7 +118,7 @@ function AnalyticsContent() {
       exams.forEach((e) => {
         if (e.cj_step_stats && typeof e.cj_step_stats === 'object') {
           Object.entries(e.cj_step_stats as Record<string, any>).forEach(([step, val]) => {
-            const score = typeof val === 'number' ? val : val?.score;
+            const score = typeof val === 'number' ? val : (val?.percentage ?? val?.score);
             if (typeof score === 'number') {
               if (!cjAccum[step]) cjAccum[step] = { total: 0, count: 0 };
               cjAccum[step].total += score;
@@ -149,7 +149,7 @@ function AnalyticsContent() {
       exams.forEach((e) => {
         if (e.domain_stats && typeof e.domain_stats === 'object') {
           Object.entries(e.domain_stats as Record<string, any>).forEach(([domain, val]) => {
-            const score = typeof val === 'number' ? val : val?.score;
+            const score = typeof val === 'number' ? val : (val?.percentage ?? val?.score);
             if (typeof score === 'number') {
               if (!domainAccum[domain]) domainAccum[domain] = { total: 0, count: 0 };
               domainAccum[domain].total += score;
@@ -175,7 +175,7 @@ function AnalyticsContent() {
       exams.forEach((e) => {
         if (e.item_type_stats && typeof e.item_type_stats === 'object') {
           Object.entries(e.item_type_stats as Record<string, any>).forEach(([type, val]) => {
-            const score = typeof val === 'number' ? val : val?.score;
+            const score = typeof val === 'number' ? val : (val?.percentage ?? val?.score);
             if (typeof score === 'number') {
               if (!teiAccum[type]) teiAccum[type] = { total: 0, count: 0 };
               teiAccum[type].total += score;
@@ -295,7 +295,7 @@ function AnalyticsContent() {
         {useDemoData && (
           <div className="bg-zinc-50 border border-zinc-200 rounded-lg border-l-2 border-l-zinc-400 px-4 py-3">
             <p className="text-xs text-zinc-600">
-              <span className="font-semibold text-zinc-900">Demo Mode</span> — Showing sample analytics from a paramedic pre/post analysis report. Your real student data will replace this automatically.
+              <span className="font-semibold text-zinc-900">Demo Mode</span> — Showing sample analytics. Your real student data will replace this automatically after students complete exams.
             </p>
           </div>
         )}
@@ -319,9 +319,10 @@ function AnalyticsContent() {
         {/* Overall Score Summary */}
         {(data.overallPre !== null || data.overallPost !== null) && (
           <ScoreSummaryCard
-            preScore={data.overallPre}
+            preScore={null}
             postScore={data.overallPost}
-            change={data.overallChange}
+            change={null}
+            postLabel="Cohort Average"
           />
         )}
 

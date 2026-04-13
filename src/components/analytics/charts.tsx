@@ -20,8 +20,8 @@ import {
   deltaColor,
 } from '@/lib/analytics';
 
-const CHART_PRE = '#7c3aed';   // violet-600
-const CHART_POST = '#2563eb';  // blue-600
+const CHART_PRE = '#94a3b8';   // slate-400 (unused in single-view mode)
+const CHART_POST = '#2563eb';  // blue-600 (primary data color)
 
 const tooltipStyle = {
   borderRadius: '10px',
@@ -36,8 +36,8 @@ const tooltipStyle = {
 export function CJRadarChart({ data }: { data: CJFunctionScore[] }) {
   const radarData = data.map((d) => ({
     subject: d.shortName,
-    'Pre-Test': d.pre ?? 0,
-    'Post-Test': d.post ?? 0,
+    'Cohort Avg': d.pre ?? 0,
+    'Score': d.post ?? 0,
     fullMark: 100,
   }));
 
@@ -61,8 +61,8 @@ export function CJRadarChart({ data }: { data: CJFunctionScore[] }) {
           />
           {hasPre && (
             <Radar
-              name="Pre-Test"
-              dataKey="Pre-Test"
+              name="Cohort Avg"
+              dataKey="Cohort Avg"
               stroke={CHART_PRE}
               fill={CHART_PRE}
               fillOpacity={0.1}
@@ -73,8 +73,8 @@ export function CJRadarChart({ data }: { data: CJFunctionScore[] }) {
           )}
           {hasPost && (
             <Radar
-              name="Post-Test"
-              dataKey="Post-Test"
+              name="Score"
+              dataKey="Score"
               stroke={CHART_POST}
               fill={CHART_POST}
               fillOpacity={0.15}
@@ -96,8 +96,8 @@ export function CJRadarChart({ data }: { data: CJFunctionScore[] }) {
           <thead>
             <tr className="border-b border-zinc-200">
               <th className="text-left py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Cognitive Function</th>
-              {hasPre && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Pre-Test</th>}
-              {hasPost && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Post-Test</th>}
+              {hasPre && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Cohort Avg</th>}
+              {hasPost && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Score</th>}
               {hasPre && hasPost && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Change</th>}
             </tr>
           </thead>
@@ -137,8 +137,8 @@ export function DomainBars({ data }: { data: DomainPerformance[] }) {
   const chartData = data.map((d) => ({
     domain: d.domain.length > 18 ? d.domain.slice(0, 16) + '...' : d.domain,
     fullDomain: d.domain,
-    'Pre-Test': d.pre ?? 0,
-    'Post-Test': d.post ?? 0,
+    'Cohort Avg': d.pre ?? 0,
+    'Score': d.post ?? 0,
   }));
 
   return (
@@ -166,10 +166,10 @@ export function DomainBars({ data }: { data: DomainPerformance[] }) {
           />
           <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}%`]} />
           {hasPre && (
-            <Bar dataKey="Pre-Test" fill={CHART_PRE} radius={[3, 3, 0, 0]} maxBarSize={36} />
+            <Bar dataKey="Cohort Avg" fill={CHART_PRE} radius={[3, 3, 0, 0]} maxBarSize={36} />
           )}
           {hasPost && (
-            <Bar dataKey="Post-Test" fill={CHART_POST} radius={[3, 3, 0, 0]} maxBarSize={36} />
+            <Bar dataKey="Score" fill={CHART_POST} radius={[3, 3, 0, 0]} maxBarSize={36} />
           )}
           <Legend wrapperStyle={{ fontSize: 12, color: '#a1a1aa' }} iconType="square" />
         </BarChart>
@@ -181,8 +181,8 @@ export function DomainBars({ data }: { data: DomainPerformance[] }) {
           <thead>
             <tr className="border-b border-zinc-200">
               <th className="text-left py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Domain</th>
-              {hasPre && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Pre-Test</th>}
-              {hasPost && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Post-Test</th>}
+              {hasPre && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Cohort Avg</th>}
+              {hasPost && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Score</th>}
               {hasPre && hasPost && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Change</th>}
               <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Assessment</th>
             </tr>
@@ -227,8 +227,8 @@ export function TEIBars({ data }: { data: TEIPerformance[] }) {
   const chartData = data.map((d) => ({
     type: d.type,
     label: `${d.type}\n(${d.label})`,
-    'Pre-Test': d.pre ?? 0,
-    'Post-Test': d.post ?? 0,
+    'Cohort Avg': d.pre ?? 0,
+    'Score': d.post ?? 0,
   }));
 
   // Volume breakdown data
@@ -238,15 +238,15 @@ export function TEIBars({ data }: { data: TEIPerformance[] }) {
     <div className="space-y-8">
       {/* Accuracy bars */}
       <div>
-        <h4 className="text-sm font-medium text-zinc-700 mb-3">TEI Format Performance: Pre-Test vs Post-Test</h4>
+        <h4 className="text-sm font-medium text-zinc-700 mb-3">TEI Format Performance</h4>
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={chartData} barGap={2} barCategoryGap="20%">
             <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
             <XAxis dataKey="type" tick={{ fill: '#a1a1aa', fontSize: 12 }} axisLine={{ stroke: '#27272a' }} tickLine={false} />
             <YAxis domain={[0, 100]} tick={{ fill: '#71717a', fontSize: 11 }} axisLine={false} tickLine={false} width={36} tickFormatter={(v) => `${v}%`} />
             <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}%`]} />
-            {hasPre && <Bar dataKey="Pre-Test" fill={CHART_PRE} radius={[3, 3, 0, 0]} maxBarSize={40} />}
-            {hasPost && <Bar dataKey="Post-Test" fill={CHART_POST} radius={[3, 3, 0, 0]} maxBarSize={40} />}
+            {hasPre && <Bar dataKey="Cohort Avg" fill={CHART_PRE} radius={[3, 3, 0, 0]} maxBarSize={40} />}
+            {hasPost && <Bar dataKey="Score" fill={CHART_POST} radius={[3, 3, 0, 0]} maxBarSize={40} />}
             <Legend wrapperStyle={{ fontSize: 12, color: '#a1a1aa' }} iconType="square" />
           </BarChart>
         </ResponsiveContainer>
@@ -519,13 +519,13 @@ export function ReadinessProjection({
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8">
         {preScore !== null && (
           <div className="bg-zinc-100 border border-zinc-200 rounded-lg p-3 text-center">
-            <p className="text-xs text-zinc-400">Pre-Test</p>
+            <p className="text-xs text-zinc-400">Cohort Avg</p>
             <p className="text-lg font-bold text-zinc-700 tabular-nums">{preScore}%</p>
           </div>
         )}
         {postScore !== null && (
           <div className="bg-zinc-100 border border-zinc-200 rounded-lg p-3 text-center">
-            <p className="text-xs text-zinc-400">Post-Test</p>
+            <p className="text-xs text-zinc-400">Score</p>
             <p className="text-lg font-bold text-zinc-700 tabular-nums">{postScore}%</p>
           </div>
         )}
@@ -575,7 +575,7 @@ export function ScoreSummaryCard({
       {preScore !== null && (
         <div className="section-card p-5 text-center">
           <p className="text-xs font-medium uppercase tracking-wider text-zinc-400 mb-1">
-            {preLabel ?? 'Pre-Test'}
+            {preLabel ?? 'Cohort Avg'}
           </p>
           <p className="text-3xl font-bold text-orange-600 tabular-nums">{preScore}%</p>
         </div>
@@ -583,7 +583,7 @@ export function ScoreSummaryCard({
       {postScore !== null && (
         <div className="section-card p-5 text-center">
           <p className="text-xs font-medium uppercase tracking-wider text-zinc-400 mb-1">
-            {postLabel ?? 'Post-Test'}
+            {postLabel ?? 'Score'}
           </p>
           <p className="text-3xl font-bold text-blue-600 tabular-nums">{postScore}%</p>
         </div>

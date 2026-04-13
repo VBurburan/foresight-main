@@ -215,9 +215,51 @@ export default function HomePage() {
             Yet every institutional assessment platform &mdash; Fisdap, EMSTesting, JBL Navigate &mdash; still delivers questions exclusively as standard multiple choice. The first complete post-TEI accreditation review cycle finishes in 2026, and programs that can&apos;t maintain a 70% pass rate risk losing CAAHEP accreditation.
           </p>
 
+          {/* Format Gap Visual */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-16">
+            {/* What students practice */}
+            <div className="glass-card p-6 border-l-2 border-l-red-400/60">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-red-500 mb-3">What students practice</p>
+              <div className="bg-zinc-50 border border-zinc-200 rounded-lg p-4 mb-3">
+                <p className="text-sm text-zinc-700 mb-3 leading-relaxed">A 54-year-old male presents with chest pain radiating to the left arm. Which is the most appropriate initial intervention?</p>
+                <div className="space-y-1.5">
+                  {["A. Administer nitroglycerin", "B. Obtain a 12-lead ECG", "C. Start an IV", "D. Administer morphine"].map((opt) => (
+                    <div key={opt} className="flex items-center gap-2 text-xs text-zinc-500">
+                      <div className="w-3 h-3 rounded-full border border-zinc-300" />
+                      {opt}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <p className="text-xs text-zinc-400 italic">Standard multiple choice &mdash; the only format in classroom tools</p>
+            </div>
+
+            {/* What NREMT actually tests */}
+            <div className="glass-card p-6 border-l-2 border-l-emerald-500/60">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-600 mb-3">What the NREMT actually tests</p>
+              <div className="space-y-2.5">
+                {[
+                  { label: "Ordered Response", desc: "Drag steps into correct clinical sequence" },
+                  { label: "Multi-Select", desc: "Select all correct findings from a set" },
+                  { label: "Options Box", desc: "Match conditions to interventions in a grid" },
+                  { label: "Clinical Judgment", desc: "Multi-phase scenario with evolving patient data" },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-start gap-3 bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-2.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
+                    <div>
+                      <p className="text-sm font-medium text-zinc-800">{item.label}</p>
+                      <p className="text-xs text-zinc-500">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-zinc-400 italic mt-3">Interactive TEI formats &mdash; scored on every NREMT exam since 2024</p>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 sm:gap-6 max-w-3xl mx-auto">
             {[
-              { value: "34-38%", label: "of the NREMT is now Clinical Judgment" },
+              { value: "Up to 38%", label: "of the Paramedic NREMT is Clinical Judgment" },
               { value: "2,000+", label: "EMS programs with no TEI tools" },
               { value: "70%", label: "first-attempt pass rate for accreditation" },
             ].map((item) => (
