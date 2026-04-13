@@ -723,14 +723,16 @@ function TestBuilderContent() {
                   <div className="space-y-4 py-2">
                     <div className="space-y-1.5">
                       <label className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Assign to Class (optional)</label>
-                      <Select value={selectedClassId} onValueChange={setSelectedClassId}>
-                        <SelectTrigger><SelectValue placeholder="Select a class..." /></SelectTrigger>
-                        <SelectContent>
-                          {availableClasses.map((c) => (
-                            <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <select
+                        value={selectedClassId}
+                        onChange={(e) => setSelectedClassId(e.target.value)}
+                        className="w-full h-10 rounded-lg border border-zinc-300 bg-zinc-50 px-3 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                      >
+                        <option value="">Select a class...</option>
+                        {availableClasses.map((c) => (
+                          <option key={c.id} value={c.id}>{c.name}</option>
+                        ))}
+                      </select>
                     </div>
                     <div className="glass-subtle p-3 text-xs text-zinc-400">
                       <p><span className="font-medium text-zinc-600">{questions.length} questions</span> will be published as &ldquo;{assessmentName || 'Untitled'}&rdquo;</p>
@@ -2136,11 +2138,43 @@ function TestBuilderContent() {
               }
 
               const base = createBlankQuestion(type);
+
+              // Normalize AI response: merge correct_answer into data structure
+              // AI returns {options: [...], correct_answer: {correctKey: "A"}} separately
+              // Test builder expects data = {options: [...], correctKey: "A"} merged
+              let data = q.options || base.data;
+              const ca = q.correct_answer || {};
+
+              if (type === 'MC') {
+                const opts = Array.isArray(data) ? data : data?.options || [];
+                data = { options: opts, correctKey: ca.correctKey || ca.answer || data?.correctKey || '' };
+              } else if (type === 'MR') {
+                const opts = Array.isArray(data) ? data : data?.options || [];
+                data = { options: opts, correctKeys: ca.correctKeys || ca.answers || data?.correctKeys || [] };
+              } else if (type === 'DD') {
+                const items = data?.items || (Array.isArray(data) ? data : []);
+                const cats = data?.categories || ca.categories || [];
+                const mapping = ca.correctMapping || data?.correctMapping || {};
+                data = { items, categories: cats, correctMapping: mapping };
+              } else if (type === 'BL') {
+                const items = data?.items || (Array.isArray(data) ? data : []);
+                const order = ca.correctOrder || data?.correctOrder || items.map((_: any, i: number) => i);
+                data = { items, correctOrder: order };
+              } else if (type === 'OB') {
+                const rows = data?.rows || [];
+                const cols = data?.columns || [];
+                const answers = ca.correctAnswers || data?.correctAnswers || {};
+                data = { rows, columns: cols, correctAnswers: answers };
+              }
+
               return {
                 ...base,
                 stem: q.stem || '',
-                data: q.options || base.data,
+                data,
                 rationale: q.rationale || '',
+                domain: q.domain || '',
+                cjFunctions: q.cj_functions || [],
+                difficulty: q.difficulty || 'medium',
                 expanded: false,
               };
             });
