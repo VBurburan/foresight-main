@@ -115,7 +115,7 @@ export default function PricingPage() {
               institution.
             </p>
             <a
-              href="mailto:sales@foresight.edu?subject=Schedule a Foresight Demo"
+              href="mailto:hello@foresight.edu?subject=Schedule a Foresight Demo"
               className="group inline-flex items-center gap-2 bg-zinc-900 text-white px-8 py-3.5 rounded-lg font-medium text-[15px] hover:bg-zinc-800 transition-colors"
             >
               <Mail className="w-4 h-4" />
@@ -125,10 +125,10 @@ export default function PricingPage() {
             <p className="text-sm text-zinc-500 mt-5">
               Have questions?{" "}
               <a
-                href="mailto:sales@foresight.edu"
+                href="mailto:hello@foresight.edu"
                 className="text-zinc-900 underline underline-offset-2 hover:text-zinc-700"
               >
-                Email us at sales@foresight.edu
+                Email us at hello@foresight.edu
               </a>
             </p>
           </div>
@@ -179,7 +179,7 @@ export default function PricingPage() {
 
                 {/* CTA */}
                 <a
-                  href={`mailto:sales@foresight.edu?subject=Foresight ${plan.name} Inquiry`}
+                  href={`mailto:hello@foresight.edu?subject=Foresight ${plan.name} Inquiry`}
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium text-[15px] transition-colors bg-zinc-900 text-white hover:bg-zinc-800"
                 >
                   Contact Sales
@@ -232,7 +232,7 @@ export default function PricingPage() {
             demo. No pressure, no obligation.
           </p>
           <a
-            href="mailto:sales@foresight.edu?subject=Schedule a Foresight Demo"
+            href="mailto:hello@foresight.edu?subject=Schedule a Foresight Demo"
             className="group inline-flex items-center gap-2 bg-zinc-900 text-white px-7 py-3 rounded-lg font-medium text-[15px] hover:bg-zinc-800 transition-colors"
           >
             Schedule a Demo

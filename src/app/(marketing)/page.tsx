@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Foresight | Assessment Infrastructure for EMS Programs",
+  title: "Assessment Infrastructure for EMS Programs",
   description:
     "Build NREMT-style TEI assessments, track cohort analytics, and identify at-risk students. The assessment platform built for EMS educators.",
 };

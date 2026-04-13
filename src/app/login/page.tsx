@@ -164,7 +164,7 @@ function LoginPage() {
       {/* Below card */}
       <div className="relative z-10 mt-6">
         <a
-          href="mailto:vincent@foresight.edu"
+          href="mailto:hello@foresight.edu"
           className="text-xs text-zinc-500 hover:text-zinc-700 transition-colors"
         >
           Need access? Contact us
