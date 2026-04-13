@@ -2,7 +2,10 @@
 
 import { useEffect, useState, use } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, User, Calendar, Award, Clock } from 'lucide-react';
+import { ArrowLeft, User, Calendar, Award, Clock, TrendingUp } from 'lucide-react';
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine,
+} from 'recharts';
 import { InstructorGuard } from '@/components/auth/instructor-guard';
 import { useUser } from '@/components/auth/auth-provider';
 import { createClient } from '@/lib/supabase/client';
@@ -104,11 +107,22 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
 
       setUseDemoData(false);
 
+      // Resolve assessment names
+      const assessmentIds = [...new Set(exams.map((e) => e.assessment_id).filter(Boolean))];
+      const assessmentNameMap: Record<string, string> = {};
+      if (assessmentIds.length > 0) {
+        const { data: aNames } = await supabase
+          .from('instructor_assessments')
+          .select('id, name')
+          .in('id', assessmentIds);
+        (aNames ?? []).forEach((a: any) => { assessmentNameMap[a.id] = a.name; });
+      }
+
       // Build session rows
       const sessionRows: SessionRow[] = [...exams].reverse().slice(0, 15).map((e) => ({
         id: e.id,
         date: new Date(e.completed_at!).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        assessmentName: null,
+        assessmentName: e.assessment_id ? assessmentNameMap[e.assessment_id] || null : null,
         score: e.score_percentage ? Number(e.score_percentage) : null,
         timeSpent: e.time_spent_seconds,
         questionCount: e.question_count,
@@ -120,7 +134,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
       exams.forEach((e) => {
         if (e.cj_step_stats && typeof e.cj_step_stats === 'object') {
           Object.entries(e.cj_step_stats as Record<string, any>).forEach(([step, val]) => {
-            const score = typeof val === 'number' ? val : val?.score;
+            const score = typeof val === 'number' ? val : val?.percentage ?? val?.score;
             if (typeof score === 'number') {
               if (!cjAccum[step]) cjAccum[step] = { total: 0, count: 0 };
               cjAccum[step].total += score;
@@ -148,12 +162,13 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         };
       });
 
-      // Domain analysis
+      // Domain analysis (filter UUID-format keys from old data)
       const domainAccum: Record<string, { total: number; count: number }> = {};
       exams.forEach((e) => {
         if (e.domain_stats && typeof e.domain_stats === 'object') {
           Object.entries(e.domain_stats as Record<string, any>).forEach(([domain, val]) => {
-            const score = typeof val === 'number' ? val : val?.score;
+            if (domain.length > 40 || /^[0-9a-f]{8}-/.test(domain)) return;
+            const score = typeof val === 'number' ? val : val?.percentage ?? val?.score;
             if (typeof score === 'number') {
               if (!domainAccum[domain]) domainAccum[domain] = { total: 0, count: 0 };
               domainAccum[domain].total += score;
@@ -181,7 +196,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
       exams.forEach((e) => {
         if (e.item_type_stats && typeof e.item_type_stats === 'object') {
           Object.entries(e.item_type_stats as Record<string, any>).forEach(([type, val]) => {
-            const score = typeof val === 'number' ? val : val?.score;
+            const score = typeof val === 'number' ? val : val?.percentage ?? val?.score;
             if (typeof score === 'number') {
               if (!teiAccum[type]) teiAccum[type] = { total: 0, count: 0 };
               teiAccum[type].total += score;
@@ -220,12 +235,58 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         readiness = Math.round(700 + (recentAvg / 100) * 400);
       }
 
+      // Per-question heatmap from session_responses
+      const sessionIds = exams.map((e) => e.id);
+      let heatmap: HeatmapCell[] = [];
+      if (sessionIds.length > 0) {
+        const { data: responses } = await supabase
+          .from('session_responses')
+          .select('is_correct, question_id')
+          .in('session_id', sessionIds.map(String));
+        if (responses && responses.length > 0) {
+          const questionIds = [...new Set(responses.map((r: any) => r.question_id))];
+          const { data: qMeta } = await supabase
+            .from('instructor_questions')
+            .select('id, item_type, metadata')
+            .in('id', questionIds);
+          if (qMeta) {
+            const qMap = new Map(qMeta.map((q: any) => [q.id, q]));
+            const hAccum: Record<string, { correct: number; total: number }> = {};
+            responses.forEach((r: any) => {
+              const q = qMap.get(r.question_id);
+              if (!q) return;
+              const domain = (q.metadata as any)?.domain || 'Unknown';
+              if (domain.length > 40 || domain.includes('-')) return;
+              const key = `${domain}|${q.item_type}`;
+              if (!hAccum[key]) hAccum[key] = { correct: 0, total: 0 };
+              hAccum[key].total += 1;
+              if (r.is_correct) hAccum[key].correct += 1;
+            });
+            heatmap = Object.entries(hAccum).filter(([, v]) => v.total > 0).map(([key, v]) => {
+              const [domain, teiType] = key.split('|');
+              return { domain, teiType, correct: v.correct, total: v.total, percentage: Math.round((v.correct / v.total) * 100) };
+            });
+          }
+        }
+      }
+
+      // Error distribution
+      const errorsByDomain: ErrorByCategory[] = Object.entries(domainAccum)
+        .filter(([, { total }]) => total > 0)
+        .map(([domain, { total, count }]) => {
+          const avg = Math.round(total / count);
+          const errorRate = 100 - avg;
+          return { name: domain, value: errorRate, color: errorRate > 30 ? '#ef4444' : errorRate > 15 ? '#f59e0b' : '#22c55e' };
+        })
+        .filter((e) => e.value > 0)
+        .sort((a, b) => b.value - a.value);
+
       setData({
         cjFunctions,
         domainPerformance,
         teiPerformance,
-        heatmap: [],
-        errorsByDomain: [],
+        heatmap,
+        errorsByDomain,
         errorsByTEI: [],
         specificErrors: [],
         overallPre: null,
@@ -312,6 +373,35 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
           </div>
         </div>
 
+        {/* Score Trend */}
+        {sessions.length >= 2 && (
+          <section className="section-card overflow-hidden">
+            <div className="px-6 pt-6 pb-2">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-zinc-500" />
+                <h2 className="text-lg font-semibold text-zinc-900">Score Trend</h2>
+              </div>
+              <p className="mt-1 text-sm text-zinc-500">Performance across {sessions.length} assessments</p>
+            </div>
+            <div className="px-6 pb-6">
+              <ResponsiveContainer width="100%" height={220}>
+                <LineChart data={[...sessions].reverse().map((s, i) => ({
+                  name: s.assessmentName || `Exam ${i + 1}`,
+                  score: s.score,
+                  date: s.date,
+                }))}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
+                  <XAxis dataKey="date" tick={{ fill: '#a1a1aa', fontSize: 11 }} tickLine={false} axisLine={{ stroke: '#e4e4e7' }} />
+                  <YAxis domain={[0, 100]} tick={{ fill: '#71717a', fontSize: 11 }} tickLine={false} axisLine={false} width={36} tickFormatter={(v) => `${v}%`} />
+                  <Tooltip contentStyle={{ borderRadius: 10, border: '1px solid rgba(0,0,0,0.08)', backgroundColor: '#fff', fontSize: 12, boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }} formatter={(v: number) => [`${v}%`, 'Score']} />
+                  <ReferenceLine y={70} stroke="#ef4444" strokeDasharray="5 5" strokeWidth={1} label={{ value: '70% pass', position: 'right', fill: '#ef4444', fontSize: 10 }} />
+                  <Line type="monotone" dataKey="score" stroke="#2563eb" strokeWidth={2.5} dot={{ r: 5, fill: '#2563eb', stroke: '#fff', strokeWidth: 2 }} activeDot={{ r: 7 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </section>
+        )}
+
         {/* Demo data banner */}
         {useDemoData && (
           <div className="glass-subtle border-l-2 border-blue-400/60 px-4 py-3">
@@ -324,9 +414,10 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
         {/* Overall Score Summary */}
         {data && (data.overallPre !== null || data.overallPost !== null) && (
           <ScoreSummaryCard
-            preScore={data.overallPre}
+            preScore={null}
             postScore={data.overallPost}
-            change={data.overallChange}
+            change={null}
+            postLabel="Student Average"
           />
         )}
 
@@ -439,16 +530,20 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-zinc-200">
-                      <th className="text-left py-2.5 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Date</th>
-                      <th className="text-center py-2.5 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Score</th>
-                      <th className="text-center py-2.5 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Questions</th>
-                      <th className="text-right py-2.5 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Time</th>
+                      <th className="text-left py-2.5 px-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Date</th>
+                      <th className="text-left py-2.5 px-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Assessment</th>
+                      <th className="text-center py-2.5 px-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Score</th>
+                      <th className="text-center py-2.5 px-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Questions</th>
+                      <th className="text-right py-2.5 px-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Time</th>
                     </tr>
                   </thead>
                   <tbody>
                     {sessions.map((session) => (
                       <tr key={session.id} className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors">
                         <td className="py-2.5 px-3 text-zinc-600">{session.date}</td>
+                        <td className="py-2.5 px-3 text-zinc-700 font-medium truncate max-w-[200px]">
+                          {session.assessmentName || <span className="text-zinc-400 italic">Untitled</span>}
+                        </td>
                         <td className="py-2.5 px-3 text-center">
                           {session.score != null ? (
                             <span className={`font-semibold tabular-nums ${scoreColor(session.score)}`}>
