@@ -71,6 +71,7 @@ export function AIAssistantPanel({
   );
   const [domain, setDomain] = useState('any');
   const [difficulty, setDifficulty] = useState('medium');
+  const [aiModel, setAiModel] = useState('gpt-4.1');
   const [topicHint, setTopicHint] = useState('');
   const [error, setError] = useState('');
   const [progress, setProgress] = useState('');
@@ -109,6 +110,7 @@ export function AIAssistantPanel({
         domain: domain === 'any' ? undefined : domain,
         difficulty,
         topic_hint: topicHint || undefined,
+        model: aiModel,
       }),
     });
 
@@ -280,6 +282,20 @@ export function AIAssistantPanel({
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs text-zinc-500 font-medium">AI Model</label>
+            <Select value={aiModel} onValueChange={setAiModel} disabled={generating}>
+              <SelectTrigger className="h-9 text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="gpt-4.1">GPT-4.1 (fast, reliable)</SelectItem>
+                <SelectItem value="claude-opus-4">Claude Opus 4 (premium clinical)</SelectItem>
+                <SelectItem value="gpt-4o">GPT-4o (budget)</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-1">

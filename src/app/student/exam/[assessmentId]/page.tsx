@@ -522,92 +522,8 @@ function renderSubQuestion(
 }
 
 /* ------------------------------------------------------------------ */
-/*  Scoring helpers                                                    */
+/*  (Scoring is handled server-side via grade_instructor_exam RPC)     */
 /* ------------------------------------------------------------------ */
-
-function arraysEqualSorted(a: string[], b: string[]): boolean {
-  if (a.length !== b.length) return false;
-  const sa = [...a].sort();
-  const sb = [...b].sort();
-  return sa.every((v, i) => v === sb[i]);
-}
-
-function scoreQuestion(question: ExamQuestion, answer: AnyAnswer): boolean {
-  const type = question.item_type;
-  const opts = question.options;
-
-  if (type === 'MC') {
-    const data = opts as MCData;
-    return (answer as MCAnswer) === data.correctKey;
-  }
-
-  if (type === 'MR') {
-    const data = opts as MRData;
-    return arraysEqualSorted(answer as MRAnswer, data.correctKeys);
-  }
-
-  if (type === 'DD') {
-    const data = opts as DDData;
-    const studentMapping = answer as DDAnswer;
-    return data.items.every((item) => studentMapping[item.id] === data.correctMapping[item.id]);
-  }
-
-  if (type === 'BL') {
-    const data = opts as BLData;
-    const studentOrder = answer as BLAnswer;
-    const expected = data.correctOrder.length > 0 ? data.correctOrder : data.items.map((_, i) => i);
-    return expected.every((v, i) => studentOrder[i] === v);
-  }
-
-  if (type === 'OB') {
-    const data = opts as OBData;
-    const studentAnswers = answer as OBAnswer;
-    return data.rows.every((row) => studentAnswers[row] === data.correctAnswers[row]);
-  }
-
-  return false;
-}
-
-function scoreCJSQuestion(question: ExamQuestion, answer: CJSAnswer): [number, number] {
-  const cjs = question.cjs_data;
-  if (!cjs || !cjs.phases) return [0, 0];
-
-  let correct = 0;
-  let total = 0;
-
-  cjs.phases.forEach((phase, phaseIdx) => {
-    phase.questions.forEach((pq, qIdx) => {
-      total++;
-      const subKey = `${phaseIdx}_${qIdx}`;
-      const subAnswer = answer[subKey];
-      if (!subAnswer) return;
-
-      const data = pq.data;
-      const type = pq.type;
-
-      if (type === 'MC') {
-        if ((subAnswer as MCAnswer) === (data as MCData).correctKey) correct++;
-      } else if (type === 'MR') {
-        if (arraysEqualSorted(subAnswer as MRAnswer, (data as MRData).correctKeys)) correct++;
-      } else if (type === 'DD') {
-        const dd = data as DDData;
-        const sa = subAnswer as DDAnswer;
-        if (dd.items.every((item) => sa[item.id] === dd.correctMapping[item.id])) correct++;
-      } else if (type === 'BL') {
-        const bl = data as BLData;
-        const so = subAnswer as BLAnswer;
-        const expected = bl.correctOrder.length > 0 ? bl.correctOrder : bl.items.map((_, i) => i);
-        if (expected.every((v, i) => so[i] === v)) correct++;
-      } else if (type === 'OB') {
-        const ob = data as OBData;
-        const sa = subAnswer as OBAnswer;
-        if (ob.rows.every((row) => sa[row] === ob.correctAnswers[row])) correct++;
-      }
-    });
-  });
-
-  return [correct, total];
-}
 
 /* ------------------------------------------------------------------ */
 /*  Navigation overview sidebar component                              */
@@ -805,7 +721,8 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
     setAnswers((prev) => ({ ...prev, [qId]: val }));
   };
 
-  // Submit exam
+  // Submit exam — answers are sent with is_correct = null;
+  // the server-side RPC grades them and updates the session.
   const handleSubmit = async () => {
     if (!sessionId || !user || submitting) return;
     setSubmitting(true);
@@ -816,60 +733,56 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
     const supabase = createClient();
 
-    let totalCorrect = 0;
-    let totalPossible = 0;
+    // Build responses with is_correct = null (server will grade)
     const responses: {
       session_id: string;
       question_id: string;
       answer: any;
-      is_correct: boolean;
+      is_correct: null;
       time_spent: number;
     }[] = [];
 
     for (const q of questions) {
       const studentAnswer = answers[q.id];
+      responses.push({
+        session_id: sessionId,
+        question_id: q.id,
+        answer: studentAnswer ?? null,
+        is_correct: null,
+        time_spent: questionTimes[q.id] || 0,
+      });
+    }
 
-      if (q.item_type === 'CJS') {
-        const [correct, total] = scoreCJSQuestion(q, (studentAnswer as CJSAnswer) || {});
-        totalCorrect += correct;
-        totalPossible += total;
-        responses.push({
-          session_id: sessionId,
-          question_id: q.id,
-          answer: studentAnswer || {},
-          is_correct: correct === total && total > 0,
-          time_spent: questionTimes[q.id] || 0,
-        });
-      } else {
-        totalPossible++;
-        const isCorrect = studentAnswer ? scoreQuestion(q, studentAnswer) : false;
-        if (isCorrect) totalCorrect++;
-        responses.push({
-          session_id: sessionId,
-          question_id: q.id,
-          answer: studentAnswer ?? null,
-          is_correct: isCorrect,
-          time_spent: questionTimes[q.id] || 0,
-        });
+    // Insert all responses (ungraded)
+    if (responses.length > 0) {
+      const { error: insertErr } = await supabase
+        .from('session_responses')
+        .insert(responses);
+      if (insertErr) {
+        console.error('Failed to insert responses:', insertErr);
+        setSubmitting(false);
+        return;
       }
     }
 
-    const scorePercentage = totalPossible > 0 ? Math.round((totalCorrect / totalPossible) * 100) : 0;
-
+    // Update session metadata (time, status) before grading
     await supabase
       .from('exam_sessions')
       .update({
-        score_percentage: scorePercentage,
-        total_correct: totalCorrect,
         completed_at: new Date().toISOString(),
         status: 'completed',
         time_spent_seconds: elapsed,
-        question_count: totalPossible,
+        question_count: questions.length,
       })
       .eq('id', sessionId);
 
-    if (responses.length > 0) {
-      await supabase.from('session_responses').insert(responses);
+    // Server-side grading: the RPC compares answers to correct keys,
+    // sets is_correct on each response, and returns the score.
+    const { error: gradeErr } = await supabase
+      .rpc('grade_instructor_exam', { p_session_id: sessionId });
+
+    if (gradeErr) {
+      console.error('Server grading failed:', gradeErr);
     }
 
     router.push(`/student/results/${sessionId}`);
