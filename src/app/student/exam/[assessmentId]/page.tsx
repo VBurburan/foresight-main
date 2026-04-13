@@ -370,7 +370,7 @@ function OBRenderer({
           {obRows.map((row: string, rowIdx: number) => (
             <tr key={rowIdx} className="border-b border-zinc-200 hover:bg-zinc-50">
               <td className="text-sm text-zinc-600 py-3 px-3">{row}</td>
-              {data.columns.map((col, colIdx) => (
+              {obColumns.map((col: string, colIdx: number) => (
                 <td key={colIdx} className="text-center py-3 px-3">
                   <button
                     type="button"
