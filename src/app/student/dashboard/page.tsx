@@ -69,12 +69,23 @@ export default function StudentDashboardPage() {
     if (!user) return;
     const supabase = createClient();
 
-    // 1. Get student record for display name
-    const { data: student } = await supabase
+    // 1. Get or create student record
+    let { data: student } = await supabase
       .from('students')
       .select('full_name, email')
       .eq('user_id', user.id)
       .single();
+
+    if (!student) {
+      // Auto-create student record from auth metadata on first login
+      const fullName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Student';
+      const { data: created } = await supabase
+        .from('students')
+        .insert({ user_id: user.id, full_name: fullName, email: user.email })
+        .select('full_name, email')
+        .single();
+      student = created;
+    }
 
     setStudentName(student?.full_name || student?.email || user.email || 'Student');
 
