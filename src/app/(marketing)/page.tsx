@@ -203,12 +203,16 @@ export default function HomePage() {
             <br />
             Assessment tools didn&apos;t.
           </h2>
+          {/* The key quote */}
+          <blockquote className="text-lg sm:text-xl text-zinc-700 max-w-2xl mx-auto leading-relaxed mb-6 italic border-l-2 border-zinc-300 pl-5 text-left">
+            &ldquo;Students spent 6 to 18 months practicing one format, then sat for an exam with formats they had literally never seen.&rdquo;
+          </blockquote>
+
+          <p className="text-base sm:text-lg text-zinc-500 max-w-2xl mx-auto leading-relaxed mb-6">
+            Since July 2024, every NREMT certification exam includes scored Technology Enhanced Items &mdash; drag-and-drop sequencing, multi-phase clinical judgment scenarios, checkbox grids, build-a-list prioritization. These interactive formats go far beyond multiple choice.
+          </p>
           <p className="text-base sm:text-lg text-zinc-500 max-w-2xl mx-auto leading-relaxed mb-16">
-            Since July 2024, Technology Enhanced Items are scored on the NREMT.
-            Clinical Judgment accounts for 34&ndash;38% of the exam. Programs
-            that can&apos;t maintain a 70% first-attempt pass rate risk losing
-            CAAHEP accreditation. Most assessment tools still only offer basic
-            multiple choice.
+            Yet every institutional assessment platform &mdash; Fisdap, EMSTesting, JBL Navigate &mdash; still delivers questions exclusively as standard multiple choice. The first complete post-TEI accreditation review cycle finishes in 2026, and programs that can&apos;t maintain a 70% pass rate risk losing CAAHEP accreditation.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 sm:gap-6 max-w-3xl mx-auto">
