@@ -63,6 +63,7 @@ const ITEM_TYPE_LABELS: Record<string, string> = {
   DD: 'Drag & Drop',
   BL: 'Build List',
   OB: 'Options Box',
+  HS: 'Hotspot',
   CL: 'Cloze',
   CJS: 'Clinical Judgment',
 };
