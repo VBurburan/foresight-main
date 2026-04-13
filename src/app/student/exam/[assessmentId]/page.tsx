@@ -20,7 +20,7 @@ import { createClient } from '@/lib/supabase/client';
 /*  Types mirroring the test-builder data model                       */
 /* ------------------------------------------------------------------ */
 
-type TEIType = 'MC' | 'MR' | 'DD' | 'BL' | 'OB' | 'CJS';
+type TEIType = 'MC' | 'MR' | 'DD' | 'BL' | 'OB' | 'HS' | 'CJS';
 
 interface MCData {
   options: { key: string; text: string }[];
@@ -840,54 +840,59 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
   /* ---- Render ---- */
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Top bar */}
-      <div className="sticky top-0 z-50 surface-1 border-b border-zinc-200">
-        <div className="max-w-5xl mx-auto px-4 py-3">
+    <div className="min-h-screen bg-[#f0f2f5] flex flex-col">
+      {/* Pearson-style sticky navy header */}
+      <div className="sticky top-0 z-50 bg-[#1a365d] shadow-md">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3">
           <div className="flex items-center justify-between gap-4">
-            <div className="flex-1 min-w-0">
-              <h1 className="text-sm font-semibold text-zinc-900 truncate">{assessment.name}</h1>
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <span className="text-white/50 text-xs font-medium tracking-wider uppercase hidden sm:block">Foresight</span>
+              <span className="text-white/30 hidden sm:block">|</span>
+              <h1 className="text-sm font-semibold text-white truncate">{assessment.name}</h1>
             </div>
 
-            <div className="inline-flex items-center rounded-md surface-2 px-2.5 py-1 text-sm text-zinc-400">
-              Q {currentIndex + 1} of {questions.length}
+            <div className="inline-flex items-center rounded-md bg-white/10 px-3 py-1 text-sm text-white font-medium">
+              Question {currentIndex + 1} of {questions.length}
             </div>
 
-            <div className="flex items-center gap-1.5 text-sm text-zinc-400">
+            <div className="flex items-center gap-1.5 text-sm text-white/70">
               <Clock className="w-3.5 h-3.5" />
-              <span className="font-mono">{formatTime(elapsed)}</span>
+              <span className="font-mono tabular-nums">{formatTime(elapsed)}</span>
             </div>
           </div>
-
-          {/* Progress bar */}
-          <div className="mt-2.5">
-            <div className="h-1 bg-zinc-100 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-blue-500 rounded-full transition-all duration-300"
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-          </div>
+        </div>
+        {/* Progress bar — thin line at bottom of header */}
+        <div className="h-[3px] bg-[#1a365d]">
+          <div
+            className="h-full bg-blue-400 transition-all duration-300"
+            style={{ width: `${progressPercent}%` }}
+          />
         </div>
       </div>
 
       {/* Main content */}
-      <div className="flex-1 max-w-5xl mx-auto w-full px-4 py-6">
+      <div className="flex-1 max-w-[960px] mx-auto w-full px-4 sm:px-6 py-6 pb-24">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_200px] gap-6">
-          {/* Question area */}
-          <div className="space-y-4">
+          {/* Question card */}
+          <div className="bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.12)] p-6 sm:p-8 min-h-[400px]">
             <div className="space-y-6">
               {/* Question header */}
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
-                  <span className="inline-block mb-3 text-[10px] font-medium text-zinc-400 border border-zinc-200 rounded px-1.5 py-0.5 uppercase tracking-wider">
-                    {currentQuestion.item_type === 'MC' && 'Multiple Choice'}
-                    {currentQuestion.item_type === 'MR' && 'Select All That Apply'}
-                    {currentQuestion.item_type === 'DD' && 'Drag & Drop'}
-                    {currentQuestion.item_type === 'BL' && 'Ordered Response'}
-                    {currentQuestion.item_type === 'OB' && 'Matrix / Options Box'}
-                    {currentQuestion.item_type === 'CJS' && 'Clinical Judgment Scenario'}
-                  </span>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="inline-block text-[10px] font-bold text-blue-700 bg-blue-50 border border-blue-200 rounded px-2 py-0.5 uppercase tracking-wider">
+                      {currentQuestion.item_type}
+                    </span>
+                    <span className="inline-block text-[10px] font-medium text-zinc-400 uppercase tracking-wider">
+                      {currentQuestion.item_type === 'MC' && 'Multiple Choice'}
+                      {currentQuestion.item_type === 'MR' && 'Select All That Apply'}
+                      {currentQuestion.item_type === 'DD' && 'Drag & Drop'}
+                      {currentQuestion.item_type === 'BL' && 'Ordered Response'}
+                      {currentQuestion.item_type === 'OB' && 'Matrix / Options Box'}
+                      {currentQuestion.item_type === 'HS' && 'Hotspot'}
+                      {currentQuestion.item_type === 'CJS' && 'Clinical Judgment Scenario'}
+                    </span>
+                  </div>
                   <h2 className="text-lg font-medium text-zinc-900 leading-relaxed">
                     {currentQuestion.stem}
                   </h2>
@@ -957,47 +962,6 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
               </div>
             </div>
 
-            {/* Navigation buttons */}
-            <div className="flex items-center justify-between pt-4 border-t border-zinc-200">
-              <button
-                onClick={goPrev}
-                disabled={currentIndex === 0}
-                className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-900 disabled:text-zinc-600 disabled:cursor-not-allowed transition-colors"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                Previous
-              </button>
-
-              <div className="flex gap-3">
-                {isLastQuestion ? (
-                  <button
-                    onClick={() => setShowConfirm(true)}
-                    disabled={submitting}
-                    className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-100 disabled:opacity-50 transition-colors"
-                  >
-                    {submitting ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        Submitting...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="w-4 h-4" />
-                        Submit Exam
-                      </>
-                    )}
-                  </button>
-                ) : (
-                  <button
-                    onClick={goNext}
-                    className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-900 transition-colors"
-                  >
-                    Next
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-            </div>
           </div>
 
           {/* Question navigation sidebar */}
@@ -1030,6 +994,57 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Fixed bottom navigation bar — Pearson Testing Center style */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-zinc-300 shadow-[0_-2px_8px_rgba(0,0,0,0.08)]">
+        <div className="max-w-[960px] mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between">
+          <button
+            onClick={goPrev}
+            disabled={currentIndex === 0}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 disabled:text-zinc-300 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Back
+          </button>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggleFlag}
+              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                currentFlagged
+                  ? 'text-orange-600 bg-orange-50 hover:bg-orange-100'
+                  : 'text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100'
+              }`}
+              title={currentFlagged ? 'Remove flag' : 'Flag for review'}
+            >
+              <Flag className="w-4 h-4" />
+              <span className="hidden sm:inline">{currentFlagged ? 'Flagged' : 'Flag'}</span>
+            </button>
+
+            {isLastQuestion ? (
+              <button
+                onClick={() => setShowConfirm(true)}
+                disabled={submitting}
+                className="inline-flex items-center gap-2 rounded-lg bg-[#1a365d] hover:bg-[#2d4a7a] px-5 py-2 text-sm font-semibold text-white disabled:opacity-50 transition-colors"
+              >
+                {submitting ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</>
+                ) : (
+                  <><Send className="w-4 h-4" /> Submit Exam</>
+                )}
+              </button>
+            ) : (
+              <button
+                onClick={goNext}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-[#3182ce] hover:bg-[#2b6cb0] px-5 py-2 text-sm font-semibold text-white transition-colors"
+              >
+                Next
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </div>
       </div>
