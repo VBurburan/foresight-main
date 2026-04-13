@@ -224,27 +224,27 @@ export default function SessionResultsPage({
           <p className={`text-sm font-medium mt-2 ${passed ? 'text-emerald-600' : 'text-red-600'}`}>
             {passed ? 'Pass' : 'Needs Improvement'}
           </p>
-          <p className="text-sm text-zinc-400 mt-3">
+          <p className="text-sm text-zinc-500 mt-3">
             {totalCorrect} / {totalQuestions} correct
           </p>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-zinc-500 mt-1">
             Time spent: {formatDuration(timeSpent)}
           </p>
           {assessment && (
-            <p className="text-xs text-zinc-400 mt-1">{assessment.name}</p>
+            <p className="text-xs text-zinc-500 mt-1">{assessment.name}</p>
           )}
         </div>
       </div>
 
       {/* Question Review */}
       <section className="space-y-3">
-        <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-400">
+        <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-500">
           Question Review
         </h2>
 
         {questions.length === 0 ? (
           <div className="glass-card py-12 text-center">
-            <p className="text-sm text-zinc-400">
+            <p className="text-sm text-zinc-500">
               No questions found for this session.
             </p>
           </div>
@@ -260,14 +260,14 @@ export default function SessionResultsPage({
                 <div key={q.id} className="px-5 py-4">
                   <div className="flex items-start gap-3">
                     {/* Number */}
-                    <span className="text-sm font-medium text-zinc-400 w-6 flex-shrink-0 pt-0.5">
+                    <span className="text-sm font-medium text-zinc-500 w-6 flex-shrink-0 pt-0.5">
                       {idx + 1}
                     </span>
 
                     {/* Stem + badge */}
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-zinc-900">{q.stem}</p>
-                      <span className="inline-block mt-1.5 text-[10px] font-medium text-zinc-400 border border-zinc-200 rounded px-1.5 py-0.5 uppercase tracking-wide">
+                      <span className="inline-block mt-1.5 text-[10px] font-medium text-zinc-500 border border-zinc-200 rounded px-1.5 py-0.5 uppercase tracking-wide">
                         {ITEM_TYPE_LABELS[q.item_type] || q.item_type}
                       </span>
 
@@ -276,7 +276,7 @@ export default function SessionResultsPage({
                         <div className="mt-2">
                           <button
                             onClick={() => toggleRationale(q.id)}
-                            className="flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+                            className="flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-700 transition-colors"
                           >
                             {isExpanded ? (
                               <ChevronDown className="w-3 h-3" />
@@ -286,7 +286,7 @@ export default function SessionResultsPage({
                             Rationale
                           </button>
                           {isExpanded && (
-                            <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed pl-4 border-l-2 border-zinc-200">
+                            <p className="text-xs text-zinc-500 mt-1.5 leading-relaxed pl-4 border-l-2 border-zinc-200">
                               {q.rationale}
                             </p>
                           )}

@@ -128,14 +128,14 @@ export default function MarketingLayout({
             </div>
 
             {/* Copyright */}
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-zinc-500">
               &copy; 2026 Foresight. All rights reserved.
             </p>
           </div>
 
           {/* Contact email */}
           <div className="mt-6 pt-6 border-t border-zinc-100 text-center">
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-zinc-500">
               Questions? Reach us at{" "}
               <a
                 href="mailto:vincent@foresight.edu"

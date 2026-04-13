@@ -599,6 +599,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const sessionCreatedRef = useRef(false);
 
   // Fetch assessment + questions
   useEffect(() => {
@@ -608,6 +609,9 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
       setLoading(false);
       return;
     }
+    // Guard against double-mount (React strict mode) creating duplicate sessions
+    if (sessionCreatedRef.current) return;
+    sessionCreatedRef.current = true;
 
     async function loadExam() {
       const supabase = createClient();

@@ -573,8 +573,8 @@ function TestBuilderContent() {
             correctAnswer = { correctKeys: data.correctKeys };
           } else if (q.type === 'DD' && data?.correctMapping) {
             correctAnswer = { correctMapping: data.correctMapping };
-          } else if (q.type === 'OB' && Array.isArray(data?.correctOrder)) {
-            correctAnswer = { correctOrder: data.correctOrder };
+          } else if (q.type === 'OB' && data?.correctAnswers && Object.keys(data.correctAnswers).length > 0) {
+            correctAnswer = { correctAnswers: data.correctAnswers };
           } else if (q.type === 'BL' && Array.isArray(data?.correctOrder)) {
             correctAnswer = { correctOrder: data.correctOrder };
           }

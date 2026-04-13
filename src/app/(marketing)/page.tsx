@@ -260,7 +260,7 @@ export default function HomePage() {
                     <div className="md:hidden absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-px bg-zinc-200" />
                   )}
 
-                  <p className="text-xs font-bold text-blue-700/80 tracking-[0.25em] uppercase mb-4">
+                  <p className="text-xs font-bold text-blue-700 tracking-[0.25em] uppercase mb-4">
                     {s.num}
                   </p>
                   <div className="w-12 h-12 rounded-xl bg-zinc-100 flex items-center justify-center mx-auto mb-5">

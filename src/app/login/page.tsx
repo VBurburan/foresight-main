@@ -155,7 +155,7 @@ function LoginPage() {
         </form>
 
         <div className="mt-5 pt-4 border-t border-zinc-100">
-          <p className="text-xs text-zinc-400 text-center">
+          <p className="text-xs text-zinc-500 text-center">
             Students: use credentials provided by your instructor
           </p>
         </div>
@@ -165,7 +165,7 @@ function LoginPage() {
       <div className="relative z-10 mt-6">
         <a
           href="mailto:vincent@foresight.edu"
-          className="text-xs text-zinc-400 hover:text-zinc-600 transition-colors"
+          className="text-xs text-zinc-500 hover:text-zinc-700 transition-colors"
         >
           Need access? Contact us
         </a>
