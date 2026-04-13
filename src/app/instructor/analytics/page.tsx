@@ -169,7 +169,7 @@ function AnalyticsContent() {
           pre: null as number | null,
           post: avg,
           change: null as number | null,
-          assessment: avg >= 90 ? 'MASTERED' : avg >= 70 ? 'PROGRESSING' : 'NEXT PRIORITY',
+          assessment: '',
         };
       }).sort((a, b) => (b.post ?? 0) - (a.post ?? 0));
 

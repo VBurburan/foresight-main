@@ -186,7 +186,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
             pre: null,
             post: avg,
             change: null,
-            assessment: avg >= 90 ? 'MASTERED' : avg >= 70 ? 'PROGRESSING' : 'NEXT PRIORITY',
+            assessment: '',
           };
         })
         .sort((a, b) => (b.post ?? 0) - (a.post ?? 0));
