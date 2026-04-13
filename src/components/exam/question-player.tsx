@@ -13,6 +13,7 @@ import OrderedResponse from './question-types/ordered-response';
 import BowTie from './question-types/bowtie';
 import OptionsBox from './question-types/options-box';
 import Cloze from './question-types/cloze';
+import Hotspot from './question-types/hotspot';
 import { scoreAnswer } from '@/lib/utils/scoring';
 import { responseToDbFormat } from '@/lib/utils/question-adapter';
 import type { ItemType } from '@/types/database';
@@ -339,6 +340,9 @@ export default function QuestionPlayer({
       case 'cloze':
       case 'CL':
         return <Cloze {...props} />;
+      case 'hotspot':
+      case 'HS':
+        return <Hotspot {...props} />;
       default:
         return (
           <div className="p-4 text-center text-slate-500">

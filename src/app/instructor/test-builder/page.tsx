@@ -10,6 +10,7 @@ import {
   ChevronUp,
   Save,
   Eye,
+  Check,
   CheckCircle2,
   X,
   Sparkles,
@@ -42,7 +43,7 @@ import { createClient } from '@/lib/supabase/client';
 import ECGStripPicker from '@/components/foresight/ecg-strip-picker';
 import { AIAssistantPanel } from '@/components/foresight/ai-assistant-panel';
 
-type TEIType = 'MC' | 'MR' | 'DD' | 'BL' | 'OB' | 'CJS';
+type TEIType = 'MC' | 'MR' | 'DD' | 'BL' | 'OB' | 'HS' | 'CJS';
 
 // Rich data model matching actual DB question structures
 interface MCData { options: { key: string; text: string }[]; correctKey: string; }
@@ -50,6 +51,8 @@ interface MRData { options: { key: string; text: string }[]; correctKeys: string
 interface DDData { items: { id: string; text: string }[]; categories: string[]; correctMapping: Record<string, string>; }
 interface BLData { items: string[]; correctOrder: number[]; }
 interface OBData { rows: string[]; columns: string[]; correctAnswers: Record<string, string>; }
+interface HSRegion { id: string; label: string; x: number; y: number; width: number; height: number; }
+interface HSData { imageUrl: string; regions: HSRegion[]; correctRegionId: string; }
 interface CJSPhaseQuestion { stem: string; type: TEIType; data: MCData | MRData | DDData | BLData | OBData; ecgStripId?: string; }
 interface CJSVitals { hr: string; bp: string; rr: string; spo2: string; etco2: string; temp: string; bgl: string; map: string; }
 interface CJSData { phases: { label: string; content: string; vitals?: CJSVitals; history?: string; ecgFindings?: string; questions: CJSPhaseQuestion[] }[]; }
@@ -58,7 +61,7 @@ interface QuestionTemplate {
   id: string;
   type: TEIType;
   stem: string;
-  data: MCData | MRData | DDData | BLData | OBData | CJSData;
+  data: MCData | MRData | DDData | BLData | OBData | HSData | CJSData;
   rationale: string;
   expanded: boolean;
   // AI-generated metadata
@@ -73,6 +76,7 @@ const TEI_LABELS: Record<TEIType, string> = {
   DD: 'Drag & Drop',
   BL: 'Build List / Ordered Response',
   OB: 'Options Box / Matrix',
+  HS: 'Hotspot',
   CJS: 'Clinical Judgment Scenario',
 };
 
@@ -82,6 +86,7 @@ const TEI_DESCRIPTIONS: Record<TEIType, string> = {
   DD: 'Sort items into categories (e.g., medications by class)',
   BL: 'Arrange steps in correct order (e.g., treatment priority)',
   OB: 'Table with row statements and column choices (e.g., effective vs ineffective)',
+  HS: 'Click the correct region on an image (e.g., ECG segment, capnogram)',
   CJS: 'Multi-phase patient scenario with evolving information',
 };
 
@@ -109,6 +114,7 @@ function createBlankQuestion(type: TEIType): QuestionTemplate {
     DD: { items: [{ id: 'item1', text: '' }, { id: 'item2', text: '' }, { id: 'item3', text: '' }], categories: ['', ''], correctMapping: {} } as DDData,
     BL: { items: ['', '', '', ''], correctOrder: [0, 1, 2, 3] } as BLData,
     OB: { rows: ['', '', ''], columns: ['', ''], correctAnswers: {} } as OBData,
+    HS: { imageUrl: '', regions: [], correctRegionId: '' } as HSData,
     CJS: { phases: [
       { label: 'En Route', content: '', questions: [newPhaseQuestion('MC')] },
       { label: 'On Scene', content: '', questions: [newPhaseQuestion('MC')] },
@@ -577,6 +583,8 @@ function TestBuilderContent() {
             correctAnswer = { correctAnswers: data.correctAnswers };
           } else if (q.type === 'BL' && Array.isArray(data?.correctOrder)) {
             correctAnswer = { correctOrder: data.correctOrder };
+          } else if (q.type === 'HS' && data?.correctRegionId) {
+            correctAnswer = { correctRegionId: data.correctRegionId, regions: data.regions };
           }
 
           return {
@@ -919,7 +927,7 @@ function TestBuilderContent() {
               <span>{questions.length - filledCount} blank</span>
             </div>
             <span className="text-xs text-zinc-400 font-mono tabular-nums">
-              {(['MC', 'MR', 'DD', 'BL', 'OB', 'CJS'] as TEIType[])
+              {(['MC', 'MR', 'DD', 'BL', 'OB', 'HS', 'CJS'] as TEIType[])
                 .map((type) => {
                   const count = questions.filter((q) => q.type === type).length;
                   return count > 0 ? `${type} ${count}` : null;
@@ -1300,6 +1308,156 @@ function TestBuilderContent() {
                                 </tbody>
                               </table>
                             </div>
+                          )}
+                        </div>
+                      );
+                    })()}
+
+                    {/* Hotspot Editor */}
+                    {q.type === 'HS' && (() => {
+                      const d = q.data as HSData;
+                      return (
+                        <div className="space-y-4">
+                          {/* Image URL */}
+                          <div>
+                            <label className="text-xs font-medium text-zinc-500 uppercase tracking-wide">Image URL</label>
+                            <Input
+                              value={d.imageUrl}
+                              onChange={(e) => updateData(q.id, (prev: HSData) => ({ ...prev, imageUrl: e.target.value }))}
+                              placeholder="Paste image URL (ECG strip, capnogram, anatomy diagram...)"
+                              className="mt-1 text-sm"
+                            />
+                          </div>
+
+                          {/* Image preview with region overlay */}
+                          {d.imageUrl && (
+                            <div className="relative border border-zinc-200 rounded-lg overflow-hidden bg-zinc-50">
+                              <img
+                                src={d.imageUrl}
+                                alt="Hotspot image"
+                                className="w-full max-h-[400px] object-contain"
+                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                              />
+                              {/* Region overlays */}
+                              <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                                {d.regions.map((r) => (
+                                  <rect
+                                    key={r.id}
+                                    x={`${r.x}%`}
+                                    y={`${r.y}%`}
+                                    width={`${r.width}%`}
+                                    height={`${r.height}%`}
+                                    fill={r.id === d.correctRegionId ? 'rgba(34,197,94,0.25)' : 'rgba(59,130,246,0.15)'}
+                                    stroke={r.id === d.correctRegionId ? '#16a34a' : '#3b82f6'}
+                                    strokeWidth="2"
+                                    strokeDasharray={r.id === d.correctRegionId ? '0' : '6 3'}
+                                    rx="4"
+                                  />
+                                ))}
+                                {d.regions.map((r) => (
+                                  <text
+                                    key={`label-${r.id}`}
+                                    x={`${r.x + r.width / 2}%`}
+                                    y={`${r.y + r.height / 2}%`}
+                                    textAnchor="middle"
+                                    dominantBaseline="central"
+                                    className="text-[11px] font-semibold fill-zinc-800"
+                                  >
+                                    {r.label}
+                                  </text>
+                                ))}
+                              </svg>
+                            </div>
+                          )}
+
+                          {/* Region list */}
+                          <div>
+                            <label className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-2 block">
+                              Clickable Regions ({d.regions.length})
+                            </label>
+                            <div className="space-y-2">
+                              {d.regions.map((region, ri) => (
+                                <div key={region.id} className={`flex items-center gap-2 p-2 rounded-lg border ${region.id === d.correctRegionId ? 'bg-emerald-50 border-emerald-200' : 'bg-zinc-50 border-zinc-200'}`}>
+                                  <button
+                                    onClick={() => updateData(q.id, (prev: HSData) => ({ ...prev, correctRegionId: region.id }))}
+                                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${region.id === d.correctRegionId ? 'border-emerald-600 bg-emerald-600' : 'border-zinc-300 hover:border-zinc-400'}`}
+                                    title="Mark as correct"
+                                  >
+                                    {region.id === d.correctRegionId && <Check className="w-3 h-3 text-white" />}
+                                  </button>
+                                  <Input
+                                    value={region.label}
+                                    onChange={(e) => updateData(q.id, (prev: HSData) => ({
+                                      ...prev, regions: prev.regions.map((r, i) => i === ri ? { ...r, label: e.target.value } : r),
+                                    }))}
+                                    placeholder="Region label (e.g., ST segment)"
+                                    className="text-sm flex-1 h-8"
+                                  />
+                                  <div className="flex items-center gap-1 text-[10px] text-zinc-400 shrink-0">
+                                    <span>x:</span>
+                                    <input type="number" value={region.x} min={0} max={100} step={1}
+                                      onChange={(e) => updateData(q.id, (prev: HSData) => ({
+                                        ...prev, regions: prev.regions.map((r, i) => i === ri ? { ...r, x: Number(e.target.value) } : r),
+                                      }))}
+                                      className="w-10 h-6 text-center text-xs border border-zinc-200 rounded"
+                                    />
+                                    <span>y:</span>
+                                    <input type="number" value={region.y} min={0} max={100} step={1}
+                                      onChange={(e) => updateData(q.id, (prev: HSData) => ({
+                                        ...prev, regions: prev.regions.map((r, i) => i === ri ? { ...r, y: Number(e.target.value) } : r),
+                                      }))}
+                                      className="w-10 h-6 text-center text-xs border border-zinc-200 rounded"
+                                    />
+                                    <span>w:</span>
+                                    <input type="number" value={region.width} min={1} max={100} step={1}
+                                      onChange={(e) => updateData(q.id, (prev: HSData) => ({
+                                        ...prev, regions: prev.regions.map((r, i) => i === ri ? { ...r, width: Number(e.target.value) } : r),
+                                      }))}
+                                      className="w-10 h-6 text-center text-xs border border-zinc-200 rounded"
+                                    />
+                                    <span>h:</span>
+                                    <input type="number" value={region.height} min={1} max={100} step={1}
+                                      onChange={(e) => updateData(q.id, (prev: HSData) => ({
+                                        ...prev, regions: prev.regions.map((r, i) => i === ri ? { ...r, height: Number(e.target.value) } : r),
+                                      }))}
+                                      className="w-10 h-6 text-center text-xs border border-zinc-200 rounded"
+                                    />
+                                    <span>%</span>
+                                  </div>
+                                  <button
+                                    onClick={() => updateData(q.id, (prev: HSData) => ({
+                                      ...prev, regions: prev.regions.filter((_, i) => i !== ri),
+                                      correctRegionId: prev.correctRegionId === region.id ? '' : prev.correctRegionId,
+                                    }))}
+                                    className="text-zinc-400 hover:text-red-600 shrink-0"
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => updateData(q.id, (prev: HSData) => ({
+                                ...prev,
+                                regions: [...prev.regions, {
+                                  id: `r_${Date.now()}`,
+                                  label: `Region ${prev.regions.length + 1}`,
+                                  x: 10 + prev.regions.length * 15,
+                                  y: 20,
+                                  width: 20,
+                                  height: 15,
+                                }],
+                              }))}
+                              className="mt-2 text-xs"
+                            >
+                              <Plus className="h-3 w-3 mr-1" />Add Region
+                            </Button>
+                          </div>
+
+                          {d.regions.length > 0 && !d.correctRegionId && (
+                            <p className="text-xs text-amber-600">Click the circle next to a region to mark it as the correct answer.</p>
                           )}
                         </div>
                       );

@@ -12,7 +12,7 @@ export type Json =
 
 // Supabase enums
 export type CertificationLevel = 'EMT' | 'AEMT' | 'Paramedic'
-export type ItemType = 'MC' | 'MR' | 'BL' | 'DD' | 'OB' | 'CL'
+export type ItemType = 'MC' | 'MR' | 'BL' | 'DD' | 'OB' | 'CL' | 'HS'
 export type Difficulty = 'easy' | 'medium' | 'hard'
 export type MembershipTier = 'pro' | 'max'
 export type MemberStatus = 'active' | 'inactive' | 'trial' | 'expired'

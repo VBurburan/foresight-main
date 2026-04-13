@@ -96,6 +96,8 @@ function mapItemTypeToComponent(itemType: ItemType): string {
       return 'options_box';
     case 'CL':
       return 'cloze';
+    case 'HS':
+      return 'hotspot';
     default:
       return 'multiple_choice';
   }
@@ -160,6 +162,11 @@ function adaptOptions(itemType: ItemType, rawOptions: Json): AdaptedOption[] {
       return [];
     }
 
+    // HS format: handled by Hotspot component (reads imageUrl + regions from raw_options)
+    if (itemType === 'HS') {
+      return [];
+    }
+
     // Default: MC/MR format {"A": "text", "B": "text"}
     return Object.entries(obj).map(([key, val]) => ({
       id: key,
@@ -215,6 +222,10 @@ function adaptCorrectAnswer(itemType: ItemType, rawAnswer: Json, rawOptions: Jso
       // Passed through as-is, CLCloze handles it
       return rawAnswer;
 
+    case 'HS':
+      // Passed through as-is, Hotspot reads correctRegionId + regions
+      return rawAnswer;
+
     default:
       return rawAnswer;
   }
@@ -264,6 +275,11 @@ export function responseToDbFormat(
 
     case 'OB':
     case 'CL':
+      return componentResponse;
+
+    case 'HS':
+      // HS response is a region ID string or { selectedRegionId: "..." }
+      if (typeof componentResponse === 'string') return { selectedRegionId: componentResponse };
       return componentResponse;
 
     default:

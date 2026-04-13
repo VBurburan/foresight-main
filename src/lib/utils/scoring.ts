@@ -35,6 +35,8 @@ export function scoreAnswer(
       return scoreOB(correctAnswer, userAnswer);
     case 'CL':
       return scoreCL(correctAnswer, userAnswer);
+    case 'HS':
+      return scoreHS(correctAnswer, userAnswer);
     default:
       return false;
   }
@@ -206,6 +208,29 @@ function scoreCL(correct: Json, user: Json): boolean {
       String(cObj[key]).trim().toLowerCase() ===
         String(uObj[key]).trim().toLowerCase()
   );
+}
+
+/**
+ * HS: selected region ID must match correct region ID.
+ * correct_answer: { correctRegionId: "r_123" }
+ * userAnswer: "r_123" or { selectedRegionId: "r_123" }
+ */
+function scoreHS(correct: Json, user: Json): boolean {
+  const cObj = extractObject(correct);
+  if (!cObj) return false;
+  const correctId = String(cObj.correctRegionId || '');
+  if (!correctId) return false;
+
+  let userId: string;
+  if (typeof user === 'string') {
+    userId = user;
+  } else if (user && typeof user === 'object' && !Array.isArray(user)) {
+    userId = String((user as Record<string, Json>).selectedRegionId || '');
+  } else {
+    return false;
+  }
+
+  return correctId === userId;
 }
 
 // --- Helpers ---
