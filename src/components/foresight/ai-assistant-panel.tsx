@@ -59,6 +59,16 @@ const ITEM_TYPES: { type: string; label: string }[] = [
 
 const CHUNK_SIZE = 10;
 
+// Tier-based generation limits (per batch request)
+const TIERS = {
+  standard: { label: 'Standard', maxTotal: 10, maxPerType: 10 },
+  professional: { label: 'Professional', maxTotal: 50, maxPerType: 50 },
+  enterprise: { label: 'Enterprise', maxTotal: 150, maxPerType: 150 },
+} as const;
+
+// TODO: Read from instructor's subscription tier. Default to professional for now.
+const CURRENT_TIER: keyof typeof TIERS = 'professional';
+
 export function AIAssistantPanel({
   open,
   onClose,
@@ -76,14 +86,24 @@ export function AIAssistantPanel({
   const [error, setError] = useState('');
   const [progress, setProgress] = useState('');
 
+  const tier = TIERS[CURRENT_TIER];
   const totalCount = itemCounts.reduce((sum, t) => sum + t.count, 0);
 
   const updateCount = (type: string, delta: number) => {
-    setItemCounts((prev) =>
-      prev.map((t) =>
-        t.type === type ? { ...t, count: Math.max(0, Math.min(50, t.count + delta)) } : t
-      )
-    );
+    setItemCounts((prev) => {
+      const currentTotal = prev.reduce((s, t) => s + t.count, 0);
+      return prev.map((t) => {
+        if (t.type !== type) return t;
+        let newCount = t.count + delta;
+        newCount = Math.max(0, Math.min(tier.maxPerType, newCount));
+        // Enforce total tier limit
+        if (delta > 0 && currentTotal >= tier.maxTotal) return t;
+        if (delta > 0 && newCount - t.count + currentTotal > tier.maxTotal) {
+          newCount = t.count + (tier.maxTotal - currentTotal);
+        }
+        return { ...t, count: newCount };
+      });
+    });
   };
 
   // Generate a single chunk
@@ -236,7 +256,7 @@ export function AIAssistantPanel({
                   </span>
                   <button
                     onClick={() => updateCount(item.type, 1)}
-                    disabled={item.count >= 50 || generating}
+                    disabled={item.count >= tier.maxPerType || totalCount >= tier.maxTotal || generating}
                     className="w-6 h-6 rounded flex items-center justify-center text-zinc-500 hover:bg-zinc-200 disabled:opacity-30 transition-colors"
                   >
                     <Plus className="h-3 w-3" />
@@ -244,12 +264,17 @@ export function AIAssistantPanel({
                 </div>
               </div>
             ))}
-            {totalCount > 0 && (
-              <p className="text-xs text-zinc-500 text-right">
-                {totalCount} question{totalCount !== 1 ? 's' : ''} total
-                {totalCount > CHUNK_SIZE && ` (${Math.ceil(totalCount / CHUNK_SIZE)} batches)`}
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] text-zinc-500">
+                {tier.label} plan — up to {tier.maxTotal} per batch
               </p>
-            )}
+              {totalCount > 0 && (
+                <p className="text-xs text-zinc-500">
+                  {totalCount}/{tier.maxTotal}
+                  {totalCount > CHUNK_SIZE && ` · ${Math.ceil(totalCount / CHUNK_SIZE)} batches`}
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
