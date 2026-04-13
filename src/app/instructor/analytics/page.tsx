@@ -96,7 +96,7 @@ function AnalyticsContent() {
       // Get exam sessions
       const { data: sessions } = await supabase
         .from('exam_sessions')
-        .select('id, student_id, score_percentage, domain_stats, item_type_stats, cj_step_stats, completed_at')
+        .select('id, student_id, score_percentage, domain_stats, item_type_stats, cj_step_stats, completed_at, question_count')
         .in('student_id', studentIds)
         .not('completed_at', 'is', null)
         .order('completed_at', { ascending: true });
@@ -220,12 +220,61 @@ function AnalyticsContent() {
         ? Math.round((allScores.reduce((a, b) => a + b, 0) / allScores.length) * 10) / 10
         : null;
 
+      // Build Domain×TEI heatmap from the aggregated stats
+      const heatmapAccum: Record<string, { correct: number; total: number }> = {};
+      exams.forEach((e) => {
+        const ds = e.domain_stats as Record<string, any> | null;
+        const ts = e.item_type_stats as Record<string, any> | null;
+        if (ds && ts) {
+          Object.keys(ds).forEach((domain) => {
+            Object.keys(ts).forEach((tei) => {
+              const key = `${domain}|${tei}`;
+              if (!heatmapAccum[key]) heatmapAccum[key] = { correct: 0, total: 0 };
+              const dStats = ds[domain];
+              const tStats = ts[tei];
+              if (dStats?.total && tStats?.total) {
+                // Estimate intersection using proportional allocation
+                const dPct = (dStats.percentage ?? 0) / 100;
+                const tPct = (tStats.percentage ?? 0) / 100;
+                const estCorrect = Math.round(dPct * tStats.correct);
+                const estTotal = Math.max(1, Math.round((dStats.total / (e.question_count || 5)) * tStats.total));
+                heatmapAccum[key].correct += estCorrect;
+                heatmapAccum[key].total += estTotal;
+              }
+            });
+          });
+        }
+      });
+
+      const heatmap = Object.entries(heatmapAccum)
+        .filter(([, v]) => v.total > 0)
+        .map(([key, v]) => {
+          const [domain, teiType] = key.split('|');
+          return {
+            domain,
+            teiType,
+            correct: v.correct,
+            total: v.total,
+            percentage: Math.round((v.correct / v.total) * 100),
+          };
+        });
+
+      // Error distribution by domain
+      const errorsByDomain = Object.entries(domainAccum)
+        .filter(([, { total, count }]) => total > 0)
+        .map(([domain, { total, count }]) => {
+          const avg = Math.round(total / count);
+          const errorRate = 100 - avg;
+          return { name: domain, value: errorRate, color: errorRate > 30 ? '#ef4444' : errorRate > 15 ? '#f59e0b' : '#22c55e' };
+        })
+        .sort((a, b) => b.value - a.value);
+
       setData({
         cjFunctions,
         domainPerformance,
         teiPerformance,
-        heatmap: [],
-        errorsByDomain: [],
+        heatmap,
+        errorsByDomain,
         errorsByTEI: [],
         specificErrors: [],
         overallPre: null,

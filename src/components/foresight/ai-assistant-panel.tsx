@@ -56,7 +56,7 @@ const ITEM_TYPES: { type: string; label: string }[] = [
   { type: 'DD', label: 'Drag & Drop' },
   { type: 'OB', label: 'Options Box (Matrix)' },
   { type: 'BL', label: 'Build List (Ordered)' },
-  { type: 'CJS', label: 'Clinical Judgment Scenario' },
+  { type: 'CJS', label: 'Clinical Judgment Scenario (manual only)' },
 ];
 
 const CHUNK_SIZE = 10;
@@ -171,6 +171,14 @@ export function AIAssistantPanel({
 
   const handleGenerate = async () => {
     if (totalCount === 0) return;
+
+    // CJS requires manual creation — too complex for single-shot AI generation
+    const cjsCount = itemCounts.find((t) => t.type === 'CJS')?.count ?? 0;
+    if (cjsCount > 0 && totalCount === cjsCount) {
+      setError('Clinical Judgment Scenarios require manual creation with the question editor. AI can assist with individual phases once the scenario structure is built.');
+      return;
+    }
+
     const controller = new AbortController();
 
     setGenerating(true);
@@ -182,7 +190,10 @@ export function AIAssistantPanel({
       const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
       if (!supabaseUrl || !supabaseAnonKey) throw new Error('Configuration error — please reload');
 
-      const items = itemCounts.filter((t) => t.count > 0).map((t) => ({ type: t.type, count: t.count }));
+      // Filter out CJS — it's manual-only. AI generates the other types.
+      const items = itemCounts
+        .filter((t) => t.count > 0 && t.type !== 'CJS')
+        .map((t) => ({ type: t.type, count: t.count }));
 
       if (totalCount <= CHUNK_SIZE) {
         // Small request — single call
@@ -309,7 +320,7 @@ export function AIAssistantPanel({
                   <SelectValue placeholder="Any domain" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="any">Any Domain</SelectItem>
+                  <SelectItem value="any">All Domains</SelectItem>
                   {domains.map((d) => (
                     <SelectItem key={d.name} value={d.name}>
                       {d.name} ({d.pctRange})
