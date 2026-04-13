@@ -150,9 +150,11 @@ function MCRenderer({
   answer: MCAnswer;
   onChange: (val: MCAnswer) => void;
 }) {
+  // Handle both formats: {options: [...]} (test builder) or [...] (AI-generated / direct array)
+  const opts = Array.isArray(data) ? data : (data?.options || []);
   return (
     <div className="space-y-2">
-      {data.options.map((opt) => {
+      {opts.map((opt: any) => {
         const selected = answer === opt.key;
         return (
           <button
@@ -193,6 +195,9 @@ function MRRenderer({
   answer: MRAnswer;
   onChange: (val: MRAnswer) => void;
 }) {
+  // Handle both formats: {options: [...]} or [...]
+  const opts = Array.isArray(data) ? data : (data?.options || []);
+
   const toggle = (key: string) => {
     if (answer.includes(key)) {
       onChange(answer.filter((k) => k !== key));
@@ -206,7 +211,7 @@ function MRRenderer({
       <p className="text-xs text-zinc-400 mb-2 font-medium uppercase tracking-wide">
         Select all that apply
       </p>
-      {data.options.map((opt) => {
+      {opts.map((opt: any) => {
         const selected = answer.includes(opt.key);
         return (
           <button
@@ -247,12 +252,16 @@ function DDRenderer({
   answer: DDAnswer;
   onChange: (val: DDAnswer) => void;
 }) {
+  // Handle both formats
+  const items = data?.items || [];
+  const categories = data?.categories || [];
+
   return (
     <div className="space-y-3">
       <p className="text-xs text-zinc-400 mb-2 font-medium uppercase tracking-wide">
         Assign each item to a category
       </p>
-      {data.items.map((item) => (
+      {items.map((item: any) => (
         <div
           key={item.id}
           className="flex items-center gap-3 rounded-lg border border-zinc-200 px-4 py-3 surface-1"
@@ -264,7 +273,7 @@ function DDRenderer({
             className="rounded-lg border border-zinc-300 bg-zinc-50 px-3 py-1.5 text-sm text-zinc-900 focus:border-blue-500/40 focus:ring-1 focus:ring-blue-500/40 outline-none"
           >
             <option value="">-- Select --</option>
-            {data.categories.map((cat, idx) => (
+            {categories.map((cat: string, idx: number) => (
               <option key={idx} value={cat}>
                 {cat}
               </option>
@@ -285,7 +294,8 @@ function BLRenderer({
   answer: BLAnswer;
   onChange: (val: BLAnswer) => void;
 }) {
-  const currentOrder = answer.length === data.items.length ? answer : data.items.map((_, i) => i);
+  const blItems = data?.items || [];
+  const currentOrder = answer.length === blItems.length ? answer : blItems.map((_: any, i: number) => i);
 
   const setPosition = (itemOrigIdx: number, newPos: number) => {
     const updated = [...currentOrder];
@@ -311,13 +321,13 @@ function BLRenderer({
             onChange={(e) => setPosition(origIdx, parseInt(e.target.value))}
             className="rounded-lg border border-zinc-300 bg-zinc-50 px-2 py-1 text-sm text-zinc-900 w-16 text-center font-mono font-bold focus:border-blue-500/40 focus:ring-1 focus:ring-blue-500/40 outline-none"
           >
-            {data.items.map((_, i) => (
+            {blItems.map((_: any, i: number) => (
               <option key={i} value={i}>
                 {i + 1}
               </option>
             ))}
           </select>
-          <span className="flex-1 text-sm text-zinc-600">{data.items[origIdx]}</span>
+          <span className="flex-1 text-sm text-zinc-600">{blItems[origIdx]}</span>
         </div>
       ))}
     </div>
@@ -333,6 +343,8 @@ function OBRenderer({
   answer: OBAnswer;
   onChange: (val: OBAnswer) => void;
 }) {
+  const obRows = data?.rows || [];
+  const obColumns = data?.columns || [];
   return (
     <div className="overflow-x-auto">
       <p className="text-xs text-zinc-400 mb-3 font-medium uppercase tracking-wide">
@@ -344,7 +356,7 @@ function OBRenderer({
             <th className="text-left text-xs font-medium uppercase tracking-wider text-zinc-400 py-2 px-3 border-b border-zinc-200">
               Statement
             </th>
-            {data.columns.map((col, idx) => (
+            {obColumns.map((col: string, idx: number) => (
               <th
                 key={idx}
                 className="text-center text-xs font-medium uppercase tracking-wider text-zinc-400 py-2 px-3 border-b border-zinc-200 min-w-[100px]"
@@ -355,7 +367,7 @@ function OBRenderer({
           </tr>
         </thead>
         <tbody>
-          {data.rows.map((row, rowIdx) => (
+          {obRows.map((row: string, rowIdx: number) => (
             <tr key={rowIdx} className="border-b border-zinc-200 hover:bg-zinc-50">
               <td className="text-sm text-zinc-600 py-3 px-3">{row}</td>
               {data.columns.map((col, colIdx) => (
