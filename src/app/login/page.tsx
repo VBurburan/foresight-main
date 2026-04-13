@@ -2,6 +2,7 @@
 
 import React, { useState, Suspense } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -75,8 +76,8 @@ function LoginPage() {
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center bg-[#FAFAFA] px-4">
-      {/* Logo + Wordmark */}
-      <div className="relative z-10 flex flex-col items-center gap-3 mb-8">
+      {/* Logo + Wordmark — links back to marketing site */}
+      <Link href="/" className="relative z-10 flex flex-col items-center gap-3 mb-8 group">
         <div className="w-14 h-14 rounded-xl bg-white border border-zinc-200 p-3 shadow-elevation-2 flex items-center justify-center">
           <Image
             src="/images/foresight-logo.png"
@@ -87,14 +88,14 @@ function LoginPage() {
           />
         </div>
         <div className="text-center">
-          <h2 className="text-xl font-bold text-zinc-900 tracking-tight font-heading">
+          <h2 className="text-xl font-bold text-zinc-900 tracking-tight font-heading group-hover:text-zinc-600 transition-colors">
             Foresight
           </h2>
           <p className="text-[10px] text-zinc-400 mt-0.5 uppercase tracking-widest font-medium">
             Assessment Platform
           </p>
         </div>
-      </div>
+      </Link>
 
       {/* Card */}
       <div className="relative z-10 w-full max-w-sm bg-white border border-zinc-200 rounded-2xl shadow-elevation-2 p-8">

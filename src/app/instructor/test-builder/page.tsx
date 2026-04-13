@@ -854,17 +854,15 @@ function TestBuilderContent() {
               {q.expanded && (
                 <div className="px-4 pb-4 pt-0 border-t border-zinc-200">
                   <div className="space-y-4 mt-4">
-                    {/* AI generate for this question */}
-                    {!q.stem && (
-                      <button
-                        onClick={() => handleGenerateAI(q.id)}
-                        disabled={generating}
-                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-dashed border-indigo-300 text-indigo-600 text-sm hover:bg-indigo-50 transition-colors disabled:opacity-50"
-                      >
-                        {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                        Generate this question with AI
-                      </button>
-                    )}
+                    {/* AI assist — works on blank or partial questions */}
+                    <button
+                      onClick={() => handleGenerateAI(q.id)}
+                      disabled={generating}
+                      className="w-full flex items-center justify-center gap-2 py-2 rounded-lg border border-dashed border-zinc-300 text-zinc-500 text-xs hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50/50 transition-all disabled:opacity-50"
+                    >
+                      {generating ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+                      {q.stem ? 'Refine with AI' : 'Generate with AI'}
+                    </button>
 
                     {/* Stem */}
                     <div className="space-y-1.5">

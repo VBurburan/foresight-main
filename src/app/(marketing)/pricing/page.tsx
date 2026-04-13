@@ -1,36 +1,17 @@
 import type { Metadata } from "next";
-import { Check, ArrowRight } from "lucide-react";
+import { Check, ArrowRight, Mail } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Pricing",
   description:
-    "Simple pricing for every EMS program size. Start free with up to 25 students, then scale with Professional or Enterprise plans.",
+    "Foresight is available to EMS programs through institutional licensing. Contact our team to schedule a demo and discuss pricing for your program.",
 };
 
 /* ───────────────────────────── Data ───────────────────────────── */
 
-const tiers = [
-  {
-    name: "Pilot",
-    price: "Free",
-    priceNote: "No credit card required",
-    description: "Perfect for trying Foresight with a single cohort.",
-    features: [
-      "Up to 25 students",
-      "1 instructor account",
-      "All 6 TEI item types",
-      "Basic cohort analytics",
-      "Limited AI item generation (50/month)",
-      "Community support",
-    ],
-    cta: "Get Started",
-    ctaHref: "mailto:vincent@foresight.edu?subject=Foresight Pilot Access",
-    highlighted: false,
-  },
+const plans = [
   {
     name: "Professional",
-    price: "Custom",
-    priceNote: "Per-program annual pricing",
     description:
       "Full platform access for programs ready to modernize their assessments.",
     features: [
@@ -44,14 +25,9 @@ const tiers = [
       "Priority email support",
       "Exportable accreditation reports",
     ],
-    cta: "Contact Sales",
-    ctaHref: "mailto:sales@foresight.edu?subject=Foresight Professional Pricing",
-    highlighted: true,
   },
   {
     name: "Enterprise",
-    price: "Custom",
-    priceNote: "Multi-program volume pricing",
     description:
       "For institutions and consortiums that need control, compliance, and scale.",
     features: [
@@ -65,9 +41,6 @@ const tiers = [
       "Custom RAG knowledge chunks",
       "On-demand training sessions",
     ],
-    cta: "Contact Sales",
-    ctaHref: "mailto:sales@foresight.edu?subject=Foresight Enterprise Inquiry",
-    highlighted: false,
   },
 ];
 
@@ -93,9 +66,14 @@ const faqs = [
       "Foresight collects assessment responses, timing data, and performance metrics. We do not collect protected health information (PHI). All data is encrypted in transit and at rest. Enterprise plans include HIPAA compliance documentation for programs that require it.",
   },
   {
+    question: "How does institutional licensing work?",
+    answer:
+      "Foresight is licensed on an annual basis per program. Pricing is based on program size and the feature tier you select. We work directly with your institution to find the right fit. Schedule a demo to get started.",
+  },
+  {
     question: "How long does onboarding take?",
     answer:
-      "Most programs are delivering their first TEI assessment within one week. Pilot accounts are self-service. Professional and Enterprise plans include a guided onboarding session with our team.",
+      "Most programs are delivering their first TEI assessment within one week. All plans include a guided onboarding session with our team to ensure your instructors are set up for success.",
   },
 ];
 
@@ -105,80 +83,111 @@ export default function PricingPage() {
   return (
     <>
       {/* ── Hero ── */}
-      <section className="px-6 pt-24 pb-20 sm:pt-32 sm:pb-28">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700 mb-4">
+      <section className="px-6 pt-24 pb-16 sm:pt-32 sm:pb-20">
+        <div className="max-w-3xl mx-auto text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500 mb-4">
             Pricing
           </p>
-          <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-[1.1] mb-6">
-            Simple pricing for
+          <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-zinc-900 leading-[1.1] mb-6">
+            Built for EMS programs,
             <br className="hidden sm:block" />
-            {" "}every program size
+            {" "}priced for institutions
           </h1>
-          <p className="text-lg text-zinc-500 max-w-2xl mx-auto leading-relaxed">
-            Start free with up to 25 students. Scale when you&apos;re ready.
-            No surprise charges, no per-student fee traps.
+          <p className="text-lg text-zinc-600 max-w-2xl mx-auto leading-relaxed">
+            Foresight is available to EMS programs through institutional
+            licensing. Contact our team to schedule a demo and discuss
+            pricing for your program.
           </p>
         </div>
       </section>
 
-      {/* ── Pricing Grid ── */}
-      <section className="px-6 pb-24 sm:pb-28">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-          {tiers.map((tier) => (
-            <div
-              key={tier.name}
-              className={`bg-white border rounded-xl shadow-sm p-8 flex flex-col ${
-                tier.highlighted
-                  ? "border-zinc-900 ring-1 ring-zinc-900"
-                  : "border-zinc-200"
-              }`}
+      {/* ── Primary CTA ── */}
+      <section className="px-6 pb-20 sm:pb-24">
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white border border-zinc-200 rounded-xl shadow-sm p-8 sm:p-12 text-center">
+            <h2 className="font-heading text-2xl sm:text-3xl font-semibold text-zinc-900 mb-4">
+              Request a Demo
+            </h2>
+            <p className="text-base text-zinc-600 max-w-lg mx-auto leading-relaxed mb-8">
+              See how Foresight can transform your program&apos;s assessment
+              workflow. We&apos;ll walk you through the platform, answer your
+              questions, and discuss licensing options tailored to your
+              institution.
+            </p>
+            <a
+              href="mailto:sales@foresight.edu?subject=Schedule a Foresight Demo"
+              className="group inline-flex items-center gap-2 bg-zinc-900 text-white px-8 py-3.5 rounded-lg font-medium text-[15px] hover:bg-zinc-800 transition-colors"
             >
-              {/* Tier header */}
-              <div className="mb-6">
-                {tier.highlighted && (
-                  <span className="inline-block text-xs font-semibold uppercase tracking-wider text-blue-700 bg-blue-50 px-3 py-1 rounded-full mb-3">
-                    Most Popular
-                  </span>
-                )}
-                <h3 className="font-heading text-xl font-bold text-zinc-900">
-                  {tier.name}
-                </h3>
-                <p className="text-sm text-zinc-500 mt-1">{tier.description}</p>
-              </div>
-
-              {/* Price */}
-              <div className="mb-8">
-                <p className="font-heading text-4xl font-bold text-zinc-900">
-                  {tier.price}
-                </p>
-                <p className="text-xs text-zinc-400 mt-1">{tier.priceNote}</p>
-              </div>
-
-              {/* Features */}
-              <ul className="space-y-3 mb-10 flex-1">
-                {tier.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-3">
-                    <Check className="h-4 w-4 text-blue-700 mt-0.5 shrink-0" strokeWidth={2.5} />
-                    <span className="text-sm text-zinc-600">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* CTA */}
+              <Mail className="w-4 h-4" />
+              Schedule a Demo
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            </a>
+            <p className="text-sm text-zinc-500 mt-5">
+              Have questions?{" "}
               <a
-                href={tier.ctaHref}
-                className={`inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium text-[15px] transition-colors ${
-                  tier.highlighted
-                    ? "bg-zinc-900 text-white hover:bg-zinc-800"
-                    : "bg-white text-zinc-900 border border-zinc-300 hover:border-zinc-400 hover:bg-zinc-50"
-                }`}
+                href="mailto:sales@foresight.edu"
+                className="text-zinc-900 underline underline-offset-2 hover:text-zinc-700"
               >
-                {tier.cta}
-                <ArrowRight className="w-4 h-4" />
+                Email us at sales@foresight.edu
               </a>
-            </div>
-          ))}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Plan Comparison ── */}
+      <section className="px-6 pb-24 sm:pb-28">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="font-heading text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900 mb-3">
+              Two tiers, one mission
+            </h2>
+            <p className="text-base text-zinc-600 max-w-xl mx-auto leading-relaxed">
+              Whether you run a single cohort or manage a multi-site
+              consortium, Foresight scales with your program.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {plans.map((plan) => (
+              <div
+                key={plan.name}
+                className="bg-white border border-zinc-200 rounded-xl shadow-sm p-8 flex flex-col"
+              >
+                {/* Plan header */}
+                <div className="mb-6">
+                  <h3 className="font-heading text-xl font-semibold text-zinc-900">
+                    {plan.name}
+                  </h3>
+                  <p className="text-sm text-zinc-500 mt-1">
+                    {plan.description}
+                  </p>
+                </div>
+
+                {/* Features */}
+                <ul className="space-y-3 mb-10 flex-1">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-3">
+                      <Check
+                        className="h-4 w-4 text-zinc-900 mt-0.5 shrink-0"
+                        strokeWidth={2.5}
+                      />
+                      <span className="text-sm text-zinc-600">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTA */}
+                <a
+                  href={`mailto:sales@foresight.edu?subject=Foresight ${plan.name} Inquiry`}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium text-[15px] transition-colors bg-zinc-900 text-white hover:bg-zinc-800"
+                >
+                  Contact Sales
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -186,10 +195,10 @@ export default function PricingPage() {
       <section className="px-6 py-24 sm:py-28 bg-zinc-50 border-t border-zinc-200">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700 mb-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500 mb-4">
               FAQ
             </p>
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900">
+            <h2 className="font-heading text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900">
               Common questions
             </h2>
           </div>
@@ -200,7 +209,7 @@ export default function PricingPage() {
                 key={faq.question}
                 className="bg-white border border-zinc-200 rounded-xl shadow-sm p-6 sm:p-8"
               >
-                <h3 className="font-heading text-base font-bold text-zinc-900 mb-3">
+                <h3 className="font-heading text-base font-semibold text-zinc-900 mb-3">
                   {faq.question}
                 </h3>
                 <p className="text-sm text-zinc-600 leading-relaxed">
@@ -212,21 +221,21 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* ── CTA ── */}
+      {/* ── Bottom CTA ── */}
       <section className="px-6 py-24 sm:py-28">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 mb-4">
-            Not sure which plan fits?
+          <h2 className="font-heading text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900 mb-4">
+            Ready to see Foresight in action?
           </h2>
           <p className="text-base text-zinc-500 max-w-xl mx-auto leading-relaxed mb-10">
-            Tell us about your program and we&apos;ll recommend the right setup.
-            No pressure, no sales pitch.
+            Tell us about your program and we&apos;ll set up a personalized
+            demo. No pressure, no obligation.
           </p>
           <a
-            href="mailto:sales@foresight.edu?subject=Pricing Question"
+            href="mailto:sales@foresight.edu?subject=Schedule a Foresight Demo"
             className="group inline-flex items-center gap-2 bg-zinc-900 text-white px-7 py-3 rounded-lg font-medium text-[15px] hover:bg-zinc-800 transition-colors"
           >
-            Talk to Us
+            Schedule a Demo
             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </a>
         </div>

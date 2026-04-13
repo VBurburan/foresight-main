@@ -42,7 +42,7 @@ export function ForesightSidebar() {
     <div className="flex flex-col h-full">
       {/* Brand */}
       <div className="px-5 pt-6 pb-6">
-        <div className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3 group">
           <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
             <Image
               src="/images/foresight-logo.png"
@@ -52,11 +52,11 @@ export function ForesightSidebar() {
             />
           </div>
           <div>
-            <p className="text-[15px] font-semibold text-white leading-none tracking-tight">
+            <p className="text-[15px] font-semibold text-white leading-none tracking-tight group-hover:text-zinc-300 transition-colors">
               Foresight
             </p>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Nav */}
