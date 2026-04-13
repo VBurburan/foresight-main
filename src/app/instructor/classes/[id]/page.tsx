@@ -111,13 +111,12 @@ function ClassDetailContent({ classId }: { classId: string }) {
 
       const { data: sessions } = await supabase
         .from('exam_sessions')
-        .select('student_id, score_percentage, completed_at, domain_stats')
+        .select('id, student_id, score_percentage, completed_at')
         .in('student_id', studentIds)
         .not('score_percentage', 'is', null);
 
       const studentScores: Record<string, number[]> = {};
       const studentSessionCount: Record<string, number> = {};
-      const domainScoreAccum: Record<string, { total: number; count: number }> = {};
 
       (sessions ?? []).forEach((s) => {
         if (s.score_percentage != null) {
@@ -127,18 +126,42 @@ function ClassDetailContent({ classId }: { classId: string }) {
         if (s.completed_at) {
           studentSessionCount[s.student_id] = (studentSessionCount[s.student_id] || 0) + 1;
         }
-        if (s.domain_stats && typeof s.domain_stats === 'object') {
-          const ds = s.domain_stats as Record<string, any>;
-          Object.entries(ds).forEach(([domain, val]) => {
-            const score = typeof val === 'number' ? val : val?.score;
-            if (typeof score === 'number') {
-              if (!domainScoreAccum[domain]) domainScoreAccum[domain] = { total: 0, count: 0 };
-              domainScoreAccum[domain].total += score;
-              domainScoreAccum[domain].count += 1;
-            }
-          });
-        }
       });
+
+      // Build domain performance from session_responses + instructor_questions
+      // (same approach as the global analytics page — works even when domain_stats is empty)
+      const domainScoreAccum: Record<string, { correct: number; total: number }> = {};
+      const sessionIds = (sessions ?? []).map((e) => e.id);
+
+      if (sessionIds.length > 0) {
+        const { data: responses } = await supabase
+          .from('session_responses')
+          .select('is_correct, question_id')
+          .in('session_id', sessionIds.map(String));
+
+        if (responses && responses.length > 0) {
+          const questionIds = [...new Set(responses.map((r: any) => r.question_id))];
+          const { data: questionMeta } = await supabase
+            .from('instructor_questions')
+            .select('id, metadata')
+            .in('id', questionIds);
+
+          if (questionMeta) {
+            const qMap = new Map(questionMeta.map((q: any) => [q.id, q]));
+
+            responses.forEach((r: any) => {
+              const q = qMap.get(r.question_id);
+              if (!q) return;
+              const domain = (q.metadata as any)?.domain;
+              // Skip questions with no domain or UUID-like domain values (old data)
+              if (!domain || domain === 'Unknown' || domain.length > 40 || domain.includes('-')) return;
+              if (!domainScoreAccum[domain]) domainScoreAccum[domain] = { correct: 0, total: 0 };
+              domainScoreAccum[domain].total += 1;
+              if (r.is_correct) domainScoreAccum[domain].correct += 1;
+            });
+          }
+        }
+      }
 
       const rows: StudentRow[] = studentIds.map((sid) => {
         const profile = profileMap[sid];
@@ -165,9 +188,10 @@ function ClassDetailContent({ classId }: { classId: string }) {
       setStudents(rows);
 
       const perfData: DomainPerformance[] = Object.entries(domainScoreAccum)
-        .map(([domain, { total, count }]) => ({
+        .filter(([, { total }]) => total > 0)
+        .map(([domain, { correct, total }]) => ({
           domain,
-          avgScore: Math.round(total / count),
+          avgScore: Math.round((correct / total) * 100),
         }))
         .sort((a, b) => a.domain.localeCompare(b.domain));
       setDomainPerf(perfData);
