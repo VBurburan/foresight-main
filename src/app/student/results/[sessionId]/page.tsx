@@ -2,7 +2,7 @@
 
 import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight, Check, X } from 'lucide-react';
 import { useUser } from '@/components/auth/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 
@@ -300,9 +300,13 @@ export default function SessionResultsPage({
                       {!wasAnswered ? (
                         <span className="text-xs text-zinc-400">--</span>
                       ) : isCorrect ? (
-                        <span className="text-emerald-600 text-sm font-medium">&check;</span>
+                        <span className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
+                          <Check className="w-3.5 h-3.5 text-emerald-600" strokeWidth={3} />
+                        </span>
                       ) : (
-                        <span className="text-red-600 text-sm font-medium">&times;</span>
+                        <span className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center">
+                          <X className="w-3.5 h-3.5 text-red-600" strokeWidth={3} />
+                        </span>
                       )}
                     </span>
                   </div>
