@@ -539,7 +539,7 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
                   </thead>
                   <tbody>
                     {sessions.map((session) => (
-                      <tr key={session.id} className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors">
+                      <tr key={session.id} className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors cursor-pointer" onClick={() => window.location.href = `/instructor/students/${studentId}/exam/${session.id}`}>
                         <td className="py-2.5 px-3 text-zinc-600">{session.date}</td>
                         <td className="py-2.5 px-3 text-zinc-700 font-medium truncate max-w-[200px]">
                           {session.assessmentName || <span className="text-zinc-400 italic">Untitled</span>}
