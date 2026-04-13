@@ -1198,7 +1198,14 @@ function TestBuilderContent() {
 
                     {/* CJS Editor */}
                     {q.type === 'CJS' && (() => {
-                      const d = q.data as CJSData;
+                      const raw = q.data as any;
+                      const d: CJSData = {
+                        phases: Array.isArray(raw?.phases) ? raw.phases : [
+                          { label: 'En Route', content: '', questions: [] },
+                          { label: 'On Scene', content: '', questions: [] },
+                          { label: 'Post-Scene', content: '', questions: [] },
+                        ],
+                      };
                       return (
                         <div className="space-y-4">
                           <label className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
@@ -1314,9 +1321,9 @@ function TestBuilderContent() {
                               {/* Phase questions */}
                               <div className="space-y-2">
                                 <label className="text-[10px] font-medium text-zinc-400 uppercase tracking-wide">
-                                  Questions for this phase ({phase.questions.length})
+                                  Questions for this phase ({(phase.questions || []).length})
                                 </label>
-                                {phase.questions.map((pq, qi) => (
+                                {(phase.questions || []).map((pq, qi) => (
                                   <div key={qi} className="rounded surface-2 ring-1 ring-zinc-200 p-3 space-y-2">
                                     <div className="flex items-center justify-between">
                                       <div className="flex items-center gap-2">

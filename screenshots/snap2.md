@@ -1,0 +1,133 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - link "Foresight Foresight" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - img "Foresight" [ref=e8]
+          - paragraph [ref=e10]: Foresight
+        - navigation [ref=e11]:
+          - link "Dashboard" [ref=e12] [cursor=pointer]:
+            - /url: /instructor/dashboard
+            - img [ref=e13]
+            - text: Dashboard
+          - link "Classes" [ref=e18] [cursor=pointer]:
+            - /url: /instructor/classes
+            - img [ref=e19]
+            - text: Classes
+          - link "Test Builder" [ref=e24] [cursor=pointer]:
+            - /url: /instructor/test-builder
+            - img [ref=e25]
+            - text: Test Builder
+          - link "Analytics" [ref=e28] [cursor=pointer]:
+            - /url: /instructor/analytics
+            - img [ref=e29]
+            - text: Analytics
+          - link "TEI Reference" [ref=e31] [cursor=pointer]:
+            - /url: /instructor/examples
+            - img [ref=e32]
+            - text: TEI Reference
+        - generic [ref=e35]:
+          - paragraph [ref=e36]: vburburan@yahoo.com
+          - button "Sign Out" [ref=e37] [cursor=pointer]:
+            - img [ref=e38]
+            - text: Sign Out
+    - main [ref=e41]:
+      - generic [ref=e54]:
+        - generic [ref=e55]:
+          - generic [ref=e56]:
+            - heading "Test Builder" [level=1] [ref=e57]
+            - paragraph [ref=e58]: Create and manage assessments with real TEI formats
+          - generic [ref=e59]:
+            - button "Clear" [ref=e60] [cursor=pointer]
+            - button "Preview" [ref=e61] [cursor=pointer]:
+              - img [ref=e62]
+              - text: Preview
+            - button "Save Draft" [ref=e65] [cursor=pointer]:
+              - img [ref=e66]
+              - text: Save Draft
+            - button "Publish" [ref=e70] [cursor=pointer]:
+              - img [ref=e71]
+              - text: Publish
+        - generic [ref=e74]:
+          - generic [ref=e75]:
+            - generic [ref=e76]: "1"
+            - heading "Assessment Setup" [level=2] [ref=e77]
+          - generic [ref=e78]:
+            - generic [ref=e79]:
+              - text: Assessment Name
+              - textbox "Assessment Name" [ref=e80]:
+                - /placeholder: e.g., Cardiology Midterm
+                - text: Chest Pain CJS Test
+            - generic [ref=e81]:
+              - text: Certification Level
+              - combobox [ref=e82] [cursor=pointer]:
+                - generic: Paramedic
+                - img [ref=e83]
+            - generic [ref=e85]:
+              - text: Assessment Type
+              - combobox [ref=e86] [cursor=pointer]:
+                - generic: Quiz (10–25 questions)
+                - img [ref=e87]
+          - generic [ref=e89]:
+            - paragraph [ref=e90]: Suggested TEI Mix
+            - generic [ref=e91]:
+              - generic [ref=e92]:
+                - generic [ref=e93]: MC
+                - generic [ref=e94]: 55–65%
+              - generic [ref=e95]:
+                - generic [ref=e96]: MR
+                - generic [ref=e97]: 10–15%
+              - generic [ref=e98]:
+                - generic [ref=e99]: DD
+                - generic [ref=e100]: 8–12%
+              - generic [ref=e101]:
+                - generic [ref=e102]: OB
+                - generic [ref=e103]: 8–12%
+              - generic [ref=e104]:
+                - generic [ref=e105]: BL
+                - generic [ref=e106]: 5–8%
+        - generic [ref=e107]:
+          - generic [ref=e108]:
+            - generic [ref=e109]:
+              - generic [ref=e110]: "2"
+              - heading "Question Assembly" [level=2] [ref=e111]
+            - button "AI Question Writer" [ref=e113] [cursor=pointer]:
+              - img [ref=e114]
+              - text: AI Question Writer
+          - paragraph [ref=e116]: Add questions manually, use AI to generate them from your curriculum, or mix both approaches.
+        - generic [ref=e117]:
+          - generic [ref=e118]:
+            - generic [ref=e119]: 2 questions
+            - generic [ref=e120]: "|"
+            - generic [ref=e121]: 2 completed
+            - generic [ref=e122]: "|"
+            - generic [ref=e123]: 0 blank
+          - generic [ref=e124]: MC 1 · CJS 1
+        - generic [ref=e125]:
+          - generic [ref=e127] [cursor=pointer]:
+            - generic [ref=e128]:
+              - img [ref=e129]
+              - generic [ref=e136]: Q1
+              - generic [ref=e137]: CJS
+              - generic [ref=e138]: 58-year-old male with crushing chest pain
+            - generic [ref=e139]:
+              - img [ref=e140]
+              - button [ref=e143]:
+                - img [ref=e144]
+              - img [ref=e147]
+          - generic [ref=e150] [cursor=pointer]:
+            - generic [ref=e151]:
+              - img [ref=e152]
+              - generic [ref=e159]: Q2
+              - generic [ref=e160]: MC
+              - generic [ref=e161]: A 62-year-old male presents with sudden onset chest pain radiating to the jaw, diaphoresis, and shortness of breath. His BP is 98/60 mmHg and HR is 112 bpm. Review the 12-lead ECG below. Which finding on this ECG is MOST consistent with the suspected diagnosis?
+            - generic [ref=e162]:
+              - img [ref=e163]
+              - button [ref=e166]:
+                - img [ref=e167]
+              - img [ref=e170]
+        - button "Add Question" [ref=e172] [cursor=pointer]:
+          - img [ref=e173]
+          - text: Add Question
+  - alert [ref=e52]

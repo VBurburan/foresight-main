@@ -1,0 +1,167 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e53]:
+        - link "Foresight Foresight" [ref=e55] [cursor=pointer]:
+          - /url: /
+          - img "Foresight" [ref=e57]
+          - paragraph [ref=e59]: Foresight
+        - navigation [ref=e60]:
+          - link "Dashboard" [ref=e61] [cursor=pointer]:
+            - /url: /instructor/dashboard
+            - img [ref=e62]
+            - text: Dashboard
+          - link "Classes" [ref=e67] [cursor=pointer]:
+            - /url: /instructor/classes
+            - img [ref=e68]
+            - text: Classes
+          - link "Test Builder" [ref=e73] [cursor=pointer]:
+            - /url: /instructor/test-builder
+            - img [ref=e74]
+            - text: Test Builder
+          - link "Analytics" [ref=e77] [cursor=pointer]:
+            - /url: /instructor/analytics
+            - img [ref=e78]
+            - text: Analytics
+          - link "TEI Reference" [ref=e80] [cursor=pointer]:
+            - /url: /instructor/examples
+            - img [ref=e81]
+            - text: TEI Reference
+        - generic [ref=e84]:
+          - paragraph [ref=e85]: vburburan@yahoo.com
+          - button "Sign Out" [ref=e86] [cursor=pointer]:
+            - img [ref=e87]
+            - text: Sign Out
+    - main [ref=e41]:
+      - generic [ref=e91]:
+        - generic [ref=e92]:
+          - generic [ref=e93]:
+            - heading "Test Builder" [level=1] [ref=e94]
+            - paragraph [ref=e95]: Create and manage assessments with real TEI formats
+          - generic [ref=e96]:
+            - button "Clear" [ref=e97] [cursor=pointer]
+            - button "Preview" [ref=e98] [cursor=pointer]:
+              - img [ref=e99]
+              - text: Preview
+            - button "Save Draft" [ref=e102] [cursor=pointer]:
+              - img [ref=e103]
+              - text: Save Draft
+            - button "Publish" [ref=e107] [cursor=pointer]:
+              - img [ref=e108]
+              - text: Publish
+        - generic [ref=e111]:
+          - generic [ref=e112]:
+            - generic [ref=e113]: "1"
+            - heading "Assessment Setup" [level=2] [ref=e114]
+          - generic [ref=e115]:
+            - generic [ref=e116]:
+              - text: Assessment Name
+              - textbox "Assessment Name" [ref=e117]:
+                - /placeholder: e.g., Cardiology Midterm
+                - text: Chest Pain CJS Test
+            - generic [ref=e118]:
+              - text: Certification Level
+              - combobox [ref=e119] [cursor=pointer]:
+                - generic: Paramedic
+                - img [ref=e120]
+            - generic [ref=e122]:
+              - text: Assessment Type
+              - combobox [ref=e123] [cursor=pointer]:
+                - generic: Quiz (10–25 questions)
+                - img [ref=e124]
+          - generic [ref=e126]:
+            - paragraph [ref=e127]: Suggested TEI Mix
+            - generic [ref=e128]:
+              - generic [ref=e129]:
+                - generic [ref=e130]: MC
+                - generic [ref=e131]: 55–65%
+              - generic [ref=e132]:
+                - generic [ref=e133]: MR
+                - generic [ref=e134]: 10–15%
+              - generic [ref=e135]:
+                - generic [ref=e136]: DD
+                - generic [ref=e137]: 8–12%
+              - generic [ref=e138]:
+                - generic [ref=e139]: OB
+                - generic [ref=e140]: 8–12%
+              - generic [ref=e141]:
+                - generic [ref=e142]: BL
+                - generic [ref=e143]: 5–8%
+        - generic [ref=e144]:
+          - generic [ref=e145]:
+            - generic [ref=e146]:
+              - generic [ref=e147]: "2"
+              - heading "Question Assembly" [level=2] [ref=e148]
+            - button "AI Question Writer" [ref=e150] [cursor=pointer]:
+              - img [ref=e151]
+              - text: AI Question Writer
+          - paragraph [ref=e153]: Add questions manually, use AI to generate them from your curriculum, or mix both approaches.
+        - generic [ref=e154]:
+          - generic [ref=e155]:
+            - generic [ref=e156]: 2 questions
+            - generic [ref=e157]: "|"
+            - generic [ref=e158]: 2 completed
+            - generic [ref=e159]: "|"
+            - generic [ref=e160]: 0 blank
+          - generic [ref=e161]: MC 1 · CJS 1
+        - generic [ref=e162]:
+          - generic [ref=e164] [cursor=pointer]:
+            - generic [ref=e165]:
+              - img [ref=e166]
+              - generic [ref=e173]: Q1
+              - generic [ref=e174]: CJS
+              - generic [ref=e175]: 58-year-old male with crushing chest pain
+            - generic [ref=e176]:
+              - img [ref=e177]
+              - button [ref=e180]:
+                - img [ref=e181]
+              - img [ref=e184]
+          - generic [ref=e186]:
+            - generic [ref=e187] [cursor=pointer]:
+              - generic [ref=e188]:
+                - img [ref=e189]
+                - generic [ref=e196]: Q2
+                - generic [ref=e197]: MC
+                - generic [ref=e198]: A 62-year-old male presents with sudden onset chest pain radiating to the jaw, diaphoresis, and shortness of breath. His BP is 98/60 mmHg and HR is 112 bpm. Review the 12-lead ECG below. Which finding on this ECG is MOST consistent with the suspected diagnosis?
+              - generic [ref=e199]:
+                - img [ref=e200]
+                - button [ref=e203]:
+                  - img [ref=e204]
+                - img [ref=e211]
+            - generic [ref=e214]:
+              - button "Refine with AI" [ref=e215] [cursor=pointer]:
+                - img [ref=e216]
+                - text: Refine with AI
+              - generic [ref=e218]:
+                - text: Question Stem
+                - textbox "Enter the question text..." [ref=e219]: A 62-year-old male presents with sudden onset chest pain radiating to the jaw, diaphoresis, and shortness of breath. His BP is 98/60 mmHg and HR is 112 bpm. Review the 12-lead ECG below. Which finding on this ECG is MOST consistent with the suspected diagnosis?
+              - generic [ref=e220]:
+                - text: Options — click the radio to mark correct
+                - generic [ref=e221]:
+                  - button [ref=e222] [cursor=pointer]
+                  - generic [ref=e224]: A.
+                  - textbox "Option A" [ref=e225]: ST-segment elevation in leads II, III, and aVF
+                - generic [ref=e226]:
+                  - button [ref=e227] [cursor=pointer]
+                  - generic [ref=e228]: B.
+                  - textbox "Option B" [ref=e229]: ST-segment depression in leads V1–V4 with T-wave inversion
+                - generic [ref=e230]:
+                  - button [ref=e231] [cursor=pointer]
+                  - generic [ref=e232]: C.
+                  - textbox "Option C" [ref=e233]: Widened QRS complex greater than 0.12 seconds with a right bundle branch pattern
+                - generic [ref=e234]:
+                  - button [ref=e235] [cursor=pointer]
+                  - generic [ref=e236]: D.
+                  - textbox "Option D" [ref=e237]: Prolonged PR interval greater than 0.20 seconds with dropped beats
+              - generic [ref=e238]:
+                - text: ECG Strip (optional)
+                - button "Attach ECG Strip (optional)" [ref=e240] [cursor=pointer]:
+                  - img [ref=e241]
+                  - text: Attach ECG Strip (optional)
+              - generic [ref=e243]:
+                - text: Rationale (shown after answering)
+                - textbox "Explain why the correct answer is correct..." [ref=e244]: This patient's presentation — chest pain radiating to the jaw, diaphoresis, hypotension (98/60), and tachycardia (HR 112) — is classic for an acute inferior STEMI. The right coronary artery (RCA) supplies the inferior wall in most patients. ST-segment elevation in leads II, III, and aVF confirms inferior wall involvement. Option B (ST depression in V1–V4) would suggest a posterior MI or anterior ischemia. Option C (RBBB) and Option D (2nd-degree AV block) are not the primary ECG findings confirming the suspected STEMI diagnosis.
+        - button "Add Question" [ref=e209] [cursor=pointer]:
+          - img [ref=e210]
+          - text: Add Question
+  - alert [ref=e52]
