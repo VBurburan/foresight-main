@@ -2140,30 +2140,40 @@ function TestBuilderContent() {
               const base = createBlankQuestion(type);
 
               // Normalize AI response: merge correct_answer into data structure
-              // AI returns {options: [...], correct_answer: {correctKey: "A"}} separately
-              // Test builder expects data = {options: [...], correctKey: "A"} merged
+              // AI returns different formats per type — see edge function output:
+              //   MC: options=[{key,text}], correctKey="D" (top-level on q)
+              //   MR: options=[{key,text}], correct_answer={correctKeys:["A","C"]}
+              //   DD: options={items,categories}, correct_answer={i1:"cat1",...}
+              //   BL: options={items}, correct_answer=[0,1,2,3]
+              //   OB: options={rows,columns}, correct_answer={row:col,...}
               let data = q.options || base.data;
               const ca = q.correct_answer || {};
 
               if (type === 'MC') {
                 const opts = Array.isArray(data) ? data : data?.options || [];
-                data = { options: opts, correctKey: ca.correctKey || ca.answer || data?.correctKey || '' };
+                // MC correctKey can be top-level on q, in ca, or in data
+                const key = q.correctKey || ca?.correctKey || ca?.answer || data?.correctKey || '';
+                data = { options: opts, correctKey: key };
               } else if (type === 'MR') {
                 const opts = Array.isArray(data) ? data : data?.options || [];
-                data = { options: opts, correctKeys: ca.correctKeys || ca.answers || data?.correctKeys || [] };
+                const keys = ca?.correctKeys || ca?.answers || q.correctKeys || data?.correctKeys || [];
+                data = { options: opts, correctKeys: keys };
               } else if (type === 'DD') {
                 const items = data?.items || (Array.isArray(data) ? data : []);
-                const cats = data?.categories || ca.categories || [];
-                const mapping = ca.correctMapping || data?.correctMapping || {};
+                const cats = data?.categories || [];
+                // DD correct_answer is a flat mapping {i1:"cat1", i2:"cat2"} or {correctMapping:{...}}
+                const mapping = ca?.correctMapping || (typeof ca === 'object' && !Array.isArray(ca) && !ca?.correctKeys ? ca : {}) || {};
                 data = { items, categories: cats, correctMapping: mapping };
               } else if (type === 'BL') {
                 const items = data?.items || (Array.isArray(data) ? data : []);
-                const order = ca.correctOrder || data?.correctOrder || items.map((_: any, i: number) => i);
+                // BL correct_answer is a flat array [0,1,2,3] or {correctOrder:[...]}
+                const order = Array.isArray(ca) ? ca : (ca?.correctOrder || data?.correctOrder || items.map((_: any, i: number) => i));
                 data = { items, correctOrder: order };
               } else if (type === 'OB') {
                 const rows = data?.rows || [];
                 const cols = data?.columns || [];
-                const answers = ca.correctAnswers || data?.correctAnswers || {};
+                // OB correct_answer is {row:col,...} or {correctAnswers:{...}}
+                const answers = ca?.correctAnswers || (typeof ca === 'object' && !Array.isArray(ca) ? ca : {}) || {};
                 data = { rows, columns: cols, correctAnswers: answers };
               }
 
