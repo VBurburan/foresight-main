@@ -379,6 +379,65 @@ function OBRenderer({
 }
 
 /* ------------------------------------------------------------------ */
+/*  HS (Hotspot) Renderer                                              */
+/* ------------------------------------------------------------------ */
+
+function HSRenderer({
+  data,
+  answer,
+  onChange,
+}: {
+  data: { imageUrl: string; regions: { id: string; label: string; x: number; y: number; width: number; height: number }[]; correctRegionId: string };
+  answer: string;
+  onChange: (val: string) => void;
+}) {
+  const [hovered, setHovered] = useState<string | null>(null);
+  const regions = data?.regions || [];
+
+  if (!data?.imageUrl) {
+    return <p className="text-sm text-zinc-400">No image provided for this hotspot question.</p>;
+  }
+
+  return (
+    <div className="space-y-3">
+      <p className="text-xs text-zinc-500 font-medium uppercase tracking-wide">
+        Click the correct region on the image
+      </p>
+      <div className="relative border border-zinc-200 rounded-lg overflow-hidden bg-zinc-50 select-none">
+        <img src={data.imageUrl} alt="Hotspot" className="w-full max-h-[500px] object-contain" draggable={false} />
+        <svg className="absolute inset-0 w-full h-full">
+          {regions.map((r) => {
+            const isSelected = answer === r.id;
+            const isHover = hovered === r.id;
+            return (
+              <rect
+                key={r.id}
+                x={`${r.x}%`} y={`${r.y}%`} width={`${r.width}%`} height={`${r.height}%`}
+                fill={isSelected ? 'rgba(59,130,246,0.25)' : isHover ? 'rgba(59,130,246,0.1)' : 'transparent'}
+                stroke={isSelected ? '#2563eb' : isHover ? '#93c5fd' : 'transparent'}
+                strokeWidth={isSelected ? 3 : 2}
+                rx="4"
+                className="cursor-pointer transition-all duration-150"
+                style={{ pointerEvents: 'all' }}
+                onMouseEnter={() => setHovered(r.id)}
+                onMouseLeave={() => setHovered(null)}
+                onClick={() => onChange(r.id)}
+              />
+            );
+          })}
+        </svg>
+      </div>
+      {answer && (
+        <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
+          <CheckCircle2 className="w-4 h-4" />
+          <span>Selected: <strong>{regions.find(r => r.id === answer)?.label || 'Region'}</strong></span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  CJS Renderer                                                       */
 /* ------------------------------------------------------------------ */
 
@@ -949,6 +1008,13 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
                   <OBRenderer
                     data={currentQuestion.options as OBData}
                     answer={(answers[currentQuestion.id] as OBAnswer) || {}}
+                    onChange={updateAnswer}
+                  />
+                )}
+                {currentQuestion.item_type === 'HS' && (
+                  <HSRenderer
+                    data={currentQuestion.options as any}
+                    answer={(answers[currentQuestion.id] as string) || ''}
                     onChange={updateAnswer}
                   />
                 )}
