@@ -249,18 +249,17 @@ function DashboardContent() {
         {!hasClasses && (
           <div className="mt-10 section-card">
             <div className="text-center py-16 px-6">
-              <div className="mx-auto w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-5">
-                <BookOpen className="h-7 w-7 text-blue-400" />
+              <div className="mx-auto w-14 h-14 rounded-2xl bg-zinc-100 border border-zinc-200 flex items-center justify-center mb-5">
+                <BookOpen className="h-6 w-6 text-zinc-500" />
               </div>
-              <h2 className="text-lg font-semibold text-zinc-800">Welcome to Foresight</h2>
-              <p className="mt-2 text-sm text-zinc-500 max-w-md mx-auto">
+              <h2 className="text-lg font-semibold text-zinc-900">Welcome to Foresight</h2>
+              <p className="mt-2 text-sm text-zinc-500 max-w-md mx-auto leading-relaxed">
                 Create your first class to start building assessments, tracking student progress, and generating analytics.
               </p>
               <Link href="/instructor/classes">
-                <button className="mt-6 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-blue-500 shadow-elevation-1 hover:shadow-elevation-2">
+                <button className="mt-6 inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800">
                   <Plus className="h-4 w-4" />
                   Create Your First Class
-                  <ArrowRight className="h-4 w-4" />
                 </button>
               </Link>
             </div>

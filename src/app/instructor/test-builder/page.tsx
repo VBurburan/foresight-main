@@ -232,15 +232,13 @@ function TestBuilderContent() {
     setSaveMessage('Generating with AI...');
 
     try {
-      const supabase = createClient();
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-      // Determine how many questions to generate
-      const typeRanges: Record<string, number> = { quiz: 10, chapter: 25, midterm: 50, final: 100 };
-      const targetCount = questionId ? 1 : Math.min(typeRanges[assessmentType] || 10, 10);
+      if (!supabaseUrl || !supabaseAnonKey) {
+        throw new Error('Supabase configuration missing');
+      }
 
-      // If generating for a specific question, use its type. Otherwise use MC as default.
       const targetType = questionId
         ? questions.find((q) => q.id === questionId)?.type || 'MC'
         : 'MC';
@@ -252,21 +250,27 @@ function TestBuilderContent() {
           'Authorization': `Bearer ${supabaseAnonKey}`,
         },
         body: JSON.stringify({
-          count: targetCount,
+          count: 1,
           certification_level: certLevel,
           item_type: targetType,
           difficulty: 'medium',
-          topic_hint: assessmentName || undefined,
+          topic_hint: assessmentName || 'EMS patient assessment',
         }),
       });
 
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || 'Generation failed');
+      const responseText = await response.text();
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch {
+        throw new Error('Invalid response from AI service');
       }
 
-      const result = await response.json();
-      const generated = result.questions || [];
+      if (!response.ok) {
+        throw new Error(result.error || `Generation failed (${response.status})`);
+      }
+
+      const generated = Array.isArray(result.questions) ? result.questions : [];
 
       if (generated.length === 0) {
         setSaveMessage('No questions generated — try again');
@@ -276,17 +280,21 @@ function TestBuilderContent() {
       }
 
       if (questionId) {
-        // Replace a single question
         const q = generated[0];
         setQuestions((prev) =>
           prev.map((existing) =>
             existing.id === questionId
-              ? { ...existing, stem: q.stem, data: q.options || existing.data, rationale: q.rationale || '' }
+              ? {
+                  ...existing,
+                  stem: q.stem || existing.stem,
+                  data: q.options || existing.data,
+                  rationale: q.rationale || existing.rationale,
+                }
               : existing
           )
         );
+        setSaveMessage('Question updated with AI!');
       } else {
-        // Add all generated questions
         const newQuestions: QuestionTemplate[] = generated.map((q: any) => {
           const type = (q.item_type || 'MC') as TEIType;
           const base = createBlankQuestion(type);
@@ -299,13 +307,12 @@ function TestBuilderContent() {
           };
         });
         setQuestions((prev) => [...prev, ...newQuestions]);
+        setSaveMessage(`Generated ${generated.length} question${generated.length !== 1 ? 's' : ''}!`);
       }
-
-      setSaveMessage(`Generated ${generated.length} question${generated.length !== 1 ? 's' : ''}!`);
       setTimeout(() => setSaveMessage(''), 3000);
     } catch (err: any) {
       console.error('AI generation error:', err);
-      setSaveMessage(`Error: ${err.message || 'Generation failed'}`);
+      setSaveMessage(err.message || 'Generation failed');
       setTimeout(() => setSaveMessage(''), 4000);
     }
     setGenerating(false);
