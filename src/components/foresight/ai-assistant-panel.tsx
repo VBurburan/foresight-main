@@ -56,7 +56,7 @@ const ITEM_TYPES: { type: string; label: string }[] = [
   { type: 'DD', label: 'Drag & Drop' },
   { type: 'OB', label: 'Options Box (Matrix)' },
   { type: 'BL', label: 'Build List (Ordered)' },
-  { type: 'CJS', label: 'Clinical Judgment Scenario (manual only)' },
+  { type: 'CJS', label: 'Clinical Judgment Scenario' },
 ];
 
 const CHUNK_SIZE = 10;
@@ -119,7 +119,9 @@ export function AIAssistantPanel({
       return prev.map((t) => {
         if (t.type !== type) return t;
         let newCount = t.count + delta;
-        newCount = Math.max(0, Math.min(tier.maxPerType, newCount));
+        // CJS limited to 1 per batch (multi-phase pipeline)
+        if (type === 'CJS') newCount = Math.max(0, Math.min(1, newCount));
+        else newCount = Math.max(0, Math.min(tier.maxPerType, newCount));
         // Enforce total tier limit
         if (delta > 0 && currentTotal >= tier.maxTotal) return t;
         if (delta > 0 && newCount - t.count + currentTotal > tier.maxTotal) {
@@ -169,15 +171,42 @@ export function AIAssistantPanel({
     return Array.isArray(result?.questions) ? result.questions : [];
   }
 
+  // Generate a CJS scenario via the multi-phase pipeline
+  async function generateCJSScenario(signal: AbortSignal): Promise<any> {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+    const response = await fetch(`${supabaseUrl}/functions/v1/generate-questions`, {
+      method: 'POST',
+      signal,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${supabaseAnonKey}`,
+      },
+      body: JSON.stringify({
+        generate_mode: 'cjs',
+        certification_level: certLevel,
+        domain: domain === 'any' ? undefined : domain,
+        difficulty,
+        topic_hint: topicHint || undefined,
+        model: aiModel,
+      }),
+    });
+
+    if (!response.ok) {
+      const text = await response.text().catch(() => '');
+      let msg = `CJS generation failed (${response.status})`;
+      try { msg = JSON.parse(text).error || msg; } catch {}
+      throw new Error(msg);
+    }
+
+    return response.json();
+  }
+
   const handleGenerate = async () => {
     if (totalCount === 0) return;
 
-    // CJS requires manual creation — too complex for single-shot AI generation
     const cjsCount = itemCounts.find((t) => t.type === 'CJS')?.count ?? 0;
-    if (cjsCount > 0 && totalCount === cjsCount) {
-      setError('Clinical Judgment Scenarios require manual creation with the question editor. AI can assist with individual phases once the scenario structure is built.');
-      return;
-    }
 
     const controller = new AbortController();
 
@@ -190,9 +219,46 @@ export function AIAssistantPanel({
       const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
       if (!supabaseUrl || !supabaseAnonKey) throw new Error('Configuration error — please reload');
 
-      // Filter out CJS — it's manual-only. AI generates the other types.
+      // ── CJS Generation Path ──
+      if (cjsCount > 0) {
+        setProgress('Generating scenario backbone...');
+        const result = await generateCJSScenario(controller.signal);
+        if (!result?.scenario?.phases) throw new Error('CJS generation returned invalid data');
+        setProgress('Scenario complete — loading into editor...');
+
+        // Return as a special CJS question for the test builder to handle
+        onAcceptQuestions([{
+          item_type: 'CJS',
+          stem: `${result.scenario.patient?.age}yo ${result.scenario.patient?.sex} — ${result.scenario.patient?.chief_complaint}`,
+          options: {},
+          correct_answer: {},
+          rationale: '',
+          domain: result.scenario.phases[0]?.questions?.[0]?.domain || '',
+          cj_functions: [],
+          difficulty,
+          // Attach the full CJS data as a special field
+          _cjs_data: result.scenario,
+        } as any]);
+
+        // Also generate any non-CJS items requested alongside
+        const nonCjsItems = itemCounts
+          .filter((t) => t.count > 0 && t.type !== 'CJS')
+          .map((t) => ({ type: t.type, count: t.count }));
+
+        if (nonCjsItems.length > 0) {
+          const nonCjsTotal = nonCjsItems.reduce((s, t) => s + t.count, 0);
+          setProgress(`Generating ${nonCjsTotal} additional questions...`);
+          const questions = await generateChunk(nonCjsItems, nonCjsTotal, controller.signal);
+          if (questions.length > 0) onAcceptQuestions(questions);
+        }
+
+        onClose();
+        return;
+      }
+
+      // ── Standard Generation Path ──
       const items = itemCounts
-        .filter((t) => t.count > 0 && t.type !== 'CJS')
+        .filter((t) => t.count > 0)
         .map((t) => ({ type: t.type, count: t.count }));
 
       if (totalCount <= CHUNK_SIZE) {

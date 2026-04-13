@@ -16,6 +16,7 @@ interface GenerateRequest {
   items?: ItemSpec[]; count?: number; item_type?: string; item_types?: ItemSpec[];
   certification_level?: string; domain?: string; difficulty?: string;
   cj_functions?: string[]; topic_hint?: string; model?: ModelOption;
+  generate_mode?: 'standard' | 'cjs';
 }
 
 // Standard CJ function names (must match analytics aggregation)
@@ -198,23 +199,253 @@ function resolveModels(requested?: ModelOption): { genModel: ModelOption; review
   }
 }
 
+// ─── CJS Multi-Phase Generation Pipeline ─────────────────────────
+async function generateCJS(
+  sb: any, level: string, diff: string, domain: string, topic: string,
+  genModel: ModelOption, reviewModel: ModelOption
+): Promise<{ scenario: any; metadata: any }> {
+  const [scopeFormulary, domainNames, rag, rules, guidance, examples] = await Promise.all([
+    fetchScopeAndFormulary(sb, level),
+    fetchDomainNames(sb, level),
+    fetchRAG(sb, topic, level, domain),
+    fetchRules(sb, ['MC', 'MR', 'DD', 'BL', 'OB']),
+    fetchGuidance(sb, ['MC', 'MR', 'DD', 'BL', 'OB']),
+    fetchExamples(sb, ['MC', 'MR', 'DD', 'BL', 'OB'], level),
+  ]);
+
+  const domainConstraint = domainNames.length > 0
+    ? `\nNREMT CONTENT DOMAINS for ${level}: ${domainNames.join(', ')}` : '';
+  const cjConstraint = `\nCLINICAL JUDGMENT FUNCTIONS: ${CJ_FUNCTION_NAMES.join(', ')}`;
+
+  // ── STEP 1: Generate Scenario Backbone ──
+  console.log(`[generate-cjs] Step 1: Generating scenario backbone...`);
+  const backboneSystem = `You are an expert EMS psychometrician creating an NREMT-style Clinical Judgment Scenario (CJS) for ${level} certification.
+
+A CJS is a multi-phase patient encounter with 3 phases: En Route, Scene, Post Scene.
+- En Route: Dispatch information, patient history, medications received while responding. No vitals yet.
+- Scene: On-scene assessment with full vitals, physical exam findings, diagnostics (ECG findings if relevant).
+- Post Scene: Post-treatment reassessment. Vitals change in response to interventions. Condition may improve or worsen.
+
+The scenario must follow ONE patient throughout all 3 phases with clinically realistic progression.
+
+CRITICAL: All medications, interventions, and procedures MUST be within ${level} scope of practice.
+${scopeFormulary}
+${domainConstraint}
+
+${rag ? '=== CLINICAL CONTEXT ===\n' + rag : ''}
+
+Return JSON:
+{
+  "patient": { "age": number, "sex": "M"|"F", "location": "string", "chief_complaint": "string" },
+  "phases": [
+    {
+      "label": "En Route",
+      "content": "Dispatch narrative with patient history and medications (200+ chars)",
+      "history": "PMH, medications, allergies",
+      "vitals": null
+    },
+    {
+      "label": "Scene",
+      "content": "On-scene assessment narrative with physical exam findings (300+ chars)",
+      "history": "Additional history gathered on scene",
+      "vitals": { "hr": "string", "bp": "string", "rr": "string", "spo2": "string", "etco2": "string", "temp": "string", "bgl": "string", "map": "string" },
+      "ecgFindings": "ECG interpretation if relevant, or null"
+    },
+    {
+      "label": "Post Scene",
+      "content": "Post-treatment narrative describing interventions performed and reassessment (300+ chars)",
+      "history": "Treatment administered",
+      "vitals": { "hr": "string", "bp": "string", "rr": "string", "spo2": "string", "etco2": "string", "temp": "string", "bgl": "string", "map": "string" },
+      "ecgFindings": "Updated ECG if changed, or null"
+    }
+  ]
+}`;
+
+  const backboneUser = `Create a CJS scenario backbone for ${level}, difficulty: ${diff}.
+${domain ? 'Primary domain: ' + domain : 'Choose an appropriate NREMT domain.'}
+${topic !== 'EMS patient assessment' ? 'Topic focus: ' + topic : ''}
+The patient condition MUST evolve realistically across all 3 phases with measurable changes in vitals after interventions.`;
+
+  const backboneRaw = await callAI(backboneSystem, backboneUser, genModel);
+  let backbone: any;
+  try { backbone = JSON.parse(backboneRaw); } catch { backbone = JSON.parse(extractJSON(backboneRaw)); }
+  if (!backbone?.phases || backbone.phases.length < 3) throw new Error('CJS backbone generation failed — invalid phase structure');
+  console.log(`[generate-cjs] Step 1 done: ${backbone.patient?.chief_complaint || 'scenario'}`);
+
+  // ── STEP 2: Generate Phase Questions ──
+  console.log(`[generate-cjs] Step 2: Generating phase questions...`);
+  const schemas = ['MC', 'MR', 'DD', 'BL', 'OB'].map(t => schema(t)).join('\n');
+
+  const questionsSystem = `You are an expert EMS psychometrician generating questions for a Clinical Judgment Scenario (CJS).
+
+You will receive a 3-phase patient scenario. Generate questions for EACH phase that test clinical reasoning appropriate to the information available at that phase.
+
+RULES:
+1. En Route (2-3 questions): Test anticipatory thinking, medication knowledge, differential diagnosis. Use DD, MC, or MR.
+2. Scene (2-3 questions): Test assessment interpretation, prioritization. Use MC, BL, or MR.
+3. Post Scene (2-3 questions): Test treatment evaluation, reassessment decisions, pharmacology. Use OB, MR, or MC.
+4. Total: 7-9 questions across all 3 phases.
+5. Each stem: 150+ chars with specific reference to the scenario information available at that phase.
+6. Distribute TEI types — do NOT make all questions MC. Use at least 3 different types.
+7. Each distractor must be wrong for exactly ONE clinical reason.
+8. All medications/interventions within ${level} scope.
+${domainConstraint}
+${cjConstraint}
+
+SCHEMAS:
+${schemas}
+
+${scopeFormulary}
+${rules}
+${guidance}
+${examples}
+
+Return JSON:
+{
+  "phases": [
+    {
+      "questions": [
+        {
+          "stem": "Based on the dispatch information, ...",
+          "type": "DD",
+          "data": { ... matching schema ... },
+          "domain": "exact NREMT domain name",
+          "cj_functions": ["Recognize Cues"],
+          "difficulty": "medium",
+          "rationale": "Explanation string"
+        }
+      ]
+    },
+    { "questions": [...] },
+    { "questions": [...] }
+  ]
+}`;
+
+  const scenarioContext = backbone.phases.map((p: any, i: number) =>
+    `=== PHASE ${i+1}: ${p.label} ===\n${p.content}\n${p.history ? 'History: ' + p.history : ''}${p.vitals ? '\nVitals: ' + JSON.stringify(p.vitals) : ''}${p.ecgFindings ? '\nECG: ' + p.ecgFindings : ''}`
+  ).join('\n\n');
+
+  const questionsUser = `Patient: ${backbone.patient?.age}yo ${backbone.patient?.sex}, ${backbone.patient?.chief_complaint} at ${backbone.patient?.location}
+
+${scenarioContext}
+
+Generate 7-9 questions distributed across the 3 phases. Use at least 3 different TEI types (MC, MR, DD, BL, OB).
+REMINDER: "domain" MUST be one of: ${domainNames.join(', ')}
+REMINDER: "cj_functions" MUST use: ${CJ_FUNCTION_NAMES.join(', ')}`;
+
+  const questionsRaw = await callAI(questionsSystem, questionsUser, genModel);
+  let questionData: any;
+  try { questionData = JSON.parse(questionsRaw); } catch { questionData = JSON.parse(extractJSON(questionsRaw)); }
+  if (!questionData?.phases || questionData.phases.length < 3) throw new Error('CJS question generation failed');
+
+  const totalQs = questionData.phases.reduce((s: number, p: any) => s + (p.questions?.length || 0), 0);
+  console.log(`[generate-cjs] Step 2 done: ${totalQs} questions across 3 phases`);
+
+  // ── STEP 3: Clinical Review ──
+  console.log(`[generate-cjs] Step 3: Reviewing clinical consistency...`);
+  const reviewSystem = `You are a senior EMS psychometrician reviewing an AI-generated Clinical Judgment Scenario (CJS) for ${level}.
+
+Review the ENTIRE scenario for:
+1. CLINICAL CONSISTENCY: Do vitals evolve realistically? Are interventions appropriate? Do reassessment findings match treatment?
+2. SCOPE COMPLIANCE: All medications/interventions within ${level} scope.
+3. QUESTION QUALITY: Each stem 150+ chars, distractors wrong for one reason, correct answers defensible.
+4. FORMAT VALIDITY: Each question's data matches its type schema.
+5. DOMAIN ACCURACY: Domains must be exact NREMT names: ${domainNames.join(', ')}
+6. CJ FUNCTIONS: Must use exact names: ${CJ_FUNCTION_NAMES.join(', ')}
+7. RATIONALE: Must be a plain text string for each question.
+
+${scopeFormulary}
+
+Fix any issues and return the complete corrected scenario.
+
+Return JSON:
+{
+  "phases": [
+    {
+      "label": "string",
+      "content": "string",
+      "history": "string",
+      "vitals": { ... } | null,
+      "ecgFindings": "string" | null,
+      "questions": [
+        { "stem": "string", "type": "MC|MR|DD|BL|OB", "data": { ... }, "domain": "string", "cj_functions": ["string"], "difficulty": "string", "rationale": "string" }
+      ]
+    }
+  ]
+}`;
+
+  // Merge backbone + questions for review
+  const mergedPhases = backbone.phases.map((phase: any, i: number) => ({
+    ...phase,
+    questions: questionData.phases[i]?.questions || [],
+  }));
+
+  const reviewUser = `Review and fix this CJS scenario for ${level}:\n\nPatient: ${JSON.stringify(backbone.patient)}\n\n${JSON.stringify({ phases: mergedPhases }, null, 2)}`;
+
+  const reviewRaw = await callAI(reviewSystem, reviewUser, reviewModel);
+  let reviewed: any;
+  try { reviewed = JSON.parse(reviewRaw); } catch { reviewed = JSON.parse(extractJSON(reviewRaw)); }
+
+  const finalPhases = (reviewed?.phases || mergedPhases).map((p: any) => ({
+    label: p.label,
+    content: p.content,
+    history: p.history || '',
+    vitals: p.vitals || null,
+    ecgFindings: p.ecgFindings || null,
+    questions: (p.questions || []).map((q: any) => ({
+      stem: q.stem,
+      type: q.type || 'MC',
+      data: q.data || q.options || {},
+      domain: q.domain,
+      cj_functions: q.cj_functions || [],
+      difficulty: q.difficulty || diff,
+      rationale: typeof q.rationale === 'string' ? q.rationale : JSON.stringify(q.rationale || ''),
+    })),
+  }));
+
+  const finalTotal = finalPhases.reduce((s: number, p: any) => s + p.questions.length, 0);
+  console.log(`[generate-cjs] Step 3 done: ${finalTotal} reviewed questions`);
+
+  return {
+    scenario: { phases: finalPhases, patient: backbone.patient },
+    metadata: {
+      total_questions: finalTotal,
+      level, difficulty: diff, domain: domain || 'mixed',
+      gen_model: genModel === 'claude-opus-4' ? CLAUDE_MODEL : genModel,
+      review_model: reviewModel === 'claude-opus-4' ? CLAUDE_MODEL : reviewModel,
+      valid_domains: domainNames,
+      pipeline: 'cjs-v1',
+    },
+  };
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type' } });
 
   try {
     const params: GenerateRequest = await req.json();
-    const items = normalize(params);
-    const total = items.reduce((s, i) => s + i.count, 0);
-    if (total < 1 || total > 30) return new Response(JSON.stringify({ error: 'Count must be 1-30' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-
     const { genModel, reviewModel, label } = resolveModels(params.model);
     const sb = createClient(supabaseUrl, supabaseServiceKey);
     const level = params.certification_level || 'Paramedic';
     const diff = params.difficulty || 'medium';
     const domain = params.domain || '';
     const topic = params.topic_hint || domain || 'EMS patient assessment';
-    const types = [...new Set(items.map(i => i.type))];
 
+    // ── CJS Pipeline ──
+    if (params.generate_mode === 'cjs') {
+      console.log(`[generate-cjs] Starting CJS pipeline, level=${level}, models=${label}`);
+      const result = await generateCJS(sb, level, diff, domain, topic, genModel, reviewModel);
+      return new Response(JSON.stringify(result), {
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      });
+    }
+
+    // ── Standard Question Pipeline ──
+    const items = normalize(params);
+    const total = items.reduce((s, i) => s + i.count, 0);
+    if (total < 1 || total > 30) return new Response(JSON.stringify({ error: 'Count must be 1-30' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+
+    const types = [...new Set(items.map(i => i.type))];
     console.log(`[generate-v8] ${total} questions (${types.join(',')}), level=${level}, models=${label}`);
 
     // STEP 1: Gather context — scope/formulary + domain names ALWAYS loaded

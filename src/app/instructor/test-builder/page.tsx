@@ -1920,6 +1920,34 @@ function TestBuilderContent() {
           onAcceptQuestions={(acceptedQuestions) => {
             const newQuestions = acceptedQuestions.map((q: any) => {
               const type = (q.item_type || 'MC') as TEIType;
+
+              // Handle CJS scenarios from the multi-phase pipeline
+              if (type === 'CJS' && q._cjs_data?.phases) {
+                const cjsData: CJSData = {
+                  phases: q._cjs_data.phases.map((p: any) => ({
+                    label: p.label || '',
+                    content: p.content || '',
+                    vitals: p.vitals || undefined,
+                    history: p.history || '',
+                    ecgFindings: p.ecgFindings || '',
+                    questions: (p.questions || []).map((pq: any) => ({
+                      stem: pq.stem || '',
+                      type: (pq.type || 'MC') as TEIType,
+                      data: pq.data || phaseQuestionDataForType((pq.type || 'MC') as TEIType),
+                      ecgStripId: undefined,
+                    })),
+                  })),
+                };
+                const base = createBlankQuestion('CJS');
+                return {
+                  ...base,
+                  stem: q.stem || '',
+                  data: cjsData,
+                  rationale: '',
+                  expanded: true, // Auto-expand so instructor can review
+                };
+              }
+
               const base = createBlankQuestion(type);
               return {
                 ...base,
@@ -1931,7 +1959,12 @@ function TestBuilderContent() {
             });
             setQuestions((prev) => [...prev, ...newQuestions]);
             setAiPanelOpen(false);
-            setSaveMessage(`Added ${newQuestions.length} AI-generated question${newQuestions.length !== 1 ? 's' : ''}!`);
+            const cjsCount = newQuestions.filter((q) => q.type === 'CJS').length;
+            const otherCount = newQuestions.length - cjsCount;
+            const parts = [];
+            if (cjsCount > 0) parts.push(`${cjsCount} CJS scenario`);
+            if (otherCount > 0) parts.push(`${otherCount} question${otherCount !== 1 ? 's' : ''}`);
+            setSaveMessage(`Added ${parts.join(' + ')} from AI!`);
             setTimeout(() => setSaveMessage(''), 3000);
           }}
         />
