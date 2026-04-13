@@ -124,7 +124,7 @@ export default function BowTie({
                     className={`flex-shrink-0 w-5 h-5 rounded-full border-2 mt-0.5 ${
                       isSelected
                         ? showWrong
-                          ? 'border-red-400 bg-red-200'
+                          ? 'border-red-300 bg-red-100'
                           : 'border-[#E67E22] bg-[#E67E22]'
                         : showCorrect
                           ? 'border-green-400 bg-green-200'
@@ -209,7 +209,7 @@ export default function BowTie({
                     className={`flex-shrink-0 w-5 h-5 rounded-full border-2 mt-0.5 ${
                       isSelected
                         ? showWrong
-                          ? 'border-red-400 bg-red-200'
+                          ? 'border-red-300 bg-red-100'
                           : 'border-[#E67E22] bg-[#E67E22]'
                         : showCorrect
                           ? 'border-green-400 bg-green-200'

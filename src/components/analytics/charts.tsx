@@ -20,8 +20,8 @@ import {
   deltaColor,
 } from '@/lib/analytics';
 
-const CHART_PRE = '#f97316';   // orange
-const CHART_POST = '#14b8a6';  // teal
+const CHART_PRE = '#7c3aed';   // violet-600
+const CHART_POST = '#2563eb';  // blue-600
 
 const tooltipStyle = {
   borderRadius: '10px',
@@ -273,7 +273,7 @@ export function TEIBars({ data }: { data: TEIPerformance[] }) {
                         <span className="text-zinc-600">{d.preCorrect}/{d.preTotal} ({preAcc}%)</span>
                       </div>
                       <div className="h-2 bg-zinc-100 rounded-full overflow-hidden">
-                        <div className="h-full rounded-full bg-orange-500/70" style={{ width: `${preAcc}%` }} />
+                        <div className="h-full rounded-full bg-violet-600/70" style={{ width: `${preAcc}%` }} />
                       </div>
                     </div>
                   )}
@@ -284,7 +284,7 @@ export function TEIBars({ data }: { data: TEIPerformance[] }) {
                         <span className="text-zinc-600">{d.postCorrect}/{d.postTotal} ({postAcc}%)</span>
                       </div>
                       <div className="h-2 bg-zinc-100 rounded-full overflow-hidden">
-                        <div className="h-full rounded-full bg-teal-500/70" style={{ width: `${postAcc}%` }} />
+                        <div className="h-full rounded-full bg-blue-600/70" style={{ width: `${postAcc}%` }} />
                       </div>
                     </div>
                   )}
@@ -488,7 +488,7 @@ export function ReadinessProjection({
 
         {/* Projected range highlight */}
         <div
-          className="absolute top-3 h-8 rounded-md border-2 border-emerald-400/40 bg-emerald-600/10"
+          className="absolute top-3 h-8 rounded-md border-2 border-emerald-600/40 bg-emerald-600/10"
           style={{ left: `${projLowPos}%`, width: `${projWidth}%` }}
         />
 
@@ -508,7 +508,7 @@ export function ReadinessProjection({
           className="absolute top-2"
           style={{ left: `${scorePos}%`, transform: 'translateX(-50%)' }}
         >
-          <div className={`w-5 h-5 rounded-full border-2 ${isPassing ? 'bg-emerald-600 border-emerald-300' : 'bg-amber-400 border-amber-300'} shadow-lg`} />
+          <div className={`w-5 h-5 rounded-full border-2 ${isPassing ? 'bg-emerald-600 border-emerald-500' : 'bg-amber-500 border-amber-500'} shadow-lg`} />
           <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap">
             <span className={`text-sm font-bold ${isPassing ? 'text-emerald-600' : 'text-amber-600'}`}>~{score}</span>
           </div>
@@ -577,7 +577,7 @@ export function ScoreSummaryCard({
           <p className="text-xs font-medium uppercase tracking-wider text-zinc-400 mb-1">
             {preLabel ?? 'Pre-Test'}
           </p>
-          <p className="text-3xl font-bold text-orange-400 tabular-nums">{preScore}%</p>
+          <p className="text-3xl font-bold text-orange-600 tabular-nums">{preScore}%</p>
         </div>
       )}
       {postScore !== null && (
@@ -585,7 +585,7 @@ export function ScoreSummaryCard({
           <p className="text-xs font-medium uppercase tracking-wider text-zinc-400 mb-1">
             {postLabel ?? 'Post-Test'}
           </p>
-          <p className="text-3xl font-bold text-teal-600 tabular-nums">{postScore}%</p>
+          <p className="text-3xl font-bold text-blue-600 tabular-nums">{postScore}%</p>
         </div>
       )}
       {change !== null && (

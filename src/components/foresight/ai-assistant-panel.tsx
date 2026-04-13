@@ -134,8 +134,8 @@ export function AIAssistantPanel({
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-800">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-              <Sparkles className="h-4 w-4 text-purple-400" />
+            <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center">
+              <Sparkles className="h-4 w-4 text-indigo-600" />
             </div>
             <div>
               <h2 className="text-sm font-bold text-zinc-100">AI Question Writer</h2>
@@ -222,7 +222,7 @@ export function AIAssistantPanel({
           <Button
             onClick={handleGenerate}
             disabled={generating}
-            className="w-full bg-purple-600 hover:bg-purple-500 text-white h-10 font-medium shadow-elevation-1"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white h-10 font-medium shadow-elevation-1"
           >
             {generating ? (
               <>
@@ -248,8 +248,8 @@ export function AIAssistantPanel({
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-2">
           {generating && (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="w-12 h-12 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-4">
-                <Loader2 className="h-6 w-6 text-purple-400 animate-spin" />
+              <div className="w-12 h-12 rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center mb-4">
+                <Loader2 className="h-6 w-6 text-indigo-600 animate-spin" />
               </div>
               <p className="text-sm text-zinc-300 font-medium">Generating questions...</p>
               <p className="text-xs text-zinc-500 mt-1">Using RAG context + item writing rules</p>
@@ -281,7 +281,7 @@ export function AIAssistantPanel({
                   onClick={() => toggleAccept(idx)}
                   className={`flex-shrink-0 w-5 h-5 rounded border transition-colors ${
                     accepted.has(idx)
-                      ? 'bg-emerald-500 border-emerald-400 text-white'
+                      ? 'bg-emerald-500 border-emerald-600 text-white'
                       : 'border-zinc-600 hover:border-zinc-400'
                   } flex items-center justify-center`}
                 >
@@ -323,7 +323,7 @@ export function AIAssistantPanel({
                   )}
                   <div className="flex flex-wrap gap-1.5 pt-1">
                     {q.domain && (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">
                         {q.domain}
                       </span>
                     )}
@@ -333,7 +333,7 @@ export function AIAssistantPanel({
                       </span>
                     )}
                     {(q.cj_functions || []).map((fn: string) => (
-                      <span key={fn} className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                      <span key={fn} className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-600 border border-indigo-200">
                         {fn}
                       </span>
                     ))}

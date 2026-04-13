@@ -104,22 +104,22 @@ export function getAssessmentLabel(pre: number | null, post: number | null): str
 
 export function getAssessmentColor(label: string): string {
   switch (label) {
-    case 'MASTERED': return 'text-emerald-400';
-    case 'STRONG GAIN': return 'text-emerald-400';
-    case 'IMPROVED': return 'text-blue-400';
+    case 'MASTERED': return 'text-emerald-700';
+    case 'STRONG GAIN': return 'text-emerald-700';
+    case 'IMPROVED': return 'text-blue-700';
     case 'PROGRESSING': return 'text-zinc-600';
-    case 'NEXT PRIORITY': return 'text-amber-400';
-    default: return 'text-zinc-400';
+    case 'NEXT PRIORITY': return 'text-amber-700';
+    default: return 'text-zinc-500';
   }
 }
 
 export function getAssessmentBg(label: string): string {
   switch (label) {
-    case 'MASTERED': return 'bg-emerald-400/10 text-emerald-400 border-emerald-400/20';
-    case 'STRONG GAIN': return 'bg-emerald-400/10 text-emerald-400 border-emerald-400/20';
-    case 'IMPROVED': return 'bg-blue-400/10 text-blue-400 border-blue-400/20';
+    case 'MASTERED': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+    case 'STRONG GAIN': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+    case 'IMPROVED': return 'bg-blue-50 text-blue-700 border-blue-200';
     case 'PROGRESSING': return 'bg-zinc-100 text-zinc-600 border-zinc-300';
-    case 'NEXT PRIORITY': return 'bg-amber-400/10 text-amber-400 border-amber-400/20';
+    case 'NEXT PRIORITY': return 'bg-amber-50 text-amber-700 border-amber-200';
     default: return 'bg-zinc-100 text-zinc-500 border-zinc-300';
   }
 }
@@ -149,8 +149,8 @@ export function formatDelta(change: number | null): string {
 
 export function deltaColor(change: number | null): string {
   if (change === null) return 'text-zinc-400';
-  if (change > 0) return 'text-emerald-400';
-  if (change < 0) return 'text-red-400';
+  if (change > 0) return 'text-emerald-700';
+  if (change < 0) return 'text-red-700';
   return 'text-zinc-400';
 }
 

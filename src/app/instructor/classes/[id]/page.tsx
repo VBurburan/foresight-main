@@ -52,7 +52,7 @@ function scoreColor(score: number): string {
 function statusDot(score: number | null): { color: string; label: string } {
   if (score === null) return { color: 'bg-zinc-600', label: '' };
   if (score < 60) return { color: 'bg-red-600', label: 'At Risk' };
-  if (score < 75) return { color: 'bg-amber-400', label: 'Monitor' };
+  if (score < 75) return { color: 'bg-amber-500', label: 'Monitor' };
   return { color: 'bg-emerald-600', label: 'On Track' };
 }
 

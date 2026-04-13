@@ -542,7 +542,7 @@ function TestBuilderContent() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             {saveMessage && (
-              <span className="text-xs text-emerald-600 font-medium animate-fade-in">{saveMessage}</span>
+              <span className="text-xs text-emerald-700 font-medium animate-fade-in">{saveMessage}</span>
             )}
             {questions.length > 0 && (
               <Button variant="ghost" size="sm" onClick={handleClearDraft} className="text-zinc-400 hover:text-red-600 text-xs">
@@ -777,7 +777,7 @@ function TestBuilderContent() {
               <Button
                 size="sm"
                 onClick={() => setAiPanelOpen(true)}
-                className="bg-purple-600 hover:bg-purple-500 text-white shadow-elevation-1"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-elevation-1"
               >
                 <Sparkles className="h-4 w-4 mr-1.5" />
                 AI Question Writer
@@ -859,7 +859,7 @@ function TestBuilderContent() {
                       <button
                         onClick={() => handleGenerateAI(q.id)}
                         disabled={generating}
-                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-dashed border-purple-500/30 text-purple-300 text-sm hover:bg-purple-500/5 transition-colors disabled:opacity-50"
+                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-dashed border-indigo-300 text-indigo-600 text-sm hover:bg-indigo-50 transition-colors disabled:opacity-50"
                       >
                         {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                         Generate this question with AI
@@ -890,7 +890,7 @@ function TestBuilderContent() {
                                 type="button"
                                 onClick={() => updateData(q.id, (prev: MCData) => ({ ...prev, correctKey: opt.key }))}
                                 className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                                  d.correctKey === opt.key ? 'border-emerald-400 ring-2 ring-emerald-400/20 bg-transparent' : 'border-zinc-600 hover:border-zinc-400'
+                                  d.correctKey === opt.key ? 'border-emerald-600 ring-2 ring-emerald-600/20 bg-transparent' : 'border-zinc-600 hover:border-zinc-400'
                                 }`}
                               >
                                 {d.correctKey === opt.key && <div className="w-3 h-3 rounded-full bg-emerald-600" />}
@@ -928,7 +928,7 @@ function TestBuilderContent() {
                                     : [...prev.correctKeys, opt.key],
                                 }))}
                                 className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                                  d.correctKeys.includes(opt.key) ? 'border-emerald-400 ring-2 ring-emerald-400/20 bg-transparent' : 'border-zinc-600 hover:border-zinc-400'
+                                  d.correctKeys.includes(opt.key) ? 'border-emerald-600 ring-2 ring-emerald-600/20 bg-transparent' : 'border-zinc-600 hover:border-zinc-400'
                                 }`}
                               >
                                 {d.correctKeys.includes(opt.key) && <CheckCircle2 className="w-3 h-3 text-emerald-600" />}
@@ -1359,10 +1359,10 @@ function TestBuilderContent() {
                                                     ...prev, correctKeys: prev.correctKeys.includes(opt.key)
                                                       ? prev.correctKeys.filter((k: string) => k !== opt.key)
                                                       : [...prev.correctKeys, opt.key],
-                                                  }))} className={`w-4 h-4 rounded border-2 flex-shrink-0 ${(d as MRData).correctKeys?.includes(opt.key) ? 'border-emerald-400 ring-1 ring-emerald-400/20' : 'border-zinc-600'}`} />
+                                                  }))} className={`w-4 h-4 rounded border-2 flex-shrink-0 ${(d as MRData).correctKeys?.includes(opt.key) ? 'border-emerald-600 ring-1 ring-emerald-600/20' : 'border-zinc-600'}`} />
                                                 ) : (
                                                   <button type="button" onClick={() => updatePQ((prev: MCData) => ({ ...prev, correctKey: opt.key }))}
-                                                    className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${(d as MCData).correctKey === opt.key ? 'border-emerald-400 ring-1 ring-emerald-400/20' : 'border-zinc-600'}`} />
+                                                    className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${(d as MCData).correctKey === opt.key ? 'border-emerald-600 ring-1 ring-emerald-600/20' : 'border-zinc-600'}`} />
                                                 )}
                                                 <span className="text-[10px] font-mono text-zinc-400">{opt.key}.</span>
                                                 <Input value={opt.text} onChange={(e) => updatePQ((prev: any) => ({
@@ -1651,7 +1651,7 @@ function TestBuilderContent() {
                       <div className="space-y-2">
                         {mc.options.map((opt) => (
                           <div key={opt.key} className={`flex items-center gap-3 rounded-lg border px-4 py-3 ${
-                            mc.correctKey === opt.key ? 'border-emerald-400/30 bg-emerald-600/5' : 'border-zinc-200'
+                            mc.correctKey === opt.key ? 'border-emerald-600/30 bg-emerald-600/5' : 'border-zinc-200'
                           }`}>
                             <span className="text-sm font-mono font-bold text-zinc-400">{opt.key}.</span>
                             <span className="text-sm text-zinc-700">{opt.text || '(empty)'}</span>
@@ -1669,7 +1669,7 @@ function TestBuilderContent() {
                         <p className="text-xs text-zinc-400 font-medium mb-2">Select all that apply</p>
                         {mr.options.map((opt) => (
                           <div key={opt.key} className={`flex items-center gap-3 rounded-lg border px-4 py-3 ${
-                            mr.correctKeys.includes(opt.key) ? 'border-emerald-400/30 bg-emerald-600/5' : 'border-zinc-200'
+                            mr.correctKeys.includes(opt.key) ? 'border-emerald-600/30 bg-emerald-600/5' : 'border-zinc-200'
                           }`}>
                             <span className="text-sm font-mono font-bold text-zinc-400">{opt.key}.</span>
                             <span className="text-sm text-zinc-700">{opt.text || '(empty)'}</span>

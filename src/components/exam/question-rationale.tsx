@@ -109,7 +109,7 @@ export default function QuestionRationale({
             transition={{ delay: 0.1 }}
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-200"
           >
-            <Brain className="w-3.5 h-3.5 text-purple-600" />
+            <Brain className="w-3.5 h-3.5 text-indigo-600" />
             <span className="text-xs font-medium text-purple-700">{cjLabel}</span>
           </motion.div>
         )}

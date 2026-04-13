@@ -250,7 +250,7 @@ export default function OptionsBox({
                           className={`w-6 h-6 rounded-full border-2 mx-auto flex items-center justify-center transition-all ${
                             isSelected
                               ? showFeedback && !isRowCorrect
-                                ? 'border-red-400 bg-red-400'
+                                ? 'border-red-300 bg-red-500'
                                 : 'border-[#E67E22] bg-[#E67E22]'
                               : isCorrectOption
                                 ? 'border-green-400 bg-green-400'
