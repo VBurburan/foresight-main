@@ -482,7 +482,13 @@ function TestBuilderContent() {
             } catch {
               data = createBlankQuestion(type).data;
             }
-            return { id: sq.id, type, stem: sq.stem || '', data, rationale: sq.rationale || '', expanded: false };
+            const meta = sq.metadata as any;
+            return {
+              id: sq.id, type, stem: sq.stem || '', data, rationale: sq.rationale || '', expanded: false,
+              domain: meta?.domain || undefined,
+              cjFunctions: meta?.cj_functions || undefined,
+              difficulty: meta?.difficulty || undefined,
+            };
           });
           setQuestions(loaded);
         }
@@ -991,6 +997,16 @@ function TestBuilderContent() {
                   )}
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                  {q.domain && (
+                    <span className="hidden sm:inline text-[10px] bg-blue-50 text-blue-600 border border-blue-200 rounded px-1.5 py-0.5 truncate max-w-[140px]">{q.domain}</span>
+                  )}
+                  {q.difficulty && (
+                    <span className={`hidden sm:inline text-[10px] rounded px-1.5 py-0.5 ${
+                      q.difficulty === 'hard' ? 'bg-red-50 text-red-600 border border-red-200' :
+                      q.difficulty === 'easy' ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' :
+                      'bg-amber-50 text-amber-600 border border-amber-200'
+                    }`}>{q.difficulty}</span>
+                  )}
                   {q.stem && (
                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                   )}

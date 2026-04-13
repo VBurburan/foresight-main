@@ -801,6 +801,36 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
     setAnswers((prev) => ({ ...prev, [qId]: val }));
   };
 
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (showConfirm || submitting) return;
+
+      // Enter or Right arrow → Next question
+      if (e.key === 'Enter' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        if (currentIndex < questions.length - 1) goNext();
+      }
+      // Left arrow → Previous (only if back navigation allowed)
+      if (e.key === 'ArrowLeft' && assessment?.settings?.forward_only === false) {
+        e.preventDefault();
+        if (currentIndex > 0) goPrev();
+      }
+      // MC shortcut keys: A-F to select option
+      const currentQ = questions[currentIndex];
+      if (currentQ?.item_type === 'MC' && /^[a-fA-F]$/.test(e.key)) {
+        const key = e.key.toUpperCase();
+        const rawOpts = currentQ.options as any;
+        const opts = Array.isArray(rawOpts) ? rawOpts : rawOpts?.options || [];
+        if (opts.some((o: any) => o.key === key)) {
+          updateAnswer(key);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentIndex, questions, showConfirm, submitting, assessment]);
+
   // Submit exam — answers are sent with is_correct = null;
   // the server-side RPC grades them and updates the session.
   const handleSubmit = async () => {
