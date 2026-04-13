@@ -172,7 +172,7 @@ export default function FeaturesPage() {
             real data from a pilot program.
           </p>
           <a
-            href="mailto:vincent@foresight.edu?subject=Foresight Feature Demo"
+            href="mailto:hello@foresight.edu?subject=Foresight Feature Demo"
             className="group inline-flex items-center gap-2 bg-zinc-900 text-white px-7 py-3 rounded-lg font-medium text-[15px] hover:bg-zinc-800 transition-colors"
           >
             Request a Demo

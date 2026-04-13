@@ -77,7 +77,7 @@ export default function MarketingLayout({
               Login
             </Link>
             <a
-              href="mailto:vincent@foresight.edu"
+              href="mailto:hello@foresight.edu"
               className="hidden sm:inline-flex items-center gap-1.5 bg-zinc-900 hover:bg-zinc-800 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
             >
               Get Started
@@ -120,7 +120,7 @@ export default function MarketingLayout({
                 About
               </Link>
               <a
-                href="mailto:vincent@foresight.edu"
+                href="mailto:hello@foresight.edu"
                 className="hover:text-zinc-900 transition-colors"
               >
                 Contact
@@ -138,10 +138,10 @@ export default function MarketingLayout({
             <p className="text-xs text-zinc-500">
               Questions? Reach us at{" "}
               <a
-                href="mailto:vincent@foresight.edu"
+                href="mailto:hello@foresight.edu"
                 className="text-zinc-500 hover:text-zinc-900 underline underline-offset-2"
               >
-                vincent@foresight.edu
+                hello@foresight.edu
               </a>
             </p>
           </div>

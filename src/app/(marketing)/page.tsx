@@ -102,11 +102,11 @@ const compCols = [
   { key: "readiness" as const, label: "Readiness Score" },
 ];
 
-const credentials = [
-  "National Registry Paramedic",
-  "NAEMSE Level 1 Instructor",
-  "4 Published NREMT Prep Books",
-  "UF Critical Care Program",
+const trustSignals = [
+  "NREMT-Aligned TEI Engine",
+  "HIPAA/FERPA Compliant Architecture",
+  "CoAEMSP Accreditation Ready",
+  "SOC 2 Type II Pathway",
 ];
 
 /* ─────────────────────────── Component ────────────────────────── */
@@ -157,7 +157,7 @@ export default function HomePage() {
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-20">
             <a
-              href="mailto:vincent@foresight.edu"
+              href="mailto:hello@foresight.edu"
               className="group inline-flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-white px-6 py-3 rounded-lg font-medium text-[15px] transition-colors"
             >
               Request Access
@@ -440,31 +440,31 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Credibility ── */}
+      {/* ── Trust / Enterprise ── */}
       <section className="px-6 py-24 sm:py-28">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700 mb-4">
-            Who built this
+            Enterprise ready
           </p>
           <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 mb-6">
-            Built by a paramedic,
+            Built for institutional
             <br className="hidden sm:block" />
-            {" "}for paramedics
+            {" "}compliance and scale
           </h2>
           <p className="text-base text-zinc-500 max-w-2xl mx-auto leading-relaxed mb-10">
-            Foresight is built by a National Registry Paramedic and NAEMSE Level
-            1 Instructor who uses every feature with real students. Every
-            analytics screen, every error pattern, every threshold exists because
-            it solved a real problem in the classroom.
+            Foresight is designed from the ground up for EMS education programs
+            that need accreditation-ready assessment infrastructure. Every feature
+            maps to CoAEMSP standards, and every data point feeds directly into
+            your annual report.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-2">
-            {credentials.map((cred) => (
+            {trustSignals.map((signal) => (
               <span
-                key={cred}
+                key={signal}
                 className="glass-card inline-flex items-center px-4 py-1.5 text-xs font-medium text-zinc-600"
               >
-                {cred}
+                {signal}
               </span>
             ))}
           </div>
@@ -489,14 +489,14 @@ export default function HomePage() {
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
             <a
-              href="mailto:vincent@foresight.edu"
+              href="mailto:hello@foresight.edu"
               className="group inline-flex items-center gap-2 bg-zinc-900 text-white px-7 py-3 rounded-lg font-medium text-[15px] hover:bg-zinc-800 transition-colors"
             >
               Request Access
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </a>
             <a
-              href="mailto:vincent@foresight.edu?subject=Foresight Demo Request"
+              href="mailto:hello@foresight.edu?subject=Foresight Demo Request"
               className="inline-flex items-center gap-2 glass-card px-7 py-3 text-zinc-600 hover:text-zinc-900 border border-zinc-300 font-medium text-[15px] transition-colors"
             >
               Schedule a Demo

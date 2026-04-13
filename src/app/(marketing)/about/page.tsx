@@ -4,16 +4,16 @@ import { ArrowRight } from "lucide-react";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Foresight was built by a paramedic and NAEMSE instructor who watched students fail an exam they were ready for. Learn the story behind the platform.",
+    "Foresight is assessment infrastructure for EMS education programs. Learn why we built the first institutional TEI platform and what it means for accreditation.",
 };
 
 /* ───────────────────────────── Data ───────────────────────────── */
 
-const credentials = [
-  { label: "National Registry Paramedic", detail: "NRP" },
-  { label: "NAEMSE Level 1 Instructor", detail: "Certified Educator" },
-  { label: "UF Critical Care Program", detail: "University of Florida" },
-  { label: "4 Published Books", detail: "NREMT Exam Preparation" },
+const principles = [
+  { label: "Format Fidelity", detail: "Every TEI type rendered exactly as the NREMT delivers it" },
+  { label: "Data-Driven Insights", detail: "Analytics at the domain, TEI, and clinical judgment level" },
+  { label: "Accreditation Aligned", detail: "Built to satisfy CoAEMSP documentation requirements" },
+  { label: "Instructor-First Design", detail: "Assessment tools designed by and for EMS educators" },
 ];
 
 const marketStats = [
@@ -52,17 +52,17 @@ export default function AboutPage() {
             {" "}they were ready for.
           </h1>
           <p className="text-lg text-zinc-500 max-w-2xl mx-auto leading-relaxed">
-            The NREMT changed. The tools didn&apos;t. So I built Foresight.
+            The NREMT changed. Assessment tools didn&apos;t. So we built Foresight.
           </p>
         </div>
       </section>
 
-      {/* ── Founder Story ── */}
+      {/* ── The Problem ── */}
       <section className="px-6 py-20 sm:py-28 bg-zinc-50 border-y border-zinc-200">
         <div className="max-w-4xl mx-auto">
           <div className="max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700 mb-6">
-              The Origin
+              The Problem
             </p>
 
             <div className="space-y-6 text-base sm:text-lg text-zinc-600 leading-relaxed">
@@ -70,72 +70,67 @@ export default function AboutPage() {
                 In July 2024, the NREMT began scoring Technology Enhanced Items
                 on the certification exam. These aren&apos;t traditional
                 multiple-choice questions. They are drag-and-drop ordering, clinical
-                judgment matrices, hot spots, build-list items, and multi-select
+                judgment matrices, hotspots, build-list items, and multi-select
                 formats that require a fundamentally different kind of
                 preparation.
               </p>
 
               <p>
-                I was teaching paramedic students who knew the material. They
-                could explain pathophysiology, recite pharmacology, and reason
-                through clinical scenarios on the whiteboard. But when they sat
-                down for the exam, they froze. Not because they lacked
-                knowledge, but because they had never interacted with the
-                question formats they were being tested on.
+                Students across 2,000+ EMS programs know the material. They
+                can explain pathophysiology, recite pharmacology, and reason
+                through clinical scenarios on the whiteboard. But when they sit
+                for the exam, they freeze. Not because they lack knowledge,
+                but because they have never interacted with the formats
+                they&apos;re being tested on.
               </p>
 
               <p>
-                I looked for tools to help them practice. There were none.
-                Existing assessment platforms offered multiple-choice items only.
-                Some marketed themselves as &ldquo;TEI-ready&rdquo; but rendered
-                nothing close to the real exam experience. Students were being
-                asked to demonstrate competency in formats they had never seen.
-              </p>
-
-              <p>
-                That gap became Foresight. I started building a rendering engine
-                for every TEI format the NREMT uses. Then I added an AI pipeline
-                to generate items at scale. Then analytics to track where
-                students struggle. Then a readiness algorithm to predict who
-                needs help before exam day.
+                Every institutional assessment platform today &mdash; Fisdap,
+                EMSTesting, JBL Navigate &mdash; delivers questions exclusively
+                as standard multiple choice. Some market themselves as
+                &ldquo;TEI-ready&rdquo; but render nothing close to the real
+                exam experience. Programs are asking students to demonstrate
+                competency in formats they have literally never practiced.
               </p>
 
               <p className="text-zinc-900 font-medium">
-                Every feature in Foresight exists because it solved a real
-                problem I encountered as an instructor. Nothing was built on
-                speculation.
+                Foresight was built to close that gap. Every feature exists
+                because it solves a real problem in the EMS classroom. Nothing
+                was built on speculation.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Founder Credentials ── */}
+      {/* ── Our Principles ── */}
       <section className="px-6 py-20 sm:py-28">
         <div className="max-w-4xl mx-auto">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700 mb-4">
-            Founder
+            How we build
           </p>
           <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 mb-4">
-            Vincent Burburan
+            Assessment infrastructure,
+            <br className="hidden sm:block" />
+            {" "}not just another test bank
           </h2>
           <p className="text-base sm:text-lg text-zinc-600 leading-relaxed mb-10 max-w-3xl">
-            National Registry Paramedic, NAEMSE Level 1 Instructor, University
-            of Florida Critical Care program, and author of four published
-            NREMT exam preparation books. I build every feature with real
-            students, real data, and real accreditation pressure.
+            Foresight is built by EMS educators who use every feature with
+            real students, real data, and real accreditation pressure. We
+            don&apos;t build features until they solve an actual problem in
+            the classroom.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
-            {credentials.map((cred) => (
+            {principles.map((p) => (
               <div
-                key={cred.label}
+                key={p.label}
                 className="bg-white border border-zinc-200 rounded-xl shadow-sm px-5 py-4"
               >
                 <p className="text-sm font-semibold text-zinc-900">
-                  {cred.label}
+                  {p.label}
                 </p>
-                <p className="text-xs text-zinc-400 mt-0.5">{cred.detail}</p>
+                <p className="text-xs text-zinc-500 mt-0.5">{p.detail}</p>
               </div>
             ))}
           </div>
@@ -230,14 +225,14 @@ export default function AboutPage() {
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
             <a
-              href="mailto:vincent@foresight.edu"
+              href="mailto:hello@foresight.edu"
               className="group inline-flex items-center gap-2 bg-zinc-900 text-white px-7 py-3 rounded-lg font-medium text-[15px] hover:bg-zinc-800 transition-colors"
             >
-              Email Vincent
+              Contact Us
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </a>
             <a
-              href="mailto:vincent@foresight.edu?subject=Foresight Demo Request"
+              href="mailto:hello@foresight.edu?subject=Foresight Demo Request"
               className="inline-flex items-center gap-2 bg-white border border-zinc-300 px-7 py-3 rounded-lg text-zinc-600 hover:text-zinc-900 hover:border-zinc-400 font-medium text-[15px] transition-colors"
             >
               Schedule a Demo
@@ -245,7 +240,7 @@ export default function AboutPage() {
           </div>
 
           <p className="text-sm text-zinc-400 mt-8">
-            vincent@foresight.edu
+            hello@foresight.edu
           </p>
         </div>
       </section>
