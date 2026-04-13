@@ -244,10 +244,10 @@ function AnalyticsContent() {
             responses.forEach((r: any) => {
               const q = qMap.get(r.question_id);
               if (!q) return;
-              const domain = (q.metadata as any)?.domain || 'Unknown';
+              const domain = (q.metadata as any)?.domain;
               const tei = q.item_type || 'MC';
-              // Skip UUID-like domain values (old data)
-              if (domain.length > 40 || domain.includes('-')) return;
+              // Skip questions with no domain or UUID-like domain values (old data)
+              if (!domain || domain === 'Unknown' || domain.length > 40 || domain.includes('-')) return;
               const key = `${domain}|${tei}`;
               if (!heatAccum[key]) heatAccum[key] = { correct: 0, total: 0 };
               heatAccum[key].total += 1;
