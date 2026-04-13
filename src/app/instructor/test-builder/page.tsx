@@ -299,9 +299,36 @@ function TestBuilderContent() {
           setSaveMessage('CJS scenario context updated!');
         } else {
           // For standard types: update stem, options data, and rationale
+          // Normalize rationale — AI sometimes returns object instead of string
+          const rationale = typeof q.rationale === 'string'
+            ? q.rationale
+            : (q.rationale ? JSON.stringify(q.rationale, null, 2) : '');
+
           // Only overwrite data if AI returned valid structured options
-          const hasValidOptions = q.options && typeof q.options === 'object' &&
-            (Array.isArray(q.options.options) || Array.isArray(q.options.items) || q.options.correctKey);
+          // that match the expected format for this question type
+          let newData: any = null;
+          if (q.options && typeof q.options === 'object') {
+            if (existingQuestion.type === 'MC' && Array.isArray(q.options.options)) {
+              newData = q.options;
+            } else if (existingQuestion.type === 'MR' && Array.isArray(q.options.options)) {
+              newData = q.options;
+            } else if (existingQuestion.type === 'DD') {
+              // DD needs items array + categories array + correctMapping
+              const items = Array.isArray(q.options.items) ? q.options.items : null;
+              const categories = Array.isArray(q.options.categories) ? q.options.categories : null;
+              if (items && categories) {
+                newData = {
+                  items: items.map((it: any, idx: number) => typeof it === 'string' ? { id: `i${idx+1}`, text: it } : it),
+                  categories,
+                  correctMapping: q.options.correctMapping || {},
+                };
+              }
+            } else if (existingQuestion.type === 'OB' && Array.isArray(q.options.items)) {
+              newData = q.options;
+            } else if (existingQuestion.type === 'BL' && Array.isArray(q.options.items)) {
+              newData = q.options;
+            }
+          }
 
           setQuestions((prev) =>
             prev.map((existing) =>
@@ -309,8 +336,8 @@ function TestBuilderContent() {
                 ? {
                     ...existing,
                     stem: q.stem || existing.stem,
-                    data: hasValidOptions ? q.options : existing.data,
-                    rationale: q.rationale || existing.rationale,
+                    data: newData || existing.data,
+                    rationale: rationale || existing.rationale,
                   }
                 : existing
             )
@@ -321,11 +348,12 @@ function TestBuilderContent() {
         const newQuestions: QuestionTemplate[] = generated.map((q: any) => {
           const type = (q.item_type || 'MC') as TEIType;
           const base = createBlankQuestion(type);
+          const rat = typeof q.rationale === 'string' ? q.rationale : (q.rationale ? JSON.stringify(q.rationale, null, 2) : '');
           return {
             ...base,
             stem: q.stem || '',
             data: q.options && typeof q.options === 'object' ? q.options : base.data,
-            rationale: q.rationale || '',
+            rationale: rat,
             expanded: false,
           };
         });
