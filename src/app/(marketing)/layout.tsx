@@ -38,12 +38,12 @@ export default function MarketingLayout({
         <div className="max-w-6xl mx-auto h-full flex items-center justify-between px-6">
           {/* Left: Logo */}
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
+            <span className="w-10 h-10 rounded-lg bg-white flex items-center justify-center shadow-sm border border-zinc-100">
               <Image
                 src="/images/foresight-logo.png"
                 alt=""
-                width={22}
-                height={22}
+                width={28}
+                height={28}
               />
             </span>
             <span className="font-heading text-[17px] font-bold tracking-tight text-zinc-900">

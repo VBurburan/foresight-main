@@ -60,8 +60,8 @@ const features = [
   },
   {
     icon: Brain,
-    title: "AI Test Builder",
-    desc: "Three tiers of creation. Blank template for full control, AI-assisted for speed, or describe the exam you want and let autopilot build it.",
+    title: "Intelligent Test Builder",
+    desc: "Build assessments from scratch, use smart generation to create questions at scale, or mix both approaches. You control the content.",
   },
   {
     icon: BarChart3,
@@ -81,7 +81,7 @@ const features = [
   {
     icon: Target,
     title: "Readiness Scoring",
-    desc: "Predictive NREMT readiness powered by 27 tracked error patterns across 17 cognitive domains. Know who needs help before exam day.",
+    desc: "Identify at-risk students before exam day. Track error patterns across cognitive domains to allocate your teaching time where it matters most.",
   },
 ];
 
@@ -103,10 +103,10 @@ const compCols = [
 ];
 
 const trustSignals = [
-  "NREMT-Aligned TEI Engine",
-  "HIPAA/FERPA Compliant Architecture",
-  "CoAEMSP Accreditation Ready",
-  "SOC 2 Type II Pathway",
+  "All 6 NREMT TEI Formats",
+  "FERPA Compliant",
+  "CoAEMSP-Aligned Reporting",
+  "Real-Time Cohort Analytics",
 ];
 
 /* ─────────────────────────── Component ────────────────────────── */
@@ -122,12 +122,12 @@ export default function HomePage() {
         <div className="relative max-w-4xl mx-auto text-center">
           {/* Centered logo in white container */}
           <div className="flex justify-center mb-8">
-            <div className="w-20 h-20 rounded-2xl bg-white shadow-elevation-3 shadow-glow-blue p-4 flex items-center justify-center">
+            <div className="w-32 h-32 sm:w-36 sm:h-36 rounded-3xl bg-white shadow-elevation-3 shadow-glow-blue p-6 flex items-center justify-center">
               <Image
                 src="/images/foresight-logo.png"
                 alt="Foresight"
-                width={48}
-                height={48}
+                width={80}
+                height={80}
                 className="w-full h-full object-contain"
               />
             </div>
