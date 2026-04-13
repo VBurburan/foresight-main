@@ -234,24 +234,78 @@ export default function HomePage() {
               <p className="text-xs text-zinc-400 italic">Standard multiple choice &mdash; the only format in classroom tools</p>
             </div>
 
-            {/* What NREMT actually tests */}
+            {/* What NREMT actually tests — rendered TEI mockups */}
             <div className="glass-card p-6 border-l-2 border-l-emerald-500/60">
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-600 mb-3">What the NREMT actually tests</p>
-              <div className="space-y-2.5">
-                {[
-                  { label: "Ordered Response", desc: "Drag steps into correct clinical sequence" },
-                  { label: "Multi-Select", desc: "Select all correct findings from a set" },
-                  { label: "Options Box", desc: "Match conditions to interventions in a grid" },
-                  { label: "Clinical Judgment", desc: "Multi-phase scenario with evolving patient data" },
-                ].map((item) => (
-                  <div key={item.label} className="flex items-start gap-3 bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-2.5">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium text-zinc-800">{item.label}</p>
-                      <p className="text-xs text-zinc-500">{item.desc}</p>
-                    </div>
+              <div className="space-y-3">
+                {/* Build List / Ordered Response mockup */}
+                <div className="bg-zinc-50 border border-zinc-200 rounded-lg p-3">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600 mb-2">Build List — Ordered Response</p>
+                  <p className="text-xs text-zinc-600 mb-2">Place the cardiac arrest interventions in the correct sequence:</p>
+                  <div className="space-y-1">
+                    {["1. Begin chest compressions", "2. Apply AED / defibrillator", "3. Establish IV/IO access", "4. Administer epinephrine 1mg IV"].map((step, i) => (
+                      <div key={i} className="flex items-center gap-2 bg-white border border-emerald-200 rounded px-2.5 py-1.5 text-xs text-zinc-700">
+                        <span className="w-4 h-4 rounded bg-emerald-100 text-emerald-700 flex items-center justify-center text-[9px] font-bold shrink-0">{i + 1}</span>
+                        <span className="flex-1">{step.slice(3)}</span>
+                        <svg className="w-3 h-3 text-zinc-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+
+                {/* Multi-Response mockup */}
+                <div className="bg-zinc-50 border border-zinc-200 rounded-lg p-3">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600 mb-2">Multiple Response — Select All That Apply</p>
+                  <p className="text-xs text-zinc-600 mb-2">Which findings indicate decompensated shock? (Select 3)</p>
+                  <div className="grid grid-cols-2 gap-1">
+                    {[
+                      { text: "Altered mental status", checked: true },
+                      { text: "Hypotension", checked: true },
+                      { text: "Bounding pulses", checked: false },
+                      { text: "Delayed capillary refill", checked: true },
+                      { text: "Warm, dry skin", checked: false },
+                      { text: "Bradycardia", checked: false },
+                    ].map((opt) => (
+                      <div key={opt.text} className={`flex items-center gap-1.5 px-2 py-1 rounded text-[11px] ${opt.checked ? 'bg-emerald-50 border border-emerald-200 text-emerald-800' : 'bg-white border border-zinc-200 text-zinc-500'}`}>
+                        <div className={`w-3 h-3 rounded-sm border flex items-center justify-center shrink-0 ${opt.checked ? 'bg-emerald-600 border-emerald-600' : 'border-zinc-300'}`}>
+                          {opt.checked && <Check className="w-2 h-2 text-white" strokeWidth={3} />}
+                        </div>
+                        {opt.text}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Options Box mockup */}
+                <div className="bg-zinc-50 border border-zinc-200 rounded-lg p-3">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600 mb-2">Options Box — Matrix Grid</p>
+                  <table className="w-full text-[10px]">
+                    <thead>
+                      <tr>
+                        <th className="text-left py-1 px-1.5 text-zinc-500 font-medium">Medication</th>
+                        <th className="text-center py-1 px-1.5 text-zinc-500 font-medium">Indicated</th>
+                        <th className="text-center py-1 px-1.5 text-zinc-500 font-medium">Contraindicated</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { med: "Aspirin 324mg", val: "indicated" },
+                        { med: "Nitroglycerin 0.4mg SL", val: "contraindicated" },
+                        { med: "Epinephrine 0.3mg IM", val: "contraindicated" },
+                      ].map((row) => (
+                        <tr key={row.med} className="border-t border-zinc-200">
+                          <td className="py-1 px-1.5 text-zinc-700">{row.med}</td>
+                          <td className="text-center py-1 px-1.5">
+                            <div className={`w-3 h-3 rounded-full border mx-auto ${row.val === 'indicated' ? 'bg-emerald-600 border-emerald-600' : 'border-zinc-300'}`} />
+                          </td>
+                          <td className="text-center py-1 px-1.5">
+                            <div className={`w-3 h-3 rounded-full border mx-auto ${row.val === 'contraindicated' ? 'bg-emerald-600 border-emerald-600' : 'border-zinc-300'}`} />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
               <p className="text-xs text-zinc-400 italic mt-3">Interactive TEI formats &mdash; scored on every NREMT exam since 2024</p>
             </div>
