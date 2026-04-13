@@ -61,6 +61,10 @@ interface QuestionTemplate {
   data: MCData | MRData | DDData | BLData | OBData | CJSData;
   rationale: string;
   expanded: boolean;
+  // AI-generated metadata
+  domain?: string;
+  cjFunctions?: string[];
+  difficulty?: string;
 }
 
 const TEI_LABELS: Record<TEIType, string> = {
@@ -298,51 +302,75 @@ function TestBuilderContent() {
           );
           setSaveMessage('CJS scenario context updated!');
         } else {
-          // For standard types: update stem, options data, and rationale
-          // Normalize rationale — AI sometimes returns object instead of string
+          // Refine mode: MERGE AI data with existing — only fill empty fields
           const rationale = typeof q.rationale === 'string'
             ? q.rationale
             : (q.rationale ? JSON.stringify(q.rationale, null, 2) : '');
 
-          // Only overwrite data if AI returned valid structured options
-          // that match the expected format for this question type
-          let newData: any = null;
-          if (q.options && typeof q.options === 'object') {
-            if (existingQuestion.type === 'MC' && Array.isArray(q.options.options)) {
-              newData = q.options;
-            } else if (existingQuestion.type === 'MR' && Array.isArray(q.options.options)) {
-              newData = q.options;
-            } else if (existingQuestion.type === 'DD') {
-              // DD needs items array + categories array + correctMapping
-              const items = Array.isArray(q.options.items) ? q.options.items : null;
-              const categories = Array.isArray(q.options.categories) ? q.options.categories : null;
-              if (items && categories) {
-                newData = {
-                  items: items.map((it: any, idx: number) => typeof it === 'string' ? { id: `i${idx+1}`, text: it } : it),
-                  categories,
-                  correctMapping: q.options.correctMapping || {},
-                };
-              }
-            } else if (existingQuestion.type === 'OB' && Array.isArray(q.options.items)) {
-              newData = q.options;
-            } else if (existingQuestion.type === 'BL' && Array.isArray(q.options.items)) {
-              newData = q.options;
-            }
-          }
-
           setQuestions((prev) =>
-            prev.map((existing) =>
-              existing.id === questionId
-                ? {
-                    ...existing,
-                    stem: q.stem || existing.stem,
-                    data: newData || existing.data,
-                    rationale: rationale || existing.rationale,
+            prev.map((existing) => {
+              if (existing.id !== questionId) return existing;
+
+              // Only update stem if current one is empty or very short
+              const newStem = (!existing.stem || existing.stem.length < 20) ? (q.stem || existing.stem) : existing.stem;
+
+              // Only update rationale if current one is empty
+              const newRationale = (!existing.rationale || existing.rationale.length < 5) ? (rationale || existing.rationale) : existing.rationale;
+
+              // For options data: merge — only fill in empty fields, preserve filled ones
+              let newData = existing.data;
+              if (q.options && typeof q.options === 'object') {
+                const existData = existing.data as any;
+
+                if (existing.type === 'DD') {
+                  // DD: preserve filled categories/items, only fill empty ones
+                  const existCats = existData?.categories || [];
+                  const existItems = existData?.items || [];
+                  const aiCats = Array.isArray(q.options.categories) ? q.options.categories : [];
+                  const aiItems = Array.isArray(q.options.items) ? q.options.items : [];
+
+                  newData = {
+                    ...existData,
+                    // Keep existing categories if they have content, otherwise use AI
+                    categories: existCats.some((c: string) => c.trim()) ? existCats : aiCats,
+                    // Keep existing items if they have content, otherwise use AI
+                    items: existItems.some((it: any) => (it?.text || it)?.toString().trim()) ? existItems :
+                      aiItems.map((it: any, idx: number) => typeof it === 'string' ? { id: `i${idx+1}`, text: it } : it),
+                    // Always update correctMapping from AI if we don't have one
+                    correctMapping: Object.keys(existData?.correctMapping || {}).length > 0
+                      ? existData.correctMapping
+                      : (q.options.correctMapping || {}),
+                  };
+                } else if ((existing.type === 'MC' || existing.type === 'MR') && Array.isArray(q.options.options)) {
+                  // MC/MR: only overwrite if existing options are all empty
+                  const existOpts = existData?.options || [];
+                  const hasContent = existOpts.some((o: any) => o?.text?.trim());
+                  if (!hasContent) {
+                    newData = q.options;
                   }
-                : existing
-            )
+                  // else keep existing options
+                } else if ((existing.type === 'OB' || existing.type === 'BL') && Array.isArray(q.options.items)) {
+                  const existItems = existData?.items || [];
+                  const hasContent = existItems.some((it: any) => it?.toString().trim());
+                  if (!hasContent) {
+                    newData = q.options;
+                  }
+                }
+              }
+
+              return {
+                ...existing,
+                stem: newStem,
+                data: newData,
+                rationale: newRationale,
+                // Store AI metadata if we don't have it yet
+                domain: existing.domain || q.domain || undefined,
+                cjFunctions: existing.cjFunctions?.length ? existing.cjFunctions : (q.cj_functions || undefined),
+                difficulty: existing.difficulty || q.difficulty || undefined,
+              };
+            })
           );
-          setSaveMessage('Question updated with AI!');
+          setSaveMessage('Question refined with AI!');
         }
       } else {
         const newQuestions: QuestionTemplate[] = generated.map((q: any) => {
@@ -355,6 +383,9 @@ function TestBuilderContent() {
             data: q.options && typeof q.options === 'object' ? q.options : base.data,
             rationale: rat,
             expanded: false,
+            domain: q.domain || undefined,
+            cjFunctions: q.cj_functions || undefined,
+            difficulty: q.difficulty || undefined,
           };
         });
         setQuestions((prev) => [...prev, ...newQuestions]);
@@ -532,16 +563,40 @@ function TestBuilderContent() {
         .eq('assessment_id', currentAssessmentId);
 
       if (questions.length > 0) {
-        const questionRows = questions.map((q, idx) => ({
-          assessment_id: currentAssessmentId,
-          display_order: idx,
-          item_type: q.type,
-          stem: q.stem,
-          options: q.type === 'CJS' ? {} : q.data,
-          correct_answer: {},
-          rationale: q.rationale,
-          cjs_data: q.type === 'CJS' ? q.data : null,
-        }));
+        const questionRows = questions.map((q, idx) => {
+          const data = q.data as any;
+          // Extract correct answer from the options data structure
+          let correctAnswer: any = {};
+          if (q.type === 'MC' && data?.correctKey) {
+            correctAnswer = { correctKey: data.correctKey };
+          } else if (q.type === 'MR' && Array.isArray(data?.correctKeys)) {
+            correctAnswer = { correctKeys: data.correctKeys };
+          } else if (q.type === 'DD' && data?.correctMapping) {
+            correctAnswer = { correctMapping: data.correctMapping };
+          } else if (q.type === 'OB' && Array.isArray(data?.correctOrder)) {
+            correctAnswer = { correctOrder: data.correctOrder };
+          } else if (q.type === 'BL' && Array.isArray(data?.correctOrder)) {
+            correctAnswer = { correctOrder: data.correctOrder };
+          }
+
+          return {
+            assessment_id: currentAssessmentId,
+            display_order: idx,
+            item_type: q.type,
+            stem: q.stem,
+            options: q.type === 'CJS' ? {} : q.data,
+            correct_answer: correctAnswer,
+            rationale: q.rationale,
+            cjs_data: q.type === 'CJS' ? q.data : null,
+            metadata: {
+              certification_level: certLevel,
+              assessment_type: assessmentType,
+              domain: q.domain || null,
+              cj_functions: q.cjFunctions || null,
+              difficulty: q.difficulty || null,
+            },
+          };
+        });
 
         await supabase.from('instructor_questions').insert(questionRows);
       }
