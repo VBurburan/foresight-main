@@ -228,6 +228,9 @@ function TestBuilderContent() {
   };
 
   const handleGenerateAI = async (questionId?: string) => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 90_000);
+
     setGenerating(true);
     setSaveMessage('Generating with AI...');
 
@@ -236,7 +239,7 @@ function TestBuilderContent() {
       const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
       if (!supabaseUrl || !supabaseAnonKey) {
-        throw new Error('Supabase configuration missing');
+        throw new Error('Configuration error — please reload the page');
       }
 
       const targetType = questionId
@@ -245,6 +248,7 @@ function TestBuilderContent() {
 
       const response = await fetch(`${supabaseUrl}/functions/v1/generate-questions`, {
         method: 'POST',
+        signal: controller.signal,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${supabaseAnonKey}`,
@@ -258,25 +262,18 @@ function TestBuilderContent() {
         }),
       });
 
-      const responseText = await response.text();
-      let result;
-      try {
-        result = JSON.parse(responseText);
-      } catch {
-        throw new Error('Invalid response from AI service');
-      }
-
       if (!response.ok) {
-        throw new Error(result.error || `Generation failed (${response.status})`);
+        const text = await response.text().catch(() => '');
+        let msg = `Generation failed (${response.status})`;
+        try { msg = JSON.parse(text).error || msg; } catch { /* use default msg */ }
+        throw new Error(msg);
       }
 
-      const generated = Array.isArray(result.questions) ? result.questions : [];
+      const result = await response.json();
+      const generated = Array.isArray(result?.questions) ? result.questions : [];
 
       if (generated.length === 0) {
-        setSaveMessage('No questions generated — try again');
-        setTimeout(() => setSaveMessage(''), 3000);
-        setGenerating(false);
-        return;
+        throw new Error('No questions generated — try again');
       }
 
       if (questionId) {
@@ -312,10 +309,16 @@ function TestBuilderContent() {
       setTimeout(() => setSaveMessage(''), 3000);
     } catch (err: any) {
       console.error('AI generation error:', err);
-      setSaveMessage(err.message || 'Generation failed');
-      setTimeout(() => setSaveMessage(''), 4000);
+      if (err.name === 'AbortError') {
+        setSaveMessage('Generation timed out — try a simpler topic');
+      } else {
+        setSaveMessage(err.message || 'AI generation failed');
+      }
+      setTimeout(() => setSaveMessage(''), 5000);
+    } finally {
+      clearTimeout(timeout);
+      setGenerating(false);
     }
-    setGenerating(false);
   };
 
   // Load draft on mount — try Supabase first, fall back to localStorage

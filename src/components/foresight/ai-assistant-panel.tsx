@@ -87,22 +87,29 @@ export function AIAssistantPanel({
 
   const handleGenerate = async () => {
     if (totalCount === 0) return;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 120_000);
+
     setGenerating(true);
     setError('');
     setGenerated([]);
     setAccepted(new Set());
 
     try {
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-      // Build the items array for multi-type generation
+      if (!supabaseUrl || !supabaseAnonKey) {
+        throw new Error('Configuration error — please reload the page');
+      }
+
       const items = itemCounts
         .filter((t) => t.count > 0)
         .map((t) => ({ type: t.type, count: t.count }));
 
       const response = await fetch(`${supabaseUrl}/functions/v1/generate-questions`, {
         method: 'POST',
+        signal: controller.signal,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${supabaseAnonKey}`,
@@ -119,16 +126,30 @@ export function AIAssistantPanel({
       });
 
       if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || 'Generation failed');
+        const text = await response.text().catch(() => '');
+        let msg = `Generation failed (${response.status})`;
+        try { msg = JSON.parse(text).error || msg; } catch { /* use default */ }
+        throw new Error(msg);
       }
 
       const result = await response.json();
-      setGenerated(result.questions || []);
+      const questions = Array.isArray(result?.questions) ? result.questions : [];
+
+      if (questions.length === 0) {
+        throw new Error('No questions generated — try adjusting your settings');
+      }
+
+      setGenerated(questions);
     } catch (err: any) {
-      setError(err.message || 'Failed to generate questions');
+      if (err.name === 'AbortError') {
+        setError('Generation timed out — try fewer questions or a simpler topic.');
+      } else {
+        setError(err.message || 'Failed to generate questions');
+      }
+    } finally {
+      clearTimeout(timeout);
+      setGenerating(false);
     }
-    setGenerating(false);
   };
 
   const toggleAccept = (idx: number) => {
