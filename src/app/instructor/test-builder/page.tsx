@@ -242,9 +242,17 @@ function TestBuilderContent() {
         throw new Error('Configuration error — please reload the page');
       }
 
-      const targetType = questionId
-        ? questions.find((q) => q.id === questionId)?.type || 'MC'
-        : 'MC';
+      const existingQuestion = questionId ? questions.find((q) => q.id === questionId) : null;
+      const targetType = existingQuestion?.type || 'MC';
+
+      // For CJS, generate MC instead — CJS multi-phase structure is too complex for single-shot generation
+      const generateType = targetType === 'CJS' ? 'MC' : targetType;
+
+      // Build topic hint including existing question context for better refinement
+      let topicContext = assessmentName || 'EMS patient assessment';
+      if (existingQuestion?.stem) {
+        topicContext = `Improve this ${targetType} question about: ${existingQuestion.stem.slice(0, 200)}`;
+      }
 
       const response = await fetch(`${supabaseUrl}/functions/v1/generate-questions`, {
         method: 'POST',
@@ -256,9 +264,9 @@ function TestBuilderContent() {
         body: JSON.stringify({
           count: 1,
           certification_level: certLevel,
-          item_type: targetType,
+          item_type: generateType,
           difficulty: 'medium',
-          topic_hint: assessmentName || 'EMS patient assessment',
+          topic_hint: topicContext,
         }),
       });
 
@@ -276,21 +284,39 @@ function TestBuilderContent() {
         throw new Error('No questions generated — try again');
       }
 
-      if (questionId) {
+      if (questionId && existingQuestion) {
         const q = generated[0];
-        setQuestions((prev) =>
-          prev.map((existing) =>
-            existing.id === questionId
-              ? {
-                  ...existing,
-                  stem: q.stem || existing.stem,
-                  data: q.options || existing.data,
-                  rationale: q.rationale || existing.rationale,
-                }
-              : existing
-          )
-        );
-        setSaveMessage('Question updated with AI!');
+
+        if (existingQuestion.type === 'CJS') {
+          // For CJS: only update the stem (scenario context), preserve the phase structure
+          setQuestions((prev) =>
+            prev.map((existing) =>
+              existing.id === questionId
+                ? { ...existing, stem: q.stem || existing.stem }
+                : existing
+            )
+          );
+          setSaveMessage('CJS scenario context updated!');
+        } else {
+          // For standard types: update stem, options data, and rationale
+          // Only overwrite data if AI returned valid structured options
+          const hasValidOptions = q.options && typeof q.options === 'object' &&
+            (Array.isArray(q.options.options) || Array.isArray(q.options.items) || q.options.correctKey);
+
+          setQuestions((prev) =>
+            prev.map((existing) =>
+              existing.id === questionId
+                ? {
+                    ...existing,
+                    stem: q.stem || existing.stem,
+                    data: hasValidOptions ? q.options : existing.data,
+                    rationale: q.rationale || existing.rationale,
+                  }
+                : existing
+            )
+          );
+          setSaveMessage('Question updated with AI!');
+        }
       } else {
         const newQuestions: QuestionTemplate[] = generated.map((q: any) => {
           const type = (q.item_type || 'MC') as TEIType;
@@ -298,7 +324,7 @@ function TestBuilderContent() {
           return {
             ...base,
             stem: q.stem || '',
-            data: q.options || base.data,
+            data: q.options && typeof q.options === 'object' ? q.options : base.data,
             rationale: q.rationale || '',
             expanded: false,
           };
