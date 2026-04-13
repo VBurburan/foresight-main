@@ -144,11 +144,14 @@ function AnalyticsContent() {
         };
       });
 
-      // Aggregate domain stats
+      // Aggregate domain stats (with name normalization)
+      // Skip UUID-like keys from old data; skip domains that look like IDs
       const domainAccum: Record<string, { total: number; count: number }> = {};
       exams.forEach((e) => {
         if (e.domain_stats && typeof e.domain_stats === 'object') {
           Object.entries(e.domain_stats as Record<string, any>).forEach(([domain, val]) => {
+            // Skip UUID-like domain keys (old Path2Medic data)
+            if (domain.length > 40 || /^[0-9a-f]{8}-/.test(domain)) return;
             const score = typeof val === 'number' ? val : (val?.percentage ?? val?.score);
             if (typeof score === 'number') {
               if (!domainAccum[domain]) domainAccum[domain] = { total: 0, count: 0 };
@@ -220,44 +223,50 @@ function AnalyticsContent() {
         ? Math.round((allScores.reduce((a, b) => a + b, 0) / allScores.length) * 10) / 10
         : null;
 
-      // Build Domain×TEI heatmap from the aggregated stats
-      const heatmapAccum: Record<string, { correct: number; total: number }> = {};
-      exams.forEach((e) => {
-        const ds = e.domain_stats as Record<string, any> | null;
-        const ts = e.item_type_stats as Record<string, any> | null;
-        if (ds && ts) {
-          Object.keys(ds).forEach((domain) => {
-            Object.keys(ts).forEach((tei) => {
-              const key = `${domain}|${tei}`;
-              if (!heatmapAccum[key]) heatmapAccum[key] = { correct: 0, total: 0 };
-              const dStats = ds[domain];
-              const tStats = ts[tei];
-              if (dStats?.total && tStats?.total) {
-                // Estimate intersection using proportional allocation
-                const dPct = (dStats.percentage ?? 0) / 100;
-                const tPct = (tStats.percentage ?? 0) / 100;
-                const estCorrect = Math.round(dPct * tStats.correct);
-                const estTotal = Math.max(1, Math.round((dStats.total / (e.question_count || 5)) * tStats.total));
-                heatmapAccum[key].correct += estCorrect;
-                heatmapAccum[key].total += estTotal;
-              }
-            });
-          });
-        }
-      });
+      // Build Domain×TEI heatmap from session_responses + instructor_questions
+      // This needs actual per-question data, not session-level aggregates
+      const sessionIds = exams.map((e) => e.id);
+      let heatmap: { domain: string; teiType: string; correct: number; total: number; percentage: number }[] = [];
 
-      const heatmap = Object.entries(heatmapAccum)
-        .filter(([, v]) => v.total > 0)
-        .map(([key, v]) => {
-          const [domain, teiType] = key.split('|');
-          return {
-            domain,
-            teiType,
-            correct: v.correct,
-            total: v.total,
-            percentage: Math.round((v.correct / v.total) * 100),
-          };
-        });
+      if (sessionIds.length > 0) {
+        const { data: responses } = await supabase
+          .from('session_responses')
+          .select('is_correct, question_id')
+          .in('session_id', sessionIds.map(String));
+
+        if (responses && responses.length > 0) {
+          const questionIds = [...new Set(responses.map((r: any) => r.question_id))];
+          const { data: questionMeta } = await supabase
+            .from('instructor_questions')
+            .select('id, item_type, metadata')
+            .in('id', questionIds);
+
+          if (questionMeta) {
+            const qMap = new Map(questionMeta.map((q: any) => [q.id, q]));
+            const heatAccum: Record<string, { correct: number; total: number }> = {};
+
+            responses.forEach((r: any) => {
+              const q = qMap.get(r.question_id);
+              if (!q) return;
+              const domain = (q.metadata as any)?.domain || 'Unknown';
+              const tei = q.item_type || 'MC';
+              // Skip UUID-like domain values (old data)
+              if (domain.length > 40 || domain.includes('-')) return;
+              const key = `${domain}|${tei}`;
+              if (!heatAccum[key]) heatAccum[key] = { correct: 0, total: 0 };
+              heatAccum[key].total += 1;
+              if (r.is_correct) heatAccum[key].correct += 1;
+            });
+
+            heatmap = Object.entries(heatAccum)
+              .filter(([, v]) => v.total > 0)
+              .map(([key, v]) => {
+                const [domain, teiType] = key.split('|');
+                return { domain, teiType, correct: v.correct, total: v.total, percentage: Math.round((v.correct / v.total) * 100) };
+              });
+          }
+        }
+      }
 
       // Error distribution by domain
       const errorsByDomain = Object.entries(domainAccum)
