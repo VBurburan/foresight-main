@@ -13,7 +13,8 @@ export interface DomainPerformance {
   pre: number | null;
   post: number | null;
   change: number | null;
-  assessment: string;
+  correct: number;
+  total: number;
 }
 
 export interface TEIPerformance {
@@ -91,37 +92,12 @@ export const TEI_COLORS = [
   '#6366f1', '#ec4899', '#14b8a6', '#f97316', '#a855f7', '#84cc16',
 ];
 
-// Assessment label based on score change
-export function getAssessmentLabel(pre: number | null, post: number | null): string {
-  if (pre === null || post === null) return '--';
-  const change = post - pre;
-  if (post >= 90) return 'MASTERED';
-  if (change >= 20) return 'STRONG GAIN';
-  if (change >= 10) return 'IMPROVED';
-  if (change < 0 || post < 60) return 'NEXT PRIORITY';
-  return 'PROGRESSING';
-}
-
-export function getAssessmentColor(label: string): string {
-  switch (label) {
-    case 'MASTERED': return 'text-emerald-700';
-    case 'STRONG GAIN': return 'text-emerald-700';
-    case 'IMPROVED': return 'text-blue-700';
-    case 'PROGRESSING': return 'text-zinc-600';
-    case 'NEXT PRIORITY': return 'text-amber-700';
-    default: return 'text-zinc-500';
-  }
-}
-
-export function getAssessmentBg(label: string): string {
-  switch (label) {
-    case 'MASTERED': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-    case 'STRONG GAIN': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-    case 'IMPROVED': return 'bg-blue-50 text-blue-700 border-blue-200';
-    case 'PROGRESSING': return 'bg-zinc-100 text-zinc-600 border-zinc-300';
-    case 'NEXT PRIORITY': return 'bg-amber-50 text-amber-700 border-amber-200';
-    default: return 'bg-zinc-100 text-zinc-500 border-zinc-300';
-  }
+// Score threshold color for domain/TEI bars
+export function scoreColor(pct: number): string {
+  if (pct >= 80) return 'text-emerald-700';
+  if (pct >= 70) return 'text-blue-700';
+  if (pct >= 60) return 'text-amber-700';
+  return 'text-red-700';
 }
 
 // Heatmap cell color based on percentage
@@ -166,12 +142,12 @@ export function generateDemoData(): AnalyticsData {
       { function: 'Evaluate Outcomes', shortName: 'Evaluate', pre: 50.0, post: 87.5, change: 37.5 },
     ],
     domainPerformance: [
-      { domain: 'Airway, Resp. & Vent.', pre: 80, post: 100, change: 20, assessment: 'MASTERED' },
-      { domain: 'Cardiology & Resus.', pre: 75, post: 80, change: 5, assessment: 'IMPROVED' },
-      { domain: 'Medical/OB/GYN', pre: 50, post: 80, change: 30, assessment: 'STRONG GAIN' },
-      { domain: 'Trauma', pre: 50, post: 80, change: 30, assessment: 'STRONG GAIN' },
-      { domain: 'EMS Operations', pre: 60, post: 80, change: 20, assessment: 'IMPROVED' },
-      { domain: 'Clinical Judgment', pre: 68, post: 53, change: -14.3, assessment: 'NEXT PRIORITY' },
+      { domain: 'Airway, Resp. & Vent.', pre: 80, post: 100, change: 20, correct: 10, total: 10 },
+      { domain: 'Cardiology & Resus.', pre: 75, post: 80, change: 5, correct: 8, total: 10 },
+      { domain: 'Medical/OB/GYN', pre: 50, post: 80, change: 30, correct: 12, total: 15 },
+      { domain: 'Trauma', pre: 50, post: 80, change: 30, correct: 8, total: 10 },
+      { domain: 'EMS Operations', pre: 60, post: 80, change: 20, correct: 8, total: 10 },
+      { domain: 'Clinical Judgment', pre: 68, post: 53, change: -14.3, correct: 8, total: 15 },
     ],
     teiPerformance: [
       { type: 'MC', label: 'Multiple Choice', pre: 74, post: 88, change: 13.5, preCorrect: 57, preTotal: 77, postCorrect: 35, postTotal: 40 },

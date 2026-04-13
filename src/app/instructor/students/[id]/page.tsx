@@ -186,7 +186,8 @@ function StudentDetailContent({ studentId }: { studentId: string }) {
             pre: null,
             post: avg,
             change: null,
-            assessment: '',
+            correct: 0,
+            total: 0,
           };
         })
         .sort((a, b) => (b.post ?? 0) - (a.post ?? 0));

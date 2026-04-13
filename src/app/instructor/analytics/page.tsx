@@ -16,6 +16,7 @@ import {
   SpecificErrorTable,
   ReadinessProjection,
   ScoreSummaryCard,
+  InsightBox,
 } from '@/components/analytics/charts';
 import {
   type AnalyticsData,
@@ -162,16 +163,11 @@ function AnalyticsContent() {
         }
       });
 
-      const domainPerformance = Object.entries(domainAccum).map(([domain, { total, count }]) => {
+      // domainPerformance will be finalized after heatmap is computed (to include correct/total)
+      const domainPerformanceAvgs = Object.entries(domainAccum).map(([domain, { total, count }]) => {
         const avg = Math.round(total / count);
-        return {
-          domain,
-          pre: null as number | null,
-          post: avg,
-          change: null as number | null,
-          assessment: '',
-        };
-      }).sort((a, b) => (b.post ?? 0) - (a.post ?? 0));
+        return { domain, avg };
+      });
 
       // Aggregate TEI stats
       const teiAccum: Record<string, { total: number; count: number }> = {};
@@ -268,6 +264,42 @@ function AnalyticsContent() {
         }
       }
 
+      // Derive domain-level correct/total from heatmap data
+      const domainCounts: Record<string, { correct: number; total: number }> = {};
+      heatmap.forEach((cell) => {
+        if (!domainCounts[cell.domain]) domainCounts[cell.domain] = { correct: 0, total: 0 };
+        domainCounts[cell.domain].correct += cell.correct;
+        domainCounts[cell.domain].total += cell.total;
+      });
+
+      const domainPerformance = domainPerformanceAvgs.map(({ domain, avg }) => {
+        const counts = domainCounts[domain] ?? { correct: 0, total: 0 };
+        // When question-level data exists, derive score from it (more accurate than session-level averages)
+        const score = counts.total > 0 ? Math.round((counts.correct / counts.total) * 100) : avg;
+        return {
+          domain,
+          pre: null as number | null,
+          post: score,
+          change: null as number | null,
+          correct: counts.correct,
+          total: counts.total,
+        };
+      }).sort((a, b) => (b.post ?? 0) - (a.post ?? 0));
+
+      // Derive TEI-level correct/total from heatmap data
+      const teiCounts: Record<string, { correct: number; total: number }> = {};
+      heatmap.forEach((cell) => {
+        if (!teiCounts[cell.teiType]) teiCounts[cell.teiType] = { correct: 0, total: 0 };
+        teiCounts[cell.teiType].correct += cell.correct;
+        teiCounts[cell.teiType].total += cell.total;
+      });
+
+      const teiPerformanceWithCounts = teiPerformance.map((t) => {
+        const counts = teiCounts[t.type] ?? { correct: 0, total: 0 };
+        const score = counts.total > 0 ? Math.round((counts.correct / counts.total) * 100) : t.post;
+        return { ...t, post: score, postCorrect: counts.correct, postTotal: counts.total };
+      });
+
       // Error distribution by domain
       const errorsByDomain = Object.entries(domainAccum)
         .filter(([, { total, count }]) => total > 0)
@@ -278,13 +310,22 @@ function AnalyticsContent() {
         })
         .sort((a, b) => b.value - a.value);
 
+      // Error distribution by TEI
+      const errorsByTEI = teiPerformanceWithCounts
+        .filter((t) => t.postTotal && t.postTotal > 0)
+        .map((t) => {
+          const errorRate = 100 - (t.post ?? 0);
+          return { name: `${t.type} (${t.label})`, value: errorRate, color: errorRate > 30 ? '#ef4444' : errorRate > 15 ? '#f59e0b' : '#22c55e' };
+        })
+        .sort((a, b) => b.value - a.value);
+
       setData({
         cjFunctions,
         domainPerformance,
-        teiPerformance,
+        teiPerformance: teiPerformanceWithCounts,
         heatmap,
         errorsByDomain,
-        errorsByTEI: [],
+        errorsByTEI,
         specificErrors: [],
         overallPre: null,
         overallPost: overallAvg,

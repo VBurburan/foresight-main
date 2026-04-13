@@ -3,7 +3,7 @@
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend,
+  ReferenceLine, Cell, Legend, LabelList,
 } from 'recharts';
 import {
   type CJFunctionScore,
@@ -12,16 +12,15 @@ import {
   type HeatmapCell,
   type ErrorByCategory,
   type SpecificError,
-  getAssessmentLabel,
-  getAssessmentBg,
+  scoreColor,
   heatmapColor,
   heatmapBorder,
   formatDelta,
   deltaColor,
 } from '@/lib/analytics';
 
-const CHART_PRE = '#94a3b8';   // slate-400 (unused in single-view mode)
 const CHART_POST = '#2563eb';  // blue-600 (primary data color)
+const PASSING = 70;
 
 const tooltipStyle = {
   borderRadius: '10px',
@@ -32,17 +31,33 @@ const tooltipStyle = {
   boxShadow: '0 8px 30px rgba(0,0,0,0.1)',
 };
 
+// ─── Objective Insight Box ───────────────────────────────────────
+export function InsightBox({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mt-4 bg-slate-50 border border-slate-200 rounded-lg p-4 border-l-4 border-l-blue-400">
+      <p className="text-sm text-slate-700 leading-relaxed">{children}</p>
+    </div>
+  );
+}
+
 // ─── 1. Clinical Judgment Radar Chart ─────────────────────────────
 export function CJRadarChart({ data }: { data: CJFunctionScore[] }) {
   const radarData = data.map((d) => ({
     subject: d.shortName,
-    'Cohort Avg': d.pre ?? 0,
     'Score': d.post ?? 0,
     fullMark: 100,
   }));
 
-  const hasPre = data.some((d) => d.pre !== null);
   const hasPost = data.some((d) => d.post !== null);
+
+  // Compute insight
+  const scored = data.filter((d) => d.post !== null);
+  const strongest = scored.length > 0
+    ? scored.reduce((a, b) => ((a.post ?? 0) > (b.post ?? 0) ? a : b))
+    : null;
+  const weakest = scored.length > 0
+    ? scored.reduce((a, b) => ((a.post ?? 0) < (b.post ?? 0) ? a : b))
+    : null;
 
   return (
     <div>
@@ -59,18 +74,6 @@ export function CJRadarChart({ data }: { data: CJFunctionScore[] }) {
             tick={{ fill: '#52525b', fontSize: 10 }}
             tickCount={6}
           />
-          {hasPre && (
-            <Radar
-              name="Cohort Avg"
-              dataKey="Cohort Avg"
-              stroke={CHART_PRE}
-              fill={CHART_PRE}
-              fillOpacity={0.1}
-              strokeWidth={2}
-              strokeDasharray="5 5"
-              dot={{ r: 4, fill: CHART_PRE, stroke: '#ffffff', strokeWidth: 2 }}
-            />
-          )}
           {hasPost && (
             <Radar
               name="Score"
@@ -83,10 +86,6 @@ export function CJRadarChart({ data }: { data: CJFunctionScore[] }) {
             />
           )}
           <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}%`]} />
-          <Legend
-            wrapperStyle={{ fontSize: 12, color: '#a1a1aa' }}
-            iconType="line"
-          />
         </RadarChart>
       </ResponsiveContainer>
 
@@ -94,57 +93,53 @@ export function CJRadarChart({ data }: { data: CJFunctionScore[] }) {
       <div className="mt-4 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-zinc-200">
-              <th className="text-left py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Cognitive Function</th>
-              {hasPre && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Cohort Avg</th>}
-              {hasPost && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Score</th>}
-              {hasPre && hasPost && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Change</th>}
+            <tr className="bg-slate-800 text-white">
+              <th className="text-left py-2.5 px-3 text-xs font-medium uppercase tracking-wider">Cognitive Function</th>
+              <th className="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider">Score</th>
             </tr>
           </thead>
           <tbody>
             {data.map((row) => (
               <tr key={row.function} className="border-b border-zinc-100 hover:bg-zinc-50">
                 <td className="py-2 px-3 text-zinc-700 font-medium">{row.function}</td>
-                {hasPre && (
-                  <td className="py-2 px-3 text-center text-zinc-600 tabular-nums">
-                    {row.pre !== null ? `${row.pre.toFixed(1)}%` : '--'}
-                  </td>
-                )}
-                {hasPost && (
-                  <td className="py-2 px-3 text-center text-zinc-600 tabular-nums">
-                    {row.post !== null ? `${row.post.toFixed(1)}%` : '--'}
-                  </td>
-                )}
-                {hasPre && hasPost && (
-                  <td className={`py-2 px-3 text-center font-semibold tabular-nums ${deltaColor(row.change)}`}>
-                    {formatDelta(row.change)}
-                  </td>
-                )}
+                <td className={`py-2 px-3 text-center tabular-nums font-semibold ${scoreColor(row.post ?? 0)}`}>
+                  {row.post !== null ? `${row.post.toFixed(1)}%` : '--'}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {strongest && weakest && strongest.function !== weakest.function && (
+        <InsightBox>
+          Highest-performing CJ function: <strong>{strongest.function}</strong> ({strongest.post?.toFixed(1)}%).
+          {' '}Lowest: <strong>{weakest.function}</strong> ({weakest.post?.toFixed(1)}%).
+          {(weakest.post ?? 0) < 60 && ` ${weakest.function} is below 60% and may need targeted reinforcement.`}
+        </InsightBox>
+      )}
     </div>
   );
 }
 
 // ─── 2. Domain Performance Bars ───────────────────────────────────
 export function DomainBars({ data }: { data: DomainPerformance[] }) {
-  const hasPre = data.some((d) => d.pre !== null);
-  const hasPost = data.some((d) => d.post !== null);
-
   const chartData = data.map((d) => ({
-    domain: d.domain.length > 18 ? d.domain.slice(0, 16) + '...' : d.domain,
+    domain: d.domain.length > 22 ? d.domain.slice(0, 20) + '...' : d.domain,
     fullDomain: d.domain,
-    'Cohort Avg': d.pre ?? 0,
-    'Score': d.post ?? 0,
+    Score: d.post ?? 0,
   }));
+
+  // Compute insights
+  const belowPassing = data.filter((d) => (d.post ?? 0) < PASSING);
+  const aboveEighty = data.filter((d) => (d.post ?? 0) >= 80);
+  const totalCorrect = data.reduce((s, d) => s + d.correct, 0);
+  const totalAll = data.reduce((s, d) => s + d.total, 0);
 
   return (
     <div>
       <ResponsiveContainer width="100%" height={320}>
-        <BarChart data={chartData} barGap={2} barCategoryGap="15%">
+        <BarChart data={chartData} barCategoryGap="15%">
           <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
           <XAxis
             dataKey="domain"
@@ -165,134 +160,145 @@ export function DomainBars({ data }: { data: DomainPerformance[] }) {
             tickFormatter={(v) => `${v}%`}
           />
           <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}%`]} />
-          {hasPre && (
-            <Bar dataKey="Cohort Avg" fill={CHART_PRE} radius={[3, 3, 0, 0]} maxBarSize={36} />
-          )}
-          {hasPost && (
-            <Bar dataKey="Score" fill={CHART_POST} radius={[3, 3, 0, 0]} maxBarSize={36} />
-          )}
-          <Legend wrapperStyle={{ fontSize: 12, color: '#a1a1aa' }} iconType="square" />
+          <ReferenceLine y={PASSING} stroke="#dc2626" strokeDasharray="6 4" strokeWidth={1.5} label={{ value: `${PASSING}% Passing`, position: 'right', fill: '#dc2626', fontSize: 11, fontWeight: 600 }} />
+          <Bar dataKey="Score" fill={CHART_POST} radius={[3, 3, 0, 0]} maxBarSize={48}>
+            <LabelList dataKey="Score" position="top" formatter={(v: number) => `${v}%`} style={{ fill: '#3f3f46', fontSize: 11, fontWeight: 600 }} />
+            {chartData.map((entry, i) => (
+              <Cell key={i} fill={entry.Score >= 80 ? '#16a34a' : entry.Score >= PASSING ? '#2563eb' : entry.Score >= 60 ? '#d97706' : '#dc2626'} />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
 
-      {/* Assessment table */}
+      {/* Domain data table with correct/total */}
       <div className="mt-4 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-zinc-200">
-              <th className="text-left py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Domain</th>
-              {hasPre && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Cohort Avg</th>}
-              {hasPost && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Score</th>}
-              {hasPre && hasPost && <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Change</th>}
-              <th className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Assessment</th>
+            <tr className="bg-slate-800 text-white">
+              <th className="text-left py-2.5 px-3 text-xs font-medium uppercase tracking-wider">Domain</th>
+              <th className="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider">Correct / Total</th>
+              <th className="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider">Score</th>
             </tr>
           </thead>
           <tbody>
-            {data.map((row) => {
-              const label = getAssessmentLabel(row.pre, row.post);
-              return (
-                <tr key={row.domain} className="border-b border-zinc-100 hover:bg-zinc-50">
-                  <td className="py-2 px-3 text-zinc-700">{row.domain}</td>
-                  {hasPre && (
-                    <td className="py-2 px-3 text-center text-zinc-600 tabular-nums">{row.pre !== null ? `${row.pre}%` : '--'}</td>
-                  )}
-                  {hasPost && (
-                    <td className="py-2 px-3 text-center text-zinc-600 tabular-nums">{row.post !== null ? `${row.post}%` : '--'}</td>
-                  )}
-                  {hasPre && hasPost && (
-                    <td className={`py-2 px-3 text-center font-semibold tabular-nums ${deltaColor(row.change)}`}>
-                      {formatDelta(row.change)}
-                    </td>
-                  )}
-                  <td className="py-2 px-3 text-center">
-                    <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold border ${getAssessmentBg(label)}`}>
-                      {label}
-                    </span>
-                  </td>
-                </tr>
-              );
-            })}
+            {data.map((row) => (
+              <tr key={row.domain} className="border-b border-zinc-100 hover:bg-zinc-50">
+                <td className="py-2 px-3 text-zinc-700 font-medium">{row.domain}</td>
+                <td className="py-2 px-3 text-center text-zinc-600 tabular-nums">
+                  {row.total > 0 ? `${row.correct} / ${row.total}` : '--'}
+                </td>
+                <td className={`py-2 px-3 text-center font-semibold tabular-nums ${scoreColor(row.post ?? 0)}`}>
+                  {row.post !== null ? `${row.post}%` : '--'}
+                </td>
+              </tr>
+            ))}
+            {totalAll > 0 && (
+              <tr className="bg-zinc-50 font-semibold border-t-2 border-zinc-300">
+                <td className="py-2 px-3 text-zinc-900">Total</td>
+                <td className="py-2 px-3 text-center text-zinc-700 tabular-nums">{totalCorrect} / {totalAll}</td>
+                <td className={`py-2 px-3 text-center tabular-nums ${scoreColor(totalAll > 0 ? Math.round((totalCorrect / totalAll) * 100) : 0)}`}>
+                  {totalAll > 0 ? `${Math.round((totalCorrect / totalAll) * 100)}%` : '--'}
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
+
+      <InsightBox>
+        {totalAll > 0 && <>Overall: <strong>{totalCorrect} of {totalAll}</strong> questions answered correctly ({Math.round((totalCorrect / totalAll) * 100)}%). </>}
+        {belowPassing.length > 0 && (
+          <>{belowPassing.length} domain{belowPassing.length > 1 ? 's' : ''} below {PASSING}% passing threshold: {belowPassing.map((d) => d.domain).join(', ')}. </>
+        )}
+        {belowPassing.length === 0 && aboveEighty.length > 0 && (
+          <>All domains at or above passing. {aboveEighty.length} domain{aboveEighty.length > 1 ? 's' : ''} above 80%.</>
+        )}
+      </InsightBox>
     </div>
   );
 }
 
 // ─── 3. TEI Format Performance ────────────────────────────────────
 export function TEIBars({ data }: { data: TEIPerformance[] }) {
-  const hasPre = data.some((d) => d.pre !== null);
-  const hasPost = data.some((d) => d.post !== null);
-
   const chartData = data.map((d) => ({
     type: d.type,
-    label: `${d.type}\n(${d.label})`,
-    'Cohort Avg': d.pre ?? 0,
-    'Score': d.post ?? 0,
+    label: d.label,
+    Score: d.post ?? 0,
   }));
 
-  // Volume breakdown data
-  const hasVolume = data.some((d) => d.preTotal || d.postTotal);
+  const belowPassing = data.filter((d) => (d.post ?? 0) < PASSING);
+  const totalCorrect = data.reduce((s, d) => s + (d.postCorrect ?? 0), 0);
+  const totalAll = data.reduce((s, d) => s + (d.postTotal ?? 0), 0);
 
   return (
-    <div className="space-y-8">
-      {/* Accuracy bars */}
-      <div>
-        <h4 className="text-sm font-medium text-zinc-700 mb-3">TEI Format Performance</h4>
-        <ResponsiveContainer width="100%" height={280}>
-          <BarChart data={chartData} barGap={2} barCategoryGap="20%">
-            <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
-            <XAxis dataKey="type" tick={{ fill: '#a1a1aa', fontSize: 12 }} axisLine={{ stroke: '#27272a' }} tickLine={false} />
-            <YAxis domain={[0, 100]} tick={{ fill: '#71717a', fontSize: 11 }} axisLine={false} tickLine={false} width={36} tickFormatter={(v) => `${v}%`} />
-            <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}%`]} />
-            {hasPre && <Bar dataKey="Cohort Avg" fill={CHART_PRE} radius={[3, 3, 0, 0]} maxBarSize={40} />}
-            {hasPost && <Bar dataKey="Score" fill={CHART_POST} radius={[3, 3, 0, 0]} maxBarSize={40} />}
-            <Legend wrapperStyle={{ fontSize: 12, color: '#a1a1aa' }} iconType="square" />
-          </BarChart>
-        </ResponsiveContainer>
+    <div>
+      <ResponsiveContainer width="100%" height={280}>
+        <BarChart data={chartData} barCategoryGap="20%">
+          <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
+          <XAxis dataKey="type" tick={{ fill: '#a1a1aa', fontSize: 12 }} axisLine={{ stroke: '#27272a' }} tickLine={false} />
+          <YAxis domain={[0, 100]} tick={{ fill: '#71717a', fontSize: 11 }} axisLine={false} tickLine={false} width={36} tickFormatter={(v) => `${v}%`} />
+          <Tooltip
+            contentStyle={tooltipStyle}
+            formatter={(v: number, name: string, props: any) => {
+              const d = data.find((t) => t.type === props.payload?.type);
+              const detail = d?.postTotal ? ` (${d.postCorrect}/${d.postTotal})` : '';
+              return [`${v}%${detail}`];
+            }}
+          />
+          <ReferenceLine y={PASSING} stroke="#dc2626" strokeDasharray="6 4" strokeWidth={1.5} label={{ value: `${PASSING}%`, position: 'right', fill: '#dc2626', fontSize: 11, fontWeight: 600 }} />
+          <Bar dataKey="Score" radius={[3, 3, 0, 0]} maxBarSize={48}>
+            <LabelList dataKey="Score" position="top" formatter={(v: number) => `${v}%`} style={{ fill: '#3f3f46', fontSize: 11, fontWeight: 600 }} />
+            {chartData.map((entry, i) => (
+              <Cell key={i} fill={entry.Score >= 80 ? '#16a34a' : entry.Score >= PASSING ? '#2563eb' : entry.Score >= 60 ? '#d97706' : '#dc2626'} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+
+      {/* TEI data table with correct/total */}
+      <div className="mt-4 overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-slate-800 text-white">
+              <th className="text-left py-2.5 px-3 text-xs font-medium uppercase tracking-wider">Format</th>
+              <th className="text-left py-2.5 px-3 text-xs font-medium uppercase tracking-wider">Description</th>
+              <th className="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider">Correct / Total</th>
+              <th className="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider">Accuracy</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((row) => (
+              <tr key={row.type} className="border-b border-zinc-100 hover:bg-zinc-50">
+                <td className="py-2 px-3">
+                  <span className="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-300">{row.type}</span>
+                </td>
+                <td className="py-2 px-3 text-zinc-600">{row.label}</td>
+                <td className="py-2 px-3 text-center text-zinc-600 tabular-nums">
+                  {row.postTotal ? `${row.postCorrect} / ${row.postTotal}` : '--'}
+                </td>
+                <td className={`py-2 px-3 text-center font-semibold tabular-nums ${scoreColor(row.post ?? 0)}`}>
+                  {row.post !== null ? `${row.post}%` : '--'}
+                </td>
+              </tr>
+            ))}
+            {totalAll > 0 && (
+              <tr className="bg-zinc-50 font-semibold border-t-2 border-zinc-300">
+                <td className="py-2 px-3 text-zinc-900" colSpan={2}>Total</td>
+                <td className="py-2 px-3 text-center text-zinc-700 tabular-nums">{totalCorrect} / {totalAll}</td>
+                <td className={`py-2 px-3 text-center tabular-nums ${scoreColor(totalAll > 0 ? Math.round((totalCorrect / totalAll) * 100) : 0)}`}>
+                  {totalAll > 0 ? `${Math.round((totalCorrect / totalAll) * 100)}%` : '--'}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
-      {/* Volume & accuracy breakdown */}
-      {hasVolume && (
-        <div>
-          <h4 className="text-sm font-medium text-zinc-700 mb-3">TEI Volume & Accuracy Breakdown</h4>
-          <div className="grid grid-cols-2 gap-4">
-            {data.filter((d) => d.preTotal || d.postTotal).map((d) => {
-              const preAcc = d.preTotal ? Math.round(((d.preCorrect ?? 0) / d.preTotal) * 100) : null;
-              const postAcc = d.postTotal ? Math.round(((d.postCorrect ?? 0) / d.postTotal) * 100) : null;
-              return (
-                <div key={d.type} className="bg-zinc-100 border border-zinc-200 rounded-lg p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-zinc-700">{d.type}</span>
-                    <span className="text-xs text-zinc-400">{d.label}</span>
-                  </div>
-                  {d.preTotal != null && (
-                    <div className="mb-1.5">
-                      <div className="flex justify-between text-xs mb-0.5">
-                        <span className="text-zinc-400">Pre</span>
-                        <span className="text-zinc-600">{d.preCorrect}/{d.preTotal} ({preAcc}%)</span>
-                      </div>
-                      <div className="h-2 bg-zinc-100 rounded-full overflow-hidden">
-                        <div className="h-full rounded-full bg-violet-600/70" style={{ width: `${preAcc}%` }} />
-                      </div>
-                    </div>
-                  )}
-                  {d.postTotal != null && (
-                    <div>
-                      <div className="flex justify-between text-xs mb-0.5">
-                        <span className="text-zinc-400">Post</span>
-                        <span className="text-zinc-600">{d.postCorrect}/{d.postTotal} ({postAcc}%)</span>
-                      </div>
-                      <div className="h-2 bg-zinc-100 rounded-full overflow-hidden">
-                        <div className="h-full rounded-full bg-blue-600/70" style={{ width: `${postAcc}%` }} />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
+      {belowPassing.length > 0 && (
+        <InsightBox>
+          {belowPassing.length} TEI format{belowPassing.length > 1 ? 's' : ''} below {PASSING}%: {belowPassing.map((d) => `${d.type} (${d.label}) at ${d.post}%`).join(', ')}.
+          {' '}These question types may require additional practice.
+        </InsightBox>
       )}
     </div>
   );
@@ -306,48 +312,71 @@ export function DomainTEIHeatmap({ data }: { data: HeatmapCell[] }) {
   const getCell = (domain: string, tei: string) =>
     data.find((d) => d.domain === domain && d.teiType === tei);
 
+  // Find weakest cells for insight
+  const weakCells = [...data]
+    .filter((d) => d.total >= 2 && d.percentage < 50)
+    .sort((a, b) => a.percentage - b.percentage)
+    .slice(0, 3);
+
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr>
-            <th className="text-left py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider min-w-[140px]">Domain</th>
-            {teiTypes.map((t) => (
-              <th key={t} className="text-center py-2 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider min-w-[80px]">{t}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {domains.map((domain) => (
-            <tr key={domain}>
-              <td className="py-1 px-3 text-zinc-700 text-xs font-medium">{domain}</td>
-              {teiTypes.map((tei) => {
-                const cell = getCell(domain, tei);
-                if (!cell || cell.total === 0) {
+    <div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-slate-800 text-white">
+              <th className="text-left py-2.5 px-3 text-xs font-medium uppercase tracking-wider min-w-[140px]">Domain</th>
+              {teiTypes.map((t) => (
+                <th key={t} className="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider min-w-[80px]">{t}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {domains.map((domain) => (
+              <tr key={domain}>
+                <td className="py-1.5 px-3 text-zinc-700 text-xs font-medium">{domain}</td>
+                {teiTypes.map((tei) => {
+                  const cell = getCell(domain, tei);
+                  if (!cell || cell.total === 0) {
+                    return (
+                      <td key={tei} className="py-1 px-1">
+                        <div className="flex items-center justify-center h-14 rounded-md bg-zinc-50 text-zinc-400 text-xs">--</div>
+                      </td>
+                    );
+                  }
                   return (
                     <td key={tei} className="py-1 px-1">
-                      <div className="flex items-center justify-center h-12 rounded-md bg-zinc-100 text-zinc-500 text-xs">--</div>
+                      <div className={`flex flex-col items-center justify-center h-14 rounded-md border ${heatmapColor(cell.percentage)} ${heatmapBorder(cell.percentage)} transition-colors`}>
+                        <span className="text-sm font-bold tabular-nums">{cell.percentage}%</span>
+                        <span className="text-[10px] opacity-70 tabular-nums">{cell.correct}/{cell.total}</span>
+                      </div>
                     </td>
                   );
-                }
-                return (
-                  <td key={tei} className="py-1 px-1">
-                    <div className={`flex flex-col items-center justify-center h-12 rounded-md border ${heatmapColor(cell.percentage)} ${heatmapBorder(cell.percentage)} transition-colors`}>
-                      <span className="text-xs font-bold">{cell.correct}/{cell.total}</span>
-                      <span className="text-[10px] opacity-80">({cell.percentage}%)</span>
-                    </div>
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Color legend */}
+      <div className="flex items-center gap-4 mt-3 text-xs text-zinc-500">
+        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-red-100 border border-red-400/20" /> &lt;40%</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-amber-50 border border-amber-400/20" /> 40–59%</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-emerald-50 border border-emerald-500/20" /> 60–79%</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-emerald-100 border border-emerald-400/30" /> 80%+</span>
+      </div>
+
+      {weakCells.length > 0 && (
+        <InsightBox>
+          Weakest intersections: {weakCells.map((c) => `${c.domain} × ${c.teiType} (${c.correct}/${c.total}, ${c.percentage}%)`).join('; ')}.
+          {' '}These combinations show where content knowledge and format difficulty overlap.
+        </InsightBox>
+      )}
     </div>
   );
 }
 
-// ─── 5. Error Distribution Donuts ─────────────────────────────────
+// ─── 5. Error Distribution — Horizontal Bars (replaces donuts) ───
 export function ErrorDistribution({
   byDomain,
   byTEI,
@@ -355,56 +384,46 @@ export function ErrorDistribution({
   byDomain: ErrorByCategory[];
   byTEI: ErrorByCategory[];
 }) {
-  const renderLabel = ({ name, value }: { name: string; value: number }) => `${name} (${value}%)`;
-
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-      <div>
-        <h4 className="text-sm font-medium text-zinc-700 mb-2 text-center">Errors by Domain</h4>
-        <ResponsiveContainer width="100%" height={260}>
-          <PieChart>
-            <Pie
-              data={byDomain}
-              cx="50%"
-              cy="50%"
-              innerRadius={50}
-              outerRadius={90}
-              paddingAngle={2}
-              dataKey="value"
-              label={renderLabel}
-              labelLine={{ stroke: '#52525b' }}
-            >
-              {byDomain.map((entry, i) => (
-                <Cell key={i} fill={entry.color} stroke="transparent" />
-              ))}
-            </Pie>
-            <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}%`]} />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
-      <div>
-        <h4 className="text-sm font-medium text-zinc-700 mb-2 text-center">Errors by TEI Format</h4>
-        <ResponsiveContainer width="100%" height={260}>
-          <PieChart>
-            <Pie
-              data={byTEI}
-              cx="50%"
-              cy="50%"
-              innerRadius={50}
-              outerRadius={90}
-              paddingAngle={2}
-              dataKey="value"
-              label={renderLabel}
-              labelLine={{ stroke: '#52525b' }}
-            >
-              {byTEI.map((entry, i) => (
-                <Cell key={i} fill={entry.color} stroke="transparent" />
-              ))}
-            </Pie>
-            <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}%`]} />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {byDomain.length > 0 && (
+        <div>
+          <h4 className="text-sm font-medium text-zinc-700 mb-3">Error Rate by Domain</h4>
+          <ResponsiveContainer width="100%" height={Math.max(180, byDomain.length * 40)}>
+            <BarChart data={byDomain} layout="vertical" barCategoryGap="20%">
+              <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" horizontal={false} />
+              <XAxis type="number" domain={[0, 100]} tick={{ fill: '#71717a', fontSize: 11 }} tickFormatter={(v) => `${v}%`} />
+              <YAxis type="category" dataKey="name" tick={{ fill: '#52525b', fontSize: 11 }} width={140} tickLine={false} axisLine={false} />
+              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}% error rate`]} />
+              <Bar dataKey="value" radius={[0, 4, 4, 0]} maxBarSize={24}>
+                <LabelList dataKey="value" position="right" formatter={(v: number) => `${v}%`} style={{ fill: '#52525b', fontSize: 11, fontWeight: 500 }} />
+                {byDomain.map((entry, i) => (
+                  <Cell key={i} fill={entry.value > 30 ? '#dc2626' : entry.value > 15 ? '#d97706' : '#16a34a'} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+      {byTEI.length > 0 && (
+        <div>
+          <h4 className="text-sm font-medium text-zinc-700 mb-3">Error Rate by TEI Format</h4>
+          <ResponsiveContainer width="100%" height={Math.max(180, byTEI.length * 40)}>
+            <BarChart data={byTEI} layout="vertical" barCategoryGap="20%">
+              <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" horizontal={false} />
+              <XAxis type="number" domain={[0, 100]} tick={{ fill: '#71717a', fontSize: 11 }} tickFormatter={(v) => `${v}%`} />
+              <YAxis type="category" dataKey="name" tick={{ fill: '#52525b', fontSize: 11 }} width={80} tickLine={false} axisLine={false} />
+              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}% error rate`]} />
+              <Bar dataKey="value" radius={[0, 4, 4, 0]} maxBarSize={24}>
+                <LabelList dataKey="value" position="right" formatter={(v: number) => `${v}%`} style={{ fill: '#52525b', fontSize: 11, fontWeight: 500 }} />
+                {byTEI.map((entry, i) => (
+                  <Cell key={i} fill={entry.value > 30 ? '#dc2626' : entry.value > 15 ? '#d97706' : '#16a34a'} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
     </div>
   );
 }
@@ -415,12 +434,12 @@ export function SpecificErrorTable({ data }: { data: SpecificError[] }) {
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-zinc-200">
-            <th className="text-left py-2.5 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Q#</th>
-            <th className="text-left py-2.5 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Type</th>
-            <th className="text-left py-2.5 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Domain</th>
-            <th className="text-left py-2.5 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">CJ Function</th>
-            <th className="text-left py-2.5 px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider">Error Pattern</th>
+          <tr className="bg-slate-800 text-white">
+            <th className="text-left py-2.5 px-3 text-xs font-medium uppercase tracking-wider">Q#</th>
+            <th className="text-left py-2.5 px-3 text-xs font-medium uppercase tracking-wider">Type</th>
+            <th className="text-left py-2.5 px-3 text-xs font-medium uppercase tracking-wider">Domain</th>
+            <th className="text-left py-2.5 px-3 text-xs font-medium uppercase tracking-wider">CJ Function</th>
+            <th className="text-left py-2.5 px-3 text-xs font-medium uppercase tracking-wider">Error Pattern</th>
           </tr>
         </thead>
         <tbody>
@@ -428,12 +447,12 @@ export function SpecificErrorTable({ data }: { data: SpecificError[] }) {
             <tr key={i} className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors">
               <td className="py-2 px-3 text-zinc-600 font-mono tabular-nums">{row.questionNumber}</td>
               <td className="py-2 px-3">
-                <span className="inline-block px-1.5 py-0.5 rounded text-xs font-medium bg-zinc-100 text-zinc-600 border border-zinc-300">
+                <span className="inline-block px-1.5 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 border border-slate-300">
                   {row.type}
                 </span>
               </td>
               <td className="py-2 px-3 text-zinc-600">{row.domain}</td>
-              <td className="py-2 px-3 text-zinc-400">{row.cjFunction}</td>
+              <td className="py-2 px-3 text-zinc-500">{row.cjFunction}</td>
               <td className="py-2 px-3 text-zinc-600 text-xs">{row.errorPattern}</td>
             </tr>
           ))}
@@ -469,7 +488,6 @@ export function ReadinessProjection({
   const passingPos = ((passingThreshold - minScale) / range) * 100;
   const isPassing = score >= passingThreshold;
 
-  // Projected range
   const projLow = Math.max(minScale, score - 20);
   const projHigh = Math.min(maxScale, score + 20);
   const projLowPos = ((projLow - minScale) / range) * 100;
@@ -479,20 +497,16 @@ export function ReadinessProjection({
     <div className="space-y-6">
       <h4 className="text-sm font-medium text-zinc-700">NREMT Scaled Score Projection (100 – 1,500 Scale)</h4>
 
-      {/* Scale bar */}
       <div className="relative h-14 mt-8 mb-12">
-        {/* Background gradient */}
         <div className="absolute inset-x-0 top-4 h-6 rounded-full overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-red-500/40 via-amber-500/30 to-emerald-500/40" />
         </div>
 
-        {/* Projected range highlight */}
         <div
           className="absolute top-3 h-8 rounded-md border-2 border-emerald-600/40 bg-emerald-600/10"
           style={{ left: `${projLowPos}%`, width: `${projWidth}%` }}
         />
 
-        {/* Passing threshold line */}
         <div
           className="absolute top-0 bottom-0 w-px"
           style={{ left: `${passingPos}%` }}
@@ -503,7 +517,6 @@ export function ReadinessProjection({
           </div>
         </div>
 
-        {/* Score marker */}
         <div
           className="absolute top-2"
           style={{ left: `${scorePos}%`, transform: 'translateX(-50%)' }}
@@ -515,26 +528,11 @@ export function ReadinessProjection({
         </div>
       </div>
 
-      {/* Readiness stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8">
-        {preScore !== null && (
-          <div className="bg-zinc-100 border border-zinc-200 rounded-lg p-3 text-center">
-            <p className="text-xs text-zinc-400">Cohort Avg</p>
-            <p className="text-lg font-bold text-zinc-700 tabular-nums">{preScore}%</p>
-          </div>
-        )}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-8">
         {postScore !== null && (
           <div className="bg-zinc-100 border border-zinc-200 rounded-lg p-3 text-center">
             <p className="text-xs text-zinc-400">Score</p>
             <p className="text-lg font-bold text-zinc-700 tabular-nums">{postScore}%</p>
-          </div>
-        )}
-        {preScore !== null && postScore !== null && (
-          <div className="bg-zinc-100 border border-zinc-200 rounded-lg p-3 text-center">
-            <p className="text-xs text-zinc-400">Improvement</p>
-            <p className={`text-lg font-bold tabular-nums ${postScore > preScore ? 'text-emerald-600' : 'text-red-600'}`}>
-              {postScore > preScore ? '+' : ''}{(postScore - preScore).toFixed(1)}%
-            </p>
           </div>
         )}
         <div className="bg-zinc-100 border border-zinc-200 rounded-lg p-3 text-center">
@@ -543,9 +541,14 @@ export function ReadinessProjection({
             {projLow} – {projHigh}
           </p>
         </div>
+        <div className="bg-zinc-100 border border-zinc-200 rounded-lg p-3 text-center">
+          <p className="text-xs text-zinc-400">Status</p>
+          <p className={`text-lg font-bold ${isPassing ? 'text-emerald-600' : 'text-amber-600'}`}>
+            {isPassing ? 'Above Threshold' : 'Below Threshold'}
+          </p>
+        </div>
       </div>
 
-      {/* Disclaimer */}
       <div className="bg-zinc-100 border border-zinc-200 rounded-lg p-3 border-l-2 border-blue-400/40">
         <p className="text-xs text-zinc-400 leading-relaxed">
           <span className="font-medium text-zinc-600">Important:</span> These projections are estimates, not guarantees.
