@@ -112,12 +112,12 @@ function formatTime(seconds: number): string {
 /* ------------------------------------------------------------------ */
 
 function ECGStripPreview({ stripId }: { stripId: string }) {
-  const [strip, setStrip] = useState<{ image_url: string; rhythm_label: string } | null>(null);
+  const [strip, setStrip] = useState<{ image_url: string; rhythm_label: string; source_dataset: string; source_license: string } | null>(null);
   useEffect(() => {
     const supabase = createClient();
     supabase
       .from('ecg_strips')
-      .select('image_url, rhythm_label')
+      .select('image_url, rhythm_label, source_dataset, source_license')
       .eq('id', stripId)
       .single()
       .then(({ data }) => {
@@ -126,9 +126,13 @@ function ECGStripPreview({ stripId }: { stripId: string }) {
   }, [stripId]);
   if (!strip) return null;
   return (
-    <div className="rounded-lg border border-zinc-200 surface-1 overflow-hidden mb-4">
+    <div className="rounded-lg border border-zinc-200 bg-white overflow-hidden mb-4">
       <img src={strip.image_url} alt="ECG Strip" className="w-full h-auto object-contain" />
-      <p className="text-[9px] text-zinc-600 px-2 py-1">PhysioNet - CC BY 4.0</p>
+      <div className="flex items-center justify-between px-3 py-1.5 bg-zinc-50 border-t border-zinc-200">
+        <span className="text-[10px] text-zinc-500">
+          Source: {strip.source_dataset || 'PhysioNet'} &middot; {strip.source_license || 'CC BY 4.0'}
+        </span>
+      </div>
     </div>
   );
 }

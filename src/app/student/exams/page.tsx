@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { BookOpen, ClipboardList } from 'lucide-react';
+import { BookOpen, ClipboardList, KeyRound, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useUser } from '@/components/auth/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 
@@ -39,10 +40,39 @@ function getScoreColor(score: number | null): string {
 export default function StudentExamsPage() {
   const { user, loading: authLoading } = useUser();
   const supabase = createClient();
+  const router = useRouter();
 
   const [assessments, setAssessments] = useState<AssessmentRow[]>([]);
   const [sessions, setSessions] = useState<ExamSessionRow[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Access code state
+  const [accessCode, setAccessCode] = useState('');
+  const [codeLoading, setCodeLoading] = useState(false);
+  const [codeError, setCodeError] = useState<string | null>(null);
+
+  const handleAccessCode = async () => {
+    if (!accessCode.trim()) return;
+    setCodeLoading(true);
+    setCodeError(null);
+    try {
+      const { data, error } = await supabase
+        .from('instructor_assessments')
+        .select('id, name, status')
+        .eq('access_code', accessCode.trim().toUpperCase())
+        .single();
+      if (error || !data) {
+        setCodeError('No exam found with that code. Check with your instructor.');
+      } else if (data.status !== 'published') {
+        setCodeError('That exam is not yet published.');
+      } else {
+        router.push(`/student/exam/${data.id}`);
+      }
+    } catch {
+      setCodeError('Something went wrong. Try again.');
+    }
+    setCodeLoading(false);
+  };
 
   const assessmentMap = new Map<string, AssessmentRow>();
   assessments.forEach((a) => assessmentMap.set(a.id, a));
@@ -116,6 +146,34 @@ export default function StudentExamsPage() {
   return (
     <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-10">
       <h1 className="text-2xl font-semibold text-zinc-900">Exams</h1>
+
+      {/* Access Code Entry */}
+      <section className="glass-card p-5">
+        <div className="flex items-center gap-3 mb-2">
+          <KeyRound className="w-4 h-4 text-zinc-500" />
+          <p className="text-sm font-medium text-zinc-700">Have an access code?</p>
+        </div>
+        <p className="text-xs text-zinc-400 mb-3">Enter the code provided by your instructor to start an exam.</p>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="Access code"
+            value={accessCode}
+            onChange={(e) => { setAccessCode(e.target.value.toUpperCase()); setCodeError(null); }}
+            onKeyDown={(e) => e.key === 'Enter' && accessCode.trim() && handleAccessCode()}
+            className="h-9 w-40 rounded-lg border border-zinc-300 bg-zinc-50 px-3 font-mono text-sm tracking-wider uppercase text-zinc-900 placeholder:text-zinc-400 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+            maxLength={8}
+          />
+          <button
+            onClick={handleAccessCode}
+            disabled={codeLoading || !accessCode.trim()}
+            className="inline-flex h-9 items-center rounded-lg bg-[#1a365d] hover:bg-[#2d4a7a] px-4 text-sm font-medium text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {codeLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Go'}
+          </button>
+        </div>
+        {codeError && <p className="mt-2 text-xs text-red-600">{codeError}</p>}
+      </section>
 
       {/* Available Assessments */}
       <section className="space-y-4">

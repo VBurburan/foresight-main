@@ -224,13 +224,17 @@ function TestBuilderContent() {
     setPublishing(true);
     try {
       const supabase = createClient();
-      await supabase.from('instructor_assessments').update({
+      // Generate a short access code (6 chars, alphanumeric uppercase)
+      const code = Array.from({ length: 6 }, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random() * 32)]).join('');
+      const { data: updated } = await supabase.from('instructor_assessments').update({
         status: 'published',
         class_id: selectedClassId || null,
-      }).eq('id', assessmentId);
-      setSaveMessage('Published!');
+        access_code: code,
+      }).eq('id', assessmentId).select('access_code').single();
+      const finalCode = updated?.access_code || code;
+      setSaveMessage(`Published! Access code: ${finalCode}`);
       setPublishOpen(false);
-      setTimeout(() => setSaveMessage(''), 3000);
+      setTimeout(() => setSaveMessage(''), 8000);
     } catch {
       setSaveMessage('Error publishing');
       setTimeout(() => setSaveMessage(''), 3000);
