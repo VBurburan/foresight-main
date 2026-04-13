@@ -191,6 +191,7 @@ function TestBuilderContent() {
   const [assessmentName, setAssessmentName] = useState('');
   const [certLevel, setCertLevel] = useState<string>('Paramedic');
   const [assessmentType, setAssessmentType] = useState<string>('quiz');
+  const [forwardOnly, setForwardOnly] = useState(true);
   const [questions, setQuestions] = useState<QuestionTemplate[]>([]);
   const [showNewDialog, setShowNewDialog] = useState(false);
   const [selectedType, setSelectedType] = useState<TEIType>('MC');
@@ -440,7 +441,7 @@ function TestBuilderContent() {
       // Check for existing draft assessment
       const { data: drafts } = await supabase
         .from('instructor_assessments')
-        .select('id, name, certification_level')
+        .select('id, name, certification_level, settings')
         .eq('instructor_id', instructor.id)
         .eq('status', 'draft')
         .order('updated_at', { ascending: false })
@@ -451,6 +452,9 @@ function TestBuilderContent() {
         setAssessmentId(draft.id);
         setAssessmentName(draft.name);
         setCertLevel(draft.certification_level);
+        const s = draft.settings as any;
+        if (s?.forward_only !== undefined) setForwardOnly(s.forward_only);
+        if (s?.assessment_type) setAssessmentType(s.assessment_type);
 
         // Load questions
         const { data: savedQuestions } = await supabase
@@ -539,6 +543,7 @@ function TestBuilderContent() {
             certification_level: certLevel,
             question_count: questions.length,
             status: 'draft',
+            settings: { forward_only: forwardOnly, assessment_type: assessmentType },
           })
           .select('id')
           .single();
@@ -558,6 +563,7 @@ function TestBuilderContent() {
             name: assessmentName || 'Untitled Assessment',
             certification_level: certLevel,
             question_count: questions.length,
+            settings: { forward_only: forwardOnly, assessment_type: assessmentType },
           })
           .eq('id', currentAssessmentId);
       }
@@ -869,6 +875,25 @@ function TestBuilderContent() {
                   <SelectItem value="final">Final Exam (100–150)</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+          </div>
+
+          {/* Exam settings */}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setForwardOnly(!forwardOnly)}
+              className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${forwardOnly ? 'bg-blue-600' : 'bg-zinc-300'}`}
+            >
+              <span className={`pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform ${forwardOnly ? 'translate-x-4' : 'translate-x-0'}`} />
+            </button>
+            <div>
+              <p className="text-sm text-zinc-700 font-medium">Forward-only navigation</p>
+              <p className="text-xs text-zinc-400">
+                {forwardOnly
+                  ? 'Students cannot go back to previous questions (matches NREMT exam rules)'
+                  : 'Students can review and change previous answers'}
+              </p>
             </div>
           </div>
 

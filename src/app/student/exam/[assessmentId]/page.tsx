@@ -82,6 +82,7 @@ interface Assessment {
   name: string;
   certification_level: string | null;
   question_count: number;
+  settings?: { forward_only?: boolean; [key: string]: any };
 }
 
 /* Answer types per question */
@@ -677,7 +678,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
       const { data: assessData, error: assessErr } = await supabase
         .from('instructor_assessments')
-        .select('id, name, certification_level, question_count')
+        .select('id, name, certification_level, question_count, settings')
         .eq('id', assessmentId)
         .single();
 
@@ -1067,14 +1068,19 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
       {/* Fixed bottom navigation bar — Pearson Testing Center style */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-zinc-300 shadow-[0_-2px_8px_rgba(0,0,0,0.08)]">
         <div className="max-w-[960px] mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between">
-          <button
-            onClick={goPrev}
-            disabled={currentIndex === 0}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 disabled:text-zinc-300 disabled:cursor-not-allowed transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Back
-          </button>
+          {assessment?.settings?.forward_only !== false ? (
+            // Forward-only mode (default / NREMT style) — no back button
+            <div />
+          ) : (
+            <button
+              onClick={goPrev}
+              disabled={currentIndex === 0}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 disabled:text-zinc-300 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Back
+            </button>
+          )}
 
           <div className="flex items-center gap-3">
             <button
