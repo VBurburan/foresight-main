@@ -13,9 +13,11 @@ import {
   AlertTriangle,
   Loader2,
   CheckCircle2,
+  Calculator as CalcIcon,
 } from 'lucide-react';
 import { useUser } from '@/components/auth/auth-provider';
 import { createClient } from '@/lib/supabase/client';
+import CalculatorWidget from '@/components/exam/calculator-widget';
 
 /* ------------------------------------------------------------------ */
 /*  Types mirroring the test-builder data model                       */
@@ -791,6 +793,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, AnyAnswer>>({});
   const [flagged, setFlagged] = useState<Set<string>>(new Set());
+  const [showCalculator, setShowCalculator] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [questionStartTime, setQuestionStartTime] = useState<number>(Date.now());
   const [questionTimes, setQuestionTimes] = useState<Record<string, number>>({});
@@ -1234,6 +1237,9 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
         </div>
       </div>
 
+      {/* Calculator widget (floating, draggable) */}
+      {showCalculator && <CalculatorWidget onClose={() => setShowCalculator(false)} />}
+
       {/* Fixed bottom navigation bar — Pearson Testing Center style */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-zinc-300 shadow-[0_-2px_8px_rgba(0,0,0,0.08)]">
         <div className="max-w-[960px] mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between">
@@ -1252,6 +1258,19 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
           )}
 
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowCalculator((v) => !v)}
+              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                showCalculator
+                  ? 'text-blue-600 bg-blue-50 hover:bg-blue-100'
+                  : 'text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100'
+              }`}
+              title="Toggle calculator"
+            >
+              <CalcIcon className="w-4 h-4" />
+              <span className="hidden sm:inline">Calc</span>
+            </button>
+
             <button
               onClick={toggleFlag}
               className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm transition-colors ${
