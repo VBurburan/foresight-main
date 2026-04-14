@@ -2,6 +2,7 @@
 
 import { use, useEffect, useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { Reorder } from 'framer-motion';
 import {
   Clock,
   ChevronLeft,
@@ -252,35 +253,127 @@ function DDRenderer({
   answer: DDAnswer;
   onChange: (val: DDAnswer) => void;
 }) {
-  // Handle both formats
   const items = data?.items || [];
   const categories = data?.categories || [];
+  const [draggedItemId, setDraggedItemId] = useState<string | null>(null);
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+
+  // Compute which items are unassigned
+  const unassignedItems = items.filter((item: any) => !answer[item.id]);
+  const itemsByCategory: Record<string, any[]> = {};
+  categories.forEach((cat: string) => { itemsByCategory[cat] = []; });
+  items.forEach((item: any) => {
+    const cat = answer[item.id];
+    if (cat && itemsByCategory[cat]) itemsByCategory[cat].push(item);
+  });
+
+  const handleDragStart = (e: React.DragEvent, itemId: string) => {
+    setDraggedItemId(itemId);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', itemId);
+  };
+
+  const handleDragOver = (e: React.DragEvent, category: string | null) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setHoveredCategory(category);
+  };
+
+  const handleDrop = (e: React.DragEvent, category: string) => {
+    e.preventDefault();
+    const itemId = e.dataTransfer.getData('text/plain') || draggedItemId;
+    if (itemId) {
+      onChange({ ...answer, [itemId]: category });
+    }
+    setDraggedItemId(null);
+    setHoveredCategory(null);
+  };
+
+  const handleDropUnassigned = (e: React.DragEvent) => {
+    e.preventDefault();
+    const itemId = e.dataTransfer.getData('text/plain') || draggedItemId;
+    if (itemId) {
+      const newAnswer = { ...answer };
+      delete newAnswer[itemId];
+      onChange(newAnswer);
+    }
+    setDraggedItemId(null);
+    setHoveredCategory(null);
+  };
 
   return (
-    <div className="space-y-3">
-      <p className="text-xs text-zinc-400 mb-2 font-medium uppercase tracking-wide">
-        Assign each item to a category
+    <div className="space-y-4">
+      <p className="text-xs text-zinc-500 mb-2 font-medium uppercase tracking-wide">
+        Drag each item into the correct category
       </p>
-      {items.map((item: any) => (
+
+      {/* Unassigned items pool */}
+      {unassignedItems.length > 0 && (
         <div
-          key={item.id}
-          className="flex items-center gap-3 rounded-lg border border-zinc-200 px-4 py-3 surface-1"
+          className={`rounded-lg border-2 border-dashed p-3 transition-colors ${
+            hoveredCategory === null && draggedItemId ? 'border-blue-400 bg-blue-50' : 'border-zinc-300 bg-zinc-50'
+          }`}
+          onDragOver={(e) => handleDragOver(e, null)}
+          onDrop={handleDropUnassigned}
         >
-          <span className="flex-1 text-sm text-zinc-600 font-medium">{item.text}</span>
-          <select
-            value={answer[item.id] || ''}
-            onChange={(e) => onChange({ ...answer, [item.id]: e.target.value })}
-            className="rounded-lg border border-zinc-300 bg-zinc-50 px-3 py-1.5 text-sm text-zinc-900 focus:border-blue-500/40 focus:ring-1 focus:ring-blue-500/40 outline-none"
-          >
-            <option value="">-- Select --</option>
-            {categories.map((cat: string, idx: number) => (
-              <option key={idx} value={cat}>
-                {cat}
-              </option>
+          <p className="text-[10px] text-zinc-500 font-medium uppercase tracking-wide mb-2">
+            Items to categorize
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {unassignedItems.map((item: any) => (
+              <div
+                key={item.id}
+                draggable
+                onDragStart={(e) => handleDragStart(e, item.id)}
+                onDragEnd={() => { setDraggedItemId(null); setHoveredCategory(null); }}
+                className={`inline-flex items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-700 cursor-grab active:cursor-grabbing hover:border-blue-400 hover:shadow-sm transition-all ${
+                  draggedItemId === item.id ? 'opacity-50' : ''
+                }`}
+              >
+                <svg className="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+                </svg>
+                {item.text}
+              </div>
             ))}
-          </select>
+          </div>
         </div>
-      ))}
+      )}
+
+      {/* Category drop zones */}
+      <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${Math.min(categories.length, 3)}, 1fr)` }}>
+        {categories.map((cat: string) => (
+          <div
+            key={cat}
+            onDragOver={(e) => handleDragOver(e, cat)}
+            onDrop={(e) => handleDrop(e, cat)}
+            className={`rounded-lg border-2 p-3 min-h-[120px] transition-colors ${
+              hoveredCategory === cat ? 'border-blue-500 bg-blue-50' : 'border-zinc-300 bg-white'
+            }`}
+          >
+            <p className="text-xs font-semibold text-zinc-700 mb-2 uppercase tracking-wide">{cat}</p>
+            <div className="flex flex-wrap gap-2">
+              {itemsByCategory[cat]?.map((item: any) => (
+                <div
+                  key={item.id}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, item.id)}
+                  onDragEnd={() => { setDraggedItemId(null); setHoveredCategory(null); }}
+                  className={`inline-flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-sm text-emerald-800 cursor-grab active:cursor-grabbing hover:shadow-sm transition-all ${
+                    draggedItemId === item.id ? 'opacity-50' : ''
+                  }`}
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  {item.text}
+                </div>
+              ))}
+              {(!itemsByCategory[cat] || itemsByCategory[cat].length === 0) && (
+                <p className="text-xs text-zinc-400 italic">Drop items here</p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -297,39 +390,69 @@ function BLRenderer({
   const blItems = data?.items || [];
   const currentOrder = answer.length === blItems.length ? answer : blItems.map((_: any, i: number) => i);
 
-  const setPosition = (itemOrigIdx: number, newPos: number) => {
+  const moveItem = (origIdx: number, direction: -1 | 1) => {
     const updated = [...currentOrder];
-    const currentPos = updated.indexOf(itemOrigIdx);
-    if (currentPos === -1) return;
-    updated.splice(currentPos, 1);
-    updated.splice(newPos, 0, itemOrigIdx);
+    const currentPos = updated.indexOf(origIdx);
+    const newPos = currentPos + direction;
+    if (newPos < 0 || newPos >= updated.length) return;
+    [updated[currentPos], updated[newPos]] = [updated[newPos], updated[currentPos]];
     onChange(updated);
   };
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-zinc-400 mb-2 font-medium uppercase tracking-wide">
-        Arrange in correct order (use dropdown to set position)
+      <p className="text-xs text-zinc-500 mb-2 font-medium uppercase tracking-wide">
+        Drag to reorder, or use the arrow buttons
       </p>
-      {currentOrder.map((origIdx, pos) => (
-        <div
-          key={origIdx}
-          className="flex items-center gap-3 rounded-lg border border-zinc-200 px-4 py-3 surface-1"
-        >
-          <select
-            value={pos}
-            onChange={(e) => setPosition(origIdx, parseInt(e.target.value))}
-            className="rounded-lg border border-zinc-300 bg-zinc-50 px-2 py-1 text-sm text-zinc-900 w-16 text-center font-mono font-bold focus:border-blue-500/40 focus:ring-1 focus:ring-blue-500/40 outline-none"
+      <Reorder.Group
+        axis="y"
+        values={currentOrder}
+        onReorder={(newOrder) => onChange(newOrder)}
+        className="space-y-2"
+      >
+        {currentOrder.map((origIdx, pos) => (
+          <Reorder.Item
+            key={origIdx}
+            value={origIdx}
+            className="flex items-center gap-3 rounded-lg border border-zinc-200 bg-white px-4 py-3 cursor-grab active:cursor-grabbing hover:border-zinc-400 hover:shadow-sm transition-all"
+            whileDrag={{
+              scale: 1.02,
+              boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+              zIndex: 10,
+            }}
           >
-            {blItems.map((_: any, i: number) => (
-              <option key={i} value={i}>
-                {i + 1}
-              </option>
-            ))}
-          </select>
-          <span className="flex-1 text-sm text-zinc-600">{blItems[origIdx]}</span>
-        </div>
-      ))}
+            <span className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-sm font-bold flex items-center justify-center tabular-nums">
+              {pos + 1}
+            </span>
+            <svg className="w-4 h-4 text-zinc-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <span className="flex-1 text-sm text-zinc-700">{blItems[origIdx]}</span>
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <button
+                type="button"
+                onClick={() => moveItem(origIdx, -1)}
+                disabled={pos === 0}
+                className="w-7 h-7 rounded flex items-center justify-center text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                title="Move up"
+                aria-label="Move up"
+              >
+                <ChevronLeft className="w-3.5 h-3.5 rotate-90" />
+              </button>
+              <button
+                type="button"
+                onClick={() => moveItem(origIdx, 1)}
+                disabled={pos === currentOrder.length - 1}
+                className="w-7 h-7 rounded flex items-center justify-center text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                title="Move down"
+                aria-label="Move down"
+              >
+                <ChevronRight className="w-3.5 h-3.5 rotate-90" />
+              </button>
+            </div>
+          </Reorder.Item>
+        ))}
+      </Reorder.Group>
     </div>
   );
 }
