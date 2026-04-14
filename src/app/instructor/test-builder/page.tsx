@@ -603,12 +603,22 @@ function TestBuilderContent() {
             correctAnswer = { correctRegionId: data.correctRegionId, regions: data.regions };
           }
 
+          // Strip correct-answer fields from options so they're not exposed
+          // to the client when students fetch questions. Correct answers live
+          // only in the correct_answer column (never fetched by exam page).
+          const SENSITIVE_KEYS = ['correctKey', 'correctKeys', 'correctMapping', 'correctOrder', 'correctAnswers', 'correctRegionId'];
+          const sanitizedOptions = q.type === 'CJS'
+            ? {}
+            : Object.fromEntries(
+                Object.entries(data || {}).filter(([key]) => !SENSITIVE_KEYS.includes(key))
+              );
+
           return {
             assessment_id: currentAssessmentId,
             display_order: idx,
             item_type: q.type,
             stem: q.stem,
-            options: q.type === 'CJS' ? {} : q.data,
+            options: sanitizedOptions,
             correct_answer: correctAnswer,
             rationale: q.rationale,
             cjs_data: q.type === 'CJS' ? q.data : null,
