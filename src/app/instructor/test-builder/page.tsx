@@ -603,15 +603,48 @@ function TestBuilderContent() {
             correctAnswer = { correctRegionId: data.correctRegionId, regions: data.regions };
           }
 
-          // Strip correct-answer fields from options so they're not exposed
-          // to the client when students fetch questions. Correct answers live
-          // only in the correct_answer column (never fetched by exam page).
+          // Strip correct-answer fields so they're never exposed to the client
+          // when students fetch questions. Correct answers live only in the
+          // correct_answer column, which the exam page never fetches.
           const SENSITIVE_KEYS = ['correctKey', 'correctKeys', 'correctMapping', 'correctOrder', 'correctAnswers', 'correctRegionId'];
-          const sanitizedOptions = q.type === 'CJS'
-            ? {}
-            : Object.fromEntries(
-                Object.entries(data || {}).filter(([key]) => !SENSITIVE_KEYS.includes(key))
-              );
+
+          let sanitizedOptions: Record<string, any> = {};
+          let sanitizedCjsData: any = null;
+
+          if (q.type === 'CJS') {
+            const cjsData = data as CJSData;
+            // Extract per-phase correct answers and strip them from cjs_data
+            correctAnswer = {
+              phases: cjsData.phases.map((phase) => ({
+                questions: phase.questions.map((pq) => {
+                  const pqData = pq.data as any;
+                  const pqAnswer: any = {};
+                  if (pq.type === 'MC' && pqData?.correctKey) pqAnswer.correctKey = pqData.correctKey;
+                  else if (pq.type === 'MR' && pqData?.correctKeys) pqAnswer.correctKeys = pqData.correctKeys;
+                  else if (pq.type === 'DD' && pqData?.correctMapping) pqAnswer.correctMapping = pqData.correctMapping;
+                  else if (pq.type === 'OB' && pqData?.correctAnswers) pqAnswer.correctAnswers = pqData.correctAnswers;
+                  else if (pq.type === 'BL' && pqData?.correctOrder) pqAnswer.correctOrder = pqData.correctOrder;
+                  return pqAnswer;
+                }),
+              })),
+            };
+            sanitizedCjsData = {
+              ...cjsData,
+              phases: cjsData.phases.map((phase) => ({
+                ...phase,
+                questions: phase.questions.map((pq) => ({
+                  ...pq,
+                  data: Object.fromEntries(
+                    Object.entries(pq.data as any || {}).filter(([key]) => !SENSITIVE_KEYS.includes(key))
+                  ),
+                })),
+              })),
+            };
+          } else {
+            sanitizedOptions = Object.fromEntries(
+              Object.entries(data || {}).filter(([key]) => !SENSITIVE_KEYS.includes(key))
+            );
+          }
 
           return {
             assessment_id: currentAssessmentId,
@@ -621,7 +654,7 @@ function TestBuilderContent() {
             options: sanitizedOptions,
             correct_answer: correctAnswer,
             rationale: q.rationale,
-            cjs_data: q.type === 'CJS' ? q.data : null,
+            cjs_data: sanitizedCjsData,
             metadata: {
               certification_level: certLevel,
               assessment_type: assessmentType,
