@@ -27,25 +27,20 @@ type TEIType = 'MC' | 'MR' | 'DD' | 'BL' | 'OB' | 'HS' | 'CJS';
 
 interface MCData {
   options: { key: string; text: string }[];
-  correctKey: string;
 }
 interface MRData {
   options: { key: string; text: string }[];
-  correctKeys: string[];
 }
 interface DDData {
   items: { id: string; text: string }[];
   categories: string[];
-  correctMapping: Record<string, string>;
 }
 interface BLData {
   items: string[];
-  correctOrder: number[];
 }
 interface OBData {
   rows: string[];
   columns: string[];
-  correctAnswers: Record<string, string>;
 }
 
 interface CJSVitals {
@@ -529,7 +524,7 @@ function HSRenderer({
   answer,
   onChange,
 }: {
-  data: { imageUrl: string; regions: { id: string; label: string; x: number; y: number; width: number; height: number }[]; correctRegionId: string };
+  data: { imageUrl: string; regions: { id: string; label: string; x: number; y: number; width: number; height: number }[] };
   answer: string;
   onChange: (val: string) => void;
 }) {
