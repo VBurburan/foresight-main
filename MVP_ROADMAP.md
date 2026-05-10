@@ -1,6 +1,6 @@
 # Foresight — MVP Roadmap & Feature Backlog
 
-_Last updated: 2026-05-03. Blocker #1 (answer key security) resolved._
+_Last updated: 2026-05-10. Blockers #1 (answer key security) and #2 (RLS policies) resolved._
 
 ---
 
@@ -45,18 +45,24 @@ Everything in this section must be completed before the platform can be responsi
 
 ---
 
-### 2. Row-Level Security Policies (CRITICAL)
+### 2. Row-Level Security Policies ~~(CRITICAL)~~ — RESOLVED
 
-**Problem:** The application has no verified RLS policies on the three most critical tables: `instructor_assessments`, `instructor_questions`, and `session_responses`. Client-side guards (`InstructorGuard`, `StudentGuard`) are UI-only — anyone with a valid Supabase auth token can query the API directly and read or write any row.
+**What was done:**
+- Audited every Supabase query across all instructor and student pages to map the exact access patterns needed
+- Wrote `supabase/migrations/20260510_rls_policies.sql` covering all 8 tables:
+  - `instructors`: own row only (SELECT/UPDATE)
+  - `instructor_assessments`: instructors CRUD their own; students SELECT published + enrolled-class exams, plus any exam already completed (for results history)
+  - `instructor_questions`: instructors CRUD for their assessments; students SELECT questions for exams they can take + already completed
+  - `exam_sessions`: students full CRUD on their own sessions; instructors SELECT sessions for their enrolled students or own assessments
+  - `session_responses`: students INSERT/SELECT their own; instructors SELECT for their assessments/students; `grade_instructor_exam` RPC is SECURITY DEFINER and bypasses RLS correctly
+  - `classes`: instructors CRUD their own; students SELECT all active classes (enrollment_code is the real secret, needed for the join-class lookup flow)
+  - `class_enrollments`: students INSERT/SELECT their own; instructors SELECT and DELETE for their classes
+  - `students`: own SELECT/UPDATE; instructors SELECT students enrolled in their classes; `students_insert_own` INSERT policy preserved
+- Dropped the overly permissive `authenticated_read_classes` policy and replaced with scoped policies
 
-**Fix required — minimum set of RLS policies:**
-- `instructor_assessments`: instructors can only read/write their own rows; students can read rows where they have an enrollment in the linked class
-- `instructor_questions`: only readable by the owning instructor and by students during an active exam session for that assessment
-- `session_responses`: student can read/write only their own rows; instructor can read rows for assessments they own
-- `classes` / `class_enrollments`: instructors can only manage their own classes; students can read classes they are enrolled in
-- `students`: users can only read/write their own row; instructors can read rows for students enrolled in their classes
+**Deployed 2026-05-10** via Supabase Dashboard SQL editor (project `kbfolxwbrjpajylkphwl`). Migration file committed to `supabase/migrations/20260510_rls_policies.sql`. The file is idempotent and safe to re-run.
 
-**Note:** The `students_insert_own` and `authenticated_read_classes` policies added in recent commits are a start — audit that they exist and verify all tables above are covered.
+**Schema notes discovered during migration:** `class_enrollments.student_id` and `session_responses.session_id` are stored as `text` (not `uuid`). Explicit `::uuid` casts were added in the policies wherever these columns are compared against uuid values. The `students_insert_own` INSERT policy (student auto-registration) was written in an earlier session and is preserved.
 
 ---
 
