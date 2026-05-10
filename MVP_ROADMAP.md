@@ -1,6 +1,6 @@
 # Foresight — MVP Roadmap & Feature Backlog
 
-_Last updated: 2026-05-10. Blockers #1 (answer key security) and #2 (RLS policies) resolved._
+_Last updated: 2026-05-10. Blockers #1 (answer key security), #2 (RLS policies), and #3 (signup & onboarding) resolved._
 
 ---
 
@@ -66,16 +66,22 @@ Everything in this section must be completed before the platform can be responsi
 
 ---
 
-### 3. Signup & Instructor Onboarding Flow (CRITICAL)
+### 3. Signup & Instructor Onboarding Flow ~~(CRITICAL)~~ — RESOLVED
 
-**Problem:** There is no `/signup` page. New instructors cannot create accounts without Supabase dashboard access. This makes it impossible to sell to a school — the school cannot self-onboard.
+**What was done:**
+- `/signup` page created at `src/app/signup/page.tsx` — collects full name, institution, program focus (EMT/AEMT/Paramedic), email, password, and confirm password
+- `POST /api/auth/signup` route at `src/app/api/auth/signup/route.ts` handles all server-side work atomically:
+  1. Calls `supabase.auth.signUp()` via the SSR server client — Supabase sends a confirmation email automatically; `emailRedirectTo` is set to `/api/auth/callback` when `NEXT_PUBLIC_SITE_URL` env var is present
+  2. Creates a `students` row (`role: 'instructor'`) via service role — required for `InstructorGuard` which reads `students.role`
+  3. Creates an `instructors` row via service role with `full_name`, `institution`, `role`
+  4. Creates a Stripe customer (best-effort — gracefully skipped if `STRIPE_SECRET_KEY` is not configured; `stripe_customer_id` can be backfilled when Stripe is set up in step 5)
+  5. Rolls back the auth user (`admin.deleteUser`) if instructor row creation fails
+- `/login` page updated: added "Forgot password?" link (inline, pre-populates email from the sign-in field) and "New instructor? Create an account" link to `/signup`
+- Forgot-password flow: calls `supabase.auth.resetPasswordForEmail()` from the client, shows success state, no new page required
 
-**Fix required:**
-- `/signup` page with email, password, full name, institution name, and certification level focus (EMT vs. Paramedic programs)
-- On signup, create: Supabase auth user + `instructors` row + Stripe customer (see section 5)
-- Email confirmation flow (Supabase already supports this — verify it is enabled and the redirect URL is set)
-- `/login` page should include a "forgot password" link (Supabase magic link handles this, but the UI link is missing)
-- Student accounts are currently created on first login (auto-registration via RLS policy) — verify this still works after RLS changes
+**Schema notes:** `instructors` table does not have a `certification_level` column — program focus is stored in `students.certification_level` (where the `InstructorGuard` already reads from the `students` table).
+
+**Prerequisite for Supabase:** Email confirmation must be enabled in Supabase Auth settings, and the Site URL must point to the production domain so confirmation email links resolve correctly.
 
 ---
 
