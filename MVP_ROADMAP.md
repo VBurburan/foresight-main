@@ -1,6 +1,6 @@
 # Foresight — MVP Roadmap & Feature Backlog
 
-_Last updated: 2026-05-10. Blockers #1 (answer key security), #2 (RLS policies), and #3 (signup & onboarding) resolved._
+_Last updated: 2026-05-10. Blockers #1 (answer key security), #2 (RLS policies), #3 (signup & onboarding), and #4 (exam time limits) resolved._
 
 ---
 
@@ -85,16 +85,22 @@ Everything in this section must be completed before the platform can be responsi
 
 ---
 
-### 4. Exam Time Limits (CRITICAL for exam integrity)
+### 4. Exam Time Limits ~~(CRITICAL for exam integrity)~~ — RESOLVED
 
-**Problem:** Exams run indefinitely. The NREMT has no stated time limit per se, but practice exams at institutions typically have a limit. More importantly, an open-ended exam with no timer creates a trivially exploitable window for looking up answers. A time limit also creates urgency that simulates real exam conditions.
+**What was done:**
+- Migration `supabase/migrations/20260511_exam_time_limits.sql` adds `time_limit_minutes INTEGER` (nullable) to `instructor_assessments` and `timed_out BOOLEAN DEFAULT FALSE` to `exam_sessions`
+- Instructor publish dialog in `src/app/instructor/test-builder/page.tsx` now includes a time limit input (minutes, optional); the value is stored with every save draft and publish operation
+- Exam player (`src/app/student/exam/[assessmentId]/page.tsx`) now:
+  - Fetches `time_limit_minutes` from the assessment and stores it in state
+  - Displays a countdown timer in the header when a limit is set (elapsed clock shown when no limit)
+  - Timer turns amber at ≤5 minutes remaining, pulsing red at ≤1 minute
+  - An amber warning banner appears at exactly 5 minutes remaining: _"5 minutes remaining — your exam will be submitted automatically when time expires."_
+  - A red "Time's up — submitting your exam…" banner replaces it at 0
+  - Auto-submits via `handleSubmitRef` when `elapsed >= timeLimitSeconds`; uses refs (`autoSubmitRef`, `timedOutRef`) to prevent double-submit
+  - Sets `timed_out: true` on the `exam_sessions` row when auto-submitting so instructors can identify flagged sessions
+- `src/types/database.ts` updated: `exam_sessions.timed_out: boolean | null` added
 
-**Fix required:**
-- Add `time_limit_minutes` field to `instructor_assessments` (nullable — null = no limit)
-- Instructor can set a time limit when publishing an exam
-- Exam player displays countdown timer when a limit is set
-- On expiry: warn at 5 minutes remaining, auto-submit at zero (submit whatever the student has answered so far)
-- Server-side validation: `grade_instructor_exam` RPC should check that the session was submitted within `time_limit_minutes` of `started_at`; flag sessions that exceed it
+**Pending:** The `grade_instructor_exam` RPC should be updated in the Supabase dashboard to also server-side-validate and set `timed_out` based on `completed_at - started_at` vs `time_limit_minutes`. The migration file includes the SQL snippet for this. The migration must be run against the live Supabase project (`kbfolxwbrjpajylkphwl`) via the SQL editor.
 
 ---
 

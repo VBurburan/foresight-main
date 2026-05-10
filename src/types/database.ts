@@ -136,6 +136,7 @@ export type Database = {
           item_type_stats: Json | null
           cj_step_stats: Json | null
           time_spent_seconds: number | null
+          timed_out: boolean | null
         }
         Insert: Partial<Database['public']['Tables']['exam_sessions']['Row']> & { student_id: string }
         Update: Partial<Database['public']['Tables']['exam_sessions']['Row']>
