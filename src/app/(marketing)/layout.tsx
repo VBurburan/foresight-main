@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 const navLinks = [
   { href: "/features", label: "Features" },
   { href: "/pricing", label: "Pricing" },
+  { href: "/compliance", label: "Compliance" },
   { href: "/about", label: "About" },
 ];
 
@@ -115,6 +116,9 @@ export default function MarketingLayout({
               </Link>
               <Link href="/pricing" className="hover:text-zinc-900 transition-colors">
                 Pricing
+              </Link>
+              <Link href="/compliance" className="hover:text-zinc-900 transition-colors">
+                Compliance
               </Link>
               <Link href="/about" className="hover:text-zinc-900 transition-colors">
                 About
