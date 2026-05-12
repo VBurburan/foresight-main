@@ -104,12 +104,6 @@ const complianceMatrix: {
     detail:
       "Conformance to WCAG 2.1 AA — the technical standard referenced by Section 508 for institutions receiving federal funds.",
   },
-  {
-    framework: "HIPAA Business Associate Agreement",
-    status: "not-applicable",
-    detail:
-      "Foresight does not ingest Protected Health Information. Educational records only under FERPA.",
-  },
 ];
 
 const dataProtection = [
@@ -287,23 +281,13 @@ export default function CompliancePage() {
                 today, what is in progress, and what is on our roadmap.
               </p>
             </div>
-            <dl className="grid grid-cols-2 sm:grid-cols-1 gap-x-6 gap-y-3 text-sm shrink-0 sm:text-right">
-              <div>
-                <dt className="text-zinc-500 text-xs uppercase tracking-wider">
-                  Last updated
-                </dt>
-                <dd className="text-zinc-900 font-medium mt-0.5">
-                  May 12, 2026
-                </dd>
-              </div>
-              <div>
-                <dt className="text-zinc-500 text-xs uppercase tracking-wider">
-                  Operated by
-                </dt>
-                <dd className="text-zinc-900 font-medium mt-0.5">
-                  Path2Medic LLC (FL)
-                </dd>
-              </div>
+            <dl className="text-sm shrink-0 sm:text-right">
+              <dt className="text-zinc-500 text-xs uppercase tracking-wider">
+                Last updated
+              </dt>
+              <dd className="text-zinc-900 font-medium mt-0.5">
+                May 12, 2026
+              </dd>
             </dl>
           </div>
         </div>
@@ -659,10 +643,9 @@ export default function CompliancePage() {
           <Separator className="mt-12 mb-6 bg-zinc-200" />
 
           <p className="text-xs text-zinc-500 leading-relaxed">
-            Foresight is built and operated by Path2Medic LLC, a Florida
-            limited-liability company. This document is provided for
-            informational purposes and is not a substitute for the binding
-            Data Processing Agreement. For general inquiries:{" "}
+            Foresight is a product of Ibis SaaS Holdings LLC. This document is
+            provided for informational purposes and is not a substitute for
+            the binding Data Processing Agreement. For general inquiries:{" "}
             <a
               href="mailto:hello@foresight.edu"
               className="text-zinc-700 hover:text-zinc-900 underline underline-offset-2"
