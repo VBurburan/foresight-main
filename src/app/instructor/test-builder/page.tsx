@@ -206,6 +206,7 @@ function TestBuilderContent() {
   const [publishing, setPublishing] = useState(false);
   const [selectedClassId, setSelectedClassId] = useState<string>('');
   const [availableClasses, setAvailableClasses] = useState<{ id: string; name: string }[]>([]);
+  const [timeLimitMinutes, setTimeLimitMinutes] = useState<string>('');
 
   // Load classes for publishing
   useEffect(() => {
@@ -230,7 +231,8 @@ function TestBuilderContent() {
         status: 'published',
         class_id: selectedClassId || null,
         access_code: code,
-      }).eq('id', assessmentId).select('access_code').single();
+        time_limit_minutes: timeLimitMinutes ? parseInt(timeLimitMinutes, 10) : null,
+      } as any).eq('id', assessmentId).select('access_code').single();
       const finalCode = updated?.access_code || code;
       setSaveMessage(`Published! Access code: ${finalCode}`);
       setPublishOpen(false);
@@ -554,7 +556,8 @@ function TestBuilderContent() {
             question_count: questions.length,
             status: 'draft',
             settings: { forward_only: forwardOnly, assessment_type: assessmentType },
-          })
+            time_limit_minutes: timeLimitMinutes ? parseInt(timeLimitMinutes, 10) : null,
+          } as any)
           .select('id')
           .single();
 
@@ -574,7 +577,8 @@ function TestBuilderContent() {
             certification_level: certLevel,
             question_count: questions.length,
             settings: { forward_only: forwardOnly, assessment_type: assessmentType },
-          })
+            time_limit_minutes: timeLimitMinutes ? parseInt(timeLimitMinutes, 10) : null,
+          } as any)
           .eq('id', currentAssessmentId);
       }
 
@@ -783,8 +787,24 @@ function TestBuilderContent() {
                         ))}
                       </select>
                     </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs uppercase tracking-wider text-zinc-400 font-medium">Time Limit (optional)</label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          min="1"
+                          max="300"
+                          value={timeLimitMinutes}
+                          onChange={(e) => setTimeLimitMinutes(e.target.value)}
+                          placeholder="No limit"
+                          className="w-28 h-10 rounded-lg border border-zinc-300 bg-zinc-50 px-3 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                        />
+                        <span className="text-sm text-zinc-500">minutes</span>
+                      </div>
+                      <p className="text-xs text-zinc-400">Leave blank for no time limit. Students will be warned at 5 minutes remaining and auto-submitted when time expires.</p>
+                    </div>
                     <div className="glass-subtle p-3 text-xs text-zinc-400">
-                      <p><span className="font-medium text-zinc-600">{questions.length} questions</span> will be published as &ldquo;{assessmentName || 'Untitled'}&rdquo;</p>
+                      <p><span className="font-medium text-zinc-600">{questions.length} questions</span> will be published as &ldquo;{assessmentName || 'Untitled'}&rdquo;{timeLimitMinutes ? <> with a <span className="font-medium text-zinc-600">{timeLimitMinutes}-minute</span> time limit</> : ''}</p>
                     </div>
                   </div>
                   <DialogFooter>

@@ -80,6 +80,7 @@ interface Assessment {
   name: string;
   certification_level: string | null;
   question_count: number;
+  time_limit_minutes: number | null;
   settings?: { forward_only?: boolean; [key: string]: any };
 }
 
@@ -794,9 +795,14 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
   const [questionTimes, setQuestionTimes] = useState<Record<string, number>>({});
   const [submitting, setSubmitting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [timeLimitMinutes, setTimeLimitMinutes] = useState<number | null>(null);
+  const [showTimeWarning, setShowTimeWarning] = useState(false);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const sessionCreatedRef = useRef(false);
+  const autoSubmitRef = useRef(false);
+  const timedOutRef = useRef(false);
+  const handleSubmitRef = useRef<(() => Promise<void>) | null>(null);
 
   // Fetch assessment + questions
   useEffect(() => {
@@ -815,7 +821,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
       const { data: assessData, error: assessErr } = await supabase
         .from('instructor_assessments')
-        .select('id, name, certification_level, question_count, settings')
+        .select('id, name, certification_level, question_count, settings, time_limit_minutes')
         .eq('id', assessmentId)
         .single();
 
@@ -825,7 +831,8 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
         return;
       }
 
-      setAssessment(assessData);
+      setAssessment(assessData as unknown as Assessment);
+      setTimeLimitMinutes((assessData as any).time_limit_minutes ?? null);
 
       const { data: questionData, error: qErr } = await supabase
         .from('instructor_questions')
@@ -878,6 +885,19 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, [sessionId]);
+
+  // Time limit enforcement: warn at 5 min remaining, auto-submit at 0
+  useEffect(() => {
+    if (!timeLimitMinutes || !sessionId) return;
+    const limitSeconds = timeLimitMinutes * 60;
+    const remaining = limitSeconds - elapsed;
+    if (remaining === 300) setShowTimeWarning(true);
+    if (remaining <= 0 && !autoSubmitRef.current) {
+      autoSubmitRef.current = true;
+      timedOutRef.current = true;
+      handleSubmitRef.current?.();
+    }
+  }, [elapsed, timeLimitMinutes, sessionId]);
 
   // Track time per question
   const recordQuestionTime = useCallback(() => {
@@ -1004,7 +1024,8 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
         status: 'completed',
         time_spent_seconds: elapsed,
         question_count: questions.length,
-      })
+        ...(timedOutRef.current ? { timed_out: true } : {}),
+      } as any)
       .eq('id', sessionId);
 
     // Server-side grading: the RPC compares answers to correct keys,
@@ -1018,6 +1039,7 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
 
     router.push(`/student/results/${sessionId}`);
   };
+  handleSubmitRef.current = handleSubmit;
 
   // Derived state
   const currentQuestion = questions[currentIndex] || null;
@@ -1031,6 +1053,11 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
   const progressPercent = questions.length > 0 ? (answeredCount / questions.length) * 100 : 0;
   const isLastQuestion = currentIndex === questions.length - 1;
   const currentFlagged = currentQuestion ? flagged.has(currentQuestion.id) : false;
+
+  const timeLimitSeconds = timeLimitMinutes ? timeLimitMinutes * 60 : null;
+  const timeRemaining = timeLimitSeconds !== null ? Math.max(0, timeLimitSeconds - elapsed) : null;
+  const isNearLimit = timeRemaining !== null && timeRemaining <= 300;
+  const isVeryNearLimit = timeRemaining !== null && timeRemaining <= 60;
 
   /* ---- Loading / error states ---- */
 
@@ -1082,9 +1109,13 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
               Question {currentIndex + 1} of {questions.length}
             </div>
 
-            <div className="flex items-center gap-1.5 text-sm text-white/70">
+            <div className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
+              isVeryNearLimit ? 'text-red-400 animate-pulse' : isNearLimit ? 'text-amber-300' : 'text-white/70'
+            }`}>
               <Clock className="w-3.5 h-3.5" />
-              <span className="font-mono tabular-nums">{formatTime(elapsed)}</span>
+              <span className="font-mono tabular-nums">
+                {timeRemaining !== null ? formatTime(timeRemaining) : formatTime(elapsed)}
+              </span>
             </div>
           </div>
         </div>
@@ -1096,6 +1127,19 @@ function ExamContent({ assessmentId }: { assessmentId: string }) {
           />
         </div>
       </div>
+
+      {/* 5-minute time warning banner */}
+      {showTimeWarning && timeRemaining !== null && timeRemaining > 0 && (
+        <div className="bg-amber-500 text-white text-sm font-medium text-center py-2 px-4 flex items-center justify-center gap-2">
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+          <span>5 minutes remaining — your exam will be submitted automatically when time expires.</span>
+        </div>
+      )}
+      {timeRemaining === 0 && (
+        <div className="bg-red-600 text-white text-sm font-semibold text-center py-2 px-4">
+          Time&apos;s up — submitting your exam&hellip;
+        </div>
+      )}
 
       {/* Main content */}
       <div className="flex-1 max-w-[960px] mx-auto w-full px-4 sm:px-6 py-6 pb-24">

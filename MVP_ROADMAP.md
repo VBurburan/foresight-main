@@ -1,6 +1,6 @@
 # Foresight — MVP Roadmap & Feature Backlog
 
-_Last updated: 2026-05-03. Blocker #1 (answer key security) resolved._
+_Last updated: 2026-05-10. Blockers #1 (answer key security), #2 (RLS policies), #3 (signup & onboarding), and #4 (exam time limits) resolved._
 
 ---
 
@@ -45,44 +45,62 @@ Everything in this section must be completed before the platform can be responsi
 
 ---
 
-### 2. Row-Level Security Policies (CRITICAL)
+### 2. Row-Level Security Policies ~~(CRITICAL)~~ — RESOLVED
 
-**Problem:** The application has no verified RLS policies on the three most critical tables: `instructor_assessments`, `instructor_questions`, and `session_responses`. Client-side guards (`InstructorGuard`, `StudentGuard`) are UI-only — anyone with a valid Supabase auth token can query the API directly and read or write any row.
+**What was done:**
+- Audited every Supabase query across all instructor and student pages to map the exact access patterns needed
+- Wrote `supabase/migrations/20260510_rls_policies.sql` covering all 8 tables:
+  - `instructors`: own row only (SELECT/UPDATE)
+  - `instructor_assessments`: instructors CRUD their own; students SELECT published + enrolled-class exams, plus any exam already completed (for results history)
+  - `instructor_questions`: instructors CRUD for their assessments; students SELECT questions for exams they can take + already completed
+  - `exam_sessions`: students full CRUD on their own sessions; instructors SELECT sessions for their enrolled students or own assessments
+  - `session_responses`: students INSERT/SELECT their own; instructors SELECT for their assessments/students; `grade_instructor_exam` RPC is SECURITY DEFINER and bypasses RLS correctly
+  - `classes`: instructors CRUD their own; students SELECT all active classes (enrollment_code is the real secret, needed for the join-class lookup flow)
+  - `class_enrollments`: students INSERT/SELECT their own; instructors SELECT and DELETE for their classes
+  - `students`: own SELECT/UPDATE; instructors SELECT students enrolled in their classes; `students_insert_own` INSERT policy preserved
+- Dropped the overly permissive `authenticated_read_classes` policy and replaced with scoped policies
 
-**Fix required — minimum set of RLS policies:**
-- `instructor_assessments`: instructors can only read/write their own rows; students can read rows where they have an enrollment in the linked class
-- `instructor_questions`: only readable by the owning instructor and by students during an active exam session for that assessment
-- `session_responses`: student can read/write only their own rows; instructor can read rows for assessments they own
-- `classes` / `class_enrollments`: instructors can only manage their own classes; students can read classes they are enrolled in
-- `students`: users can only read/write their own row; instructors can read rows for students enrolled in their classes
+**Deployed 2026-05-10** via Supabase Dashboard SQL editor (project `kbfolxwbrjpajylkphwl`). Migration file committed to `supabase/migrations/20260510_rls_policies.sql`. The file is idempotent and safe to re-run.
 
-**Note:** The `students_insert_own` and `authenticated_read_classes` policies added in recent commits are a start — audit that they exist and verify all tables above are covered.
-
----
-
-### 3. Signup & Instructor Onboarding Flow (CRITICAL)
-
-**Problem:** There is no `/signup` page. New instructors cannot create accounts without Supabase dashboard access. This makes it impossible to sell to a school — the school cannot self-onboard.
-
-**Fix required:**
-- `/signup` page with email, password, full name, institution name, and certification level focus (EMT vs. Paramedic programs)
-- On signup, create: Supabase auth user + `instructors` row + Stripe customer (see section 5)
-- Email confirmation flow (Supabase already supports this — verify it is enabled and the redirect URL is set)
-- `/login` page should include a "forgot password" link (Supabase magic link handles this, but the UI link is missing)
-- Student accounts are currently created on first login (auto-registration via RLS policy) — verify this still works after RLS changes
+**Schema notes discovered during migration:** `class_enrollments.student_id` and `session_responses.session_id` are stored as `text` (not `uuid`). Explicit `::uuid` casts were added in the policies wherever these columns are compared against uuid values. The `students_insert_own` INSERT policy (student auto-registration) was written in an earlier session and is preserved.
 
 ---
 
-### 4. Exam Time Limits (CRITICAL for exam integrity)
+### 3. Signup & Instructor Onboarding Flow ~~(CRITICAL)~~ — RESOLVED
 
-**Problem:** Exams run indefinitely. The NREMT has no stated time limit per se, but practice exams at institutions typically have a limit. More importantly, an open-ended exam with no timer creates a trivially exploitable window for looking up answers. A time limit also creates urgency that simulates real exam conditions.
+**What was done:**
+- `/signup` page created at `src/app/signup/page.tsx` — collects full name, institution, program focus (EMT/AEMT/Paramedic), email, password, and confirm password
+- `POST /api/auth/signup` route at `src/app/api/auth/signup/route.ts` handles all server-side work atomically:
+  1. Calls `supabase.auth.signUp()` via the SSR server client — Supabase sends a confirmation email automatically; `emailRedirectTo` is set to `/api/auth/callback` when `NEXT_PUBLIC_SITE_URL` env var is present
+  2. Creates a `students` row (`role: 'instructor'`) via service role — required for `InstructorGuard` which reads `students.role`
+  3. Creates an `instructors` row via service role with `full_name`, `institution`, `role`
+  4. Creates a Stripe customer (best-effort — gracefully skipped if `STRIPE_SECRET_KEY` is not configured; `stripe_customer_id` can be backfilled when Stripe is set up in step 5)
+  5. Rolls back the auth user (`admin.deleteUser`) if instructor row creation fails
+- `/login` page updated: added "Forgot password?" link (inline, pre-populates email from the sign-in field) and "New instructor? Create an account" link to `/signup`
+- Forgot-password flow: calls `supabase.auth.resetPasswordForEmail()` from the client, shows success state, no new page required
 
-**Fix required:**
-- Add `time_limit_minutes` field to `instructor_assessments` (nullable — null = no limit)
-- Instructor can set a time limit when publishing an exam
-- Exam player displays countdown timer when a limit is set
-- On expiry: warn at 5 minutes remaining, auto-submit at zero (submit whatever the student has answered so far)
-- Server-side validation: `grade_instructor_exam` RPC should check that the session was submitted within `time_limit_minutes` of `started_at`; flag sessions that exceed it
+**Schema notes:** `instructors` table does not have a `certification_level` column — program focus is stored in `students.certification_level` (where the `InstructorGuard` already reads from the `students` table).
+
+**Prerequisite for Supabase:** Email confirmation must be enabled in Supabase Auth settings, and the Site URL must point to the production domain so confirmation email links resolve correctly.
+
+---
+
+### 4. Exam Time Limits ~~(CRITICAL for exam integrity)~~ — RESOLVED
+
+**What was done:**
+- Migration `supabase/migrations/20260511_exam_time_limits.sql` adds `time_limit_minutes INTEGER` (nullable) to `instructor_assessments` and `timed_out BOOLEAN DEFAULT FALSE` to `exam_sessions`
+- Instructor publish dialog in `src/app/instructor/test-builder/page.tsx` now includes a time limit input (minutes, optional); the value is stored with every save draft and publish operation
+- Exam player (`src/app/student/exam/[assessmentId]/page.tsx`) now:
+  - Fetches `time_limit_minutes` from the assessment and stores it in state
+  - Displays a countdown timer in the header when a limit is set (elapsed clock shown when no limit)
+  - Timer turns amber at ≤5 minutes remaining, pulsing red at ≤1 minute
+  - An amber warning banner appears at exactly 5 minutes remaining: _"5 minutes remaining — your exam will be submitted automatically when time expires."_
+  - A red "Time's up — submitting your exam…" banner replaces it at 0
+  - Auto-submits via `handleSubmitRef` when `elapsed >= timeLimitSeconds`; uses refs (`autoSubmitRef`, `timedOutRef`) to prevent double-submit
+  - Sets `timed_out: true` on the `exam_sessions` row when auto-submitting so instructors can identify flagged sessions
+- `src/types/database.ts` updated: `exam_sessions.timed_out: boolean | null` added
+
+**Pending:** The `grade_instructor_exam` RPC should be updated in the Supabase dashboard to also server-side-validate and set `timed_out` based on `completed_at - started_at` vs `time_limit_minutes`. The migration file includes the SQL snippet for this. The migration must be run against the live Supabase project (`kbfolxwbrjpajylkphwl`) via the SQL editor.
 
 ---
 
