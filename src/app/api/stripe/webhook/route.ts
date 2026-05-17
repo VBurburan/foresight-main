@@ -3,9 +3,6 @@ import { getStripe, FORESIGHT_PRODUCTS, getPlanFromPriceId } from '@/lib/stripe'
 import { createServiceClient } from '@/lib/supabase/service'
 import type Stripe from 'stripe'
 
-// Next.js must not parse the body — Stripe needs the raw bytes to verify the signature
-export const config = { api: { bodyParser: false } }
-
 const MAX_STUDENTS: Record<string, number> = Object.fromEntries(
   Object.entries(FORESIGHT_PRODUCTS).map(([key, val]) => [key, val.maxStudents])
 )

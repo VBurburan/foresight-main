@@ -22,6 +22,7 @@ const PLANS = [
     period: 'per cohort',
     students: 'Up to 25 students',
     maxStudents: 25,
+    highlighted: false,
     features: ['All 7 NREMT TEI question types', 'AI question generation', 'Class analytics', 'Student results & review'],
   },
   {
@@ -41,6 +42,7 @@ const PLANS = [
     period: 'per cohort',
     students: 'Up to 100 students',
     maxStudents: 100,
+    highlighted: false,
     features: ['All 7 NREMT TEI question types', 'AI question generation', 'Class analytics', 'Student results & review'],
   },
 ] as const;
