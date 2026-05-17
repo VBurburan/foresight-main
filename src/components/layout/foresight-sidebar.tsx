@@ -10,6 +10,7 @@ import {
   FileText,
   BarChart3,
   BookOpen,
+  CreditCard,
   LogOut,
   Menu,
   X,
@@ -24,6 +25,7 @@ const navItems = [
   { icon: FileText, label: "Test Builder", href: "/instructor/test-builder" },
   { icon: BarChart3, label: "Analytics", href: "/instructor/analytics" },
   { icon: BookOpen, label: "TEI Reference", href: "/instructor/examples" },
+  { icon: CreditCard, label: "Billing", href: "/instructor/billing" },
 ];
 
 export function ForesightSidebar() {

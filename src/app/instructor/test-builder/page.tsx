@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Plus,
   GripVertical,
@@ -188,6 +189,7 @@ function saveDraft(draft: SavedDraft) {
 
 function TestBuilderContent() {
   const { user } = useUser();
+  const router = useRouter();
   const [assessmentName, setAssessmentName] = useState('');
   const [certLevel, setCertLevel] = useState<string>('Paramedic');
   const [assessmentType, setAssessmentType] = useState<string>('quiz');
@@ -207,15 +209,24 @@ function TestBuilderContent() {
   const [selectedClassId, setSelectedClassId] = useState<string>('');
   const [availableClasses, setAvailableClasses] = useState<{ id: string; name: string }[]>([]);
   const [timeLimitMinutes, setTimeLimitMinutes] = useState<string>('');
+  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
 
-  // Load classes for publishing
+  // Load instructor subscription status + classes for publishing
   useEffect(() => {
     if (!user) return;
     const supabase = createClient();
-    supabase.from('instructors').select('id').eq('user_id', user.id).single()
+    supabase
+      .from('instructors')
+      .select('id, subscription_status')
+      .eq('user_id', user.id)
+      .single()
       .then(({ data: inst }) => {
         if (!inst) return;
-        supabase.from('classes').select('id, name').eq('instructor_id', inst.id)
+        setSubscriptionStatus((inst as any).subscription_status ?? null);
+        supabase
+          .from('classes')
+          .select('id, name')
+          .eq('instructor_id', inst.id)
           .then(({ data }) => setAvailableClasses(data ?? []));
       });
   }, [user]);
@@ -761,7 +772,16 @@ function TestBuilderContent() {
             {assessmentId && (
               <Dialog open={publishOpen} onOpenChange={setPublishOpen}>
                 <DialogTrigger asChild>
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-500 text-white">
+                  <Button
+                    size="sm"
+                    className="bg-blue-600 hover:bg-blue-500 text-white"
+                    onClick={(e) => {
+                      if (subscriptionStatus !== 'active') {
+                        e.preventDefault();
+                        router.push('/instructor/billing');
+                      }
+                    }}
+                  >
                     <Send className="h-4 w-4 mr-1.5" />
                     Publish
                   </Button>

@@ -1,6 +1,6 @@
 # Foresight — MVP Roadmap & Feature Backlog
 
-_Last updated: 2026-05-10. Blockers #1 (answer key security), #2 (RLS policies), #3 (signup & onboarding), and #4 (exam time limits) resolved._
+_Last updated: 2026-05-10. Blockers #1 (answer key security), #2 (RLS policies), #3 (signup & onboarding), #4 (exam time limits), and #5 (Stripe payment integration) resolved._
 
 ---
 
@@ -104,22 +104,27 @@ Everything in this section must be completed before the platform can be responsi
 
 ---
 
-### 5. Stripe Payment Integration (CRITICAL for monetization)
+### 5. Stripe Payment Integration ~~(CRITICAL for monetization)~~ — RESOLVED
 
-**Problem:** `src/lib/stripe.ts` defines pricing tiers and initializes the Stripe client, but nothing is wired. There is no checkout flow, no webhook handler, and no subscription gating. Any user with `role='instructor'` can create unlimited exams without paying.
+**What was done:**
+- `src/lib/stripe.ts` extended with `getPriceId()` and `getPlanFromPriceId()` helpers; `maxStudents` added to each product definition
+- `POST /api/stripe/checkout` — creates a Stripe Checkout Session for the selected plan (Small/Medium/Large Cohort); lazily creates a Stripe customer if `stripe_customer_id` is missing on the instructor row (handles instructors who signed up before Stripe was configured)
+- `POST /api/stripe/webhook` — verifies Stripe signature via `STRIPE_WEBHOOK_SECRET`; handles `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`; writes `subscription_status`, `subscription_plan`, and `max_students` to the `instructors` row
+- `POST /api/stripe/portal` — creates a Stripe Customer Portal session so instructors can manage card, cancel, and view invoices
+- `/instructor/billing` page — shows current plan status badge, plan selection cards ($1,999/$2,499/$2,999 per cohort), "Manage Billing" button (→ Customer Portal) for active subscribers, success/cancel flash messages from Stripe redirect
+- "Billing" nav item added to the sidebar
+- Test-builder Publish button now checks `subscription_status`; if not `'active'`, redirects to `/instructor/billing` instead of opening the publish dialog
+- `.env.example` updated with `STRIPE_PRICE_COHORT_SMALL/MEDIUM/LARGE` and `NEXT_PUBLIC_SITE_URL`
 
-**Fix required — minimum viable payment loop:**
+**Pricing tiers (configure in Stripe Dashboard as recurring subscription prices):**
+- Cohort Small: up to 25 students, $1,999/cohort — set `STRIPE_PRICE_COHORT_SMALL`
+- Cohort Medium: up to 50 students, $2,499/cohort — set `STRIPE_PRICE_COHORT_MEDIUM`
+- Cohort Large: up to 100 students, $2,999/cohort — set `STRIPE_PRICE_COHORT_LARGE`
 
-1. **Checkout endpoint:** `POST /api/stripe/checkout` — creates a Stripe Checkout Session for the selected plan, redirects instructor to Stripe-hosted checkout
-2. **Webhook handler:** `POST /api/stripe/webhook` — handles `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted` events; writes subscription status to `instructors.subscription_status`
-3. **Subscription gating:** Check `instructors.subscription_status = 'active'` before allowing exam creation. Show upgrade prompt if not active.
-4. **Billing page:** `/instructor/billing` — link to Stripe Customer Portal for the instructor to manage card, cancel, view invoices
-5. **Stripe customer creation:** On instructor signup, call `stripe.customers.create()` and store the returned `customer_id` in `instructors.stripe_customer_id`
-
-**Pricing tiers already defined in `stripe.ts`:**
-- Cohort Small: up to 25 students, $1,999/cohort
-- Cohort Medium: up to 50 students, $2,499/cohort
-- Cohort Large: up to 100 students, $2,999/cohort
+**Required Stripe Dashboard setup before going live:**
+1. Create three Products in Stripe → add a recurring Price to each → copy the `price_xxx` IDs into env vars
+2. Add webhook endpoint `https://yourdomain.com/api/stripe/webhook` listening to `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted` → copy signing secret into `STRIPE_WEBHOOK_SECRET`
+3. Enable the Customer Portal in Stripe Dashboard (Billing → Customer Portal settings)
 
 ---
 
